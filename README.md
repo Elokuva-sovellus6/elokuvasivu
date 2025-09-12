@@ -27,3 +27,4 @@ A full-stack web application for movie enthusiasts. This project integrates mult
 ### Bonus Feature
 15. **Profile page** – Additional functionality chosen by the development team.  
 
+Testi - Poista myöhemmin
