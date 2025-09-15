@@ -34,3 +34,20 @@ export const getPopularMovies = async (page = 1) => {
   };
 };
 
+export const getMovieDetails = async (id) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`
+    );
+
+    if (!response.ok) {
+      throw new Error(`TMDB error: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Virhe elokuvan haussa:", err);
+    return null;
+  }
+};
+
