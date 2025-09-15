@@ -4,14 +4,6 @@ export default function GroupScreen() {
   return (
     <div className='groupscreen'>
 
-        {/*Logo ja hakupalkki, kirjautuminen puuttuu*/}
-      <header className="topbar">
-        <div className="logo-placeholder">Logo</div>
-        <div className="search">
-          <input type="text" placeholder="Hae..." />
-        </div>
-      </header>
-
       {/*Ryhmän tiedot*/}
       <section className='group-header'>
         <div className='group-image'></div>
