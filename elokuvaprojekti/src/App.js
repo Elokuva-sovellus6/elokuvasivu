@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import HomeScreen from "./screens/HomeScreen";
 import MovieScreen from "./screens/MovieScreen";
 import GroupScreen from "./screens/GroupScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
         <Routes>
           {/* <Route path="/" element={<HomeScreen />} /> */}
           <Route path="/movie/:id" element={<MovieScreen />} />
-          {/* <Route path="/profile" element={<ProfileScreen />} /> */}
+          <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/shows" element={<ShowScreen />} />
           <Route path="/group" element={<GroupScreen />} />
         </Routes>
