@@ -5,6 +5,7 @@ import MovieScreen from "./screens/MovieScreen";
 import GroupScreen from "./screens/GroupScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 function App() {
   return (
