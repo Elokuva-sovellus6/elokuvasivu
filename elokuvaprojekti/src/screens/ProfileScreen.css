@@ -1,0 +1,113 @@
+.profilescreen-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/*Profiilikuva ja tiedot*/
+.profile-header {
+    display: flex;
+    align-items:flex-start;
+    gap: 24px;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 40px;
+}
+
+
+.profile-image {
+    width: 250px;
+    height: 250px;
+    background: #ccc;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.profile-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.profile-info {
+    flex: 1;
+    font-size: 24px;
+}
+
+.profile-username {
+    font-size: 48px;
+    margin: 0 0 8px 0;
+}
+
+.profile-description {
+    color: #666;
+    margin: 0;
+}
+
+/*Profiilin poistaminen*/
+.delete-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    max-width: 120px;
+}
+
+/*Sisältö osiot*/
+.profile-sections {
+    display: grid;
+    gap: 24px;
+}
+
+.profile-data {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.profile-data h2 {
+    margin-top: 0;
+    margin-bottom: 100px;
+}
+
+.profile-data p {
+    color: #888;
+    margin: 10;
+    font-size: 24px;
+}
+
+/*Jaettava linkki*/
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.share-link {
+    font-size: 12px;
+    color: #333;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.footer {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
