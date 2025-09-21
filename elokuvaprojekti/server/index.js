@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { ApiError } from './helper/ApiError.js';
 import authRouter from './routers/authRouter.js';
+import userRouter from './routers/userRouter.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -14,6 +15,9 @@ app.use(express.json());
 
 // Reitit auth-kontrollerille
 app.use('/auth', authRouter);
+
+// Reitti user-kontrollerille
+app.use('/users', userRouter);
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
