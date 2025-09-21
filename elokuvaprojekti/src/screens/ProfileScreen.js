@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfileScreen.css';
 import { getUserProfile, deleteUserProfile } from '../api/user';
+import { AuthContext } from '../context/authContext';
 
 {/*Profiilin tiedot ja kuva*/}
 function ProfileScreen() {
@@ -27,13 +28,15 @@ function ProfileScreen() {
     fetchData();
   }, []);
 
+  const { logout } = useContext(AuthContext);
+
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete your profile?')) return;
     try {
       await deleteUserProfile();
-      localStorage.removeItem('token');
+      logout();
       alert('Profile deleted successfully');
-      navigate('/login');
+      navigate('/shows'); // HUOM! muuta ohjaus homescreeniin kun valmistuu
     } catch (err) {
       alert(`Error: ${err.message}`);
     }

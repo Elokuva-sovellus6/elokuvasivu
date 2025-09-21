@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from '../context/authContext.js';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { searchMovies } from '../api/moviedb.js';
@@ -11,19 +12,6 @@ export default function Navbar() {
   const [query, setQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-
-  // Tarkistaa kirjautumistilan käynnistyksessä
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUsername = localStorage.getItem('username');
-    if (token && storedUsername) {
-      setIsLoggedIn(true);
-      setUsername(storedUsername);
-    }
-  }, []);
 
   // Hakee elokuvat kun query muuttuu
   useEffect(() => {
@@ -41,6 +29,7 @@ export default function Navbar() {
   }, [query]);
 
   const navigate = useNavigate();
+  const { isLoggedIn, username, login, logout, loginData, setLoginData } = useContext(AuthContext);
 
   const handleSelectMovie = (movie) => {
     navigate(`/movie/${movie.id}`);
@@ -63,21 +52,10 @@ export default function Navbar() {
     e.preventDefault();
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, loginData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('username', response.data.username);
-      setIsLoggedIn(true);
-      setUsername(response.data.username);
+      login(response.data.token, response.data.username);
     } catch (error) {
       console.error('Login failed:', error.response?.data?.message);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    setIsLoggedIn(false);
-    setUsername('');
-    setLoginData({ email: '', password: '' });
   };
 
   return (
@@ -114,9 +92,12 @@ export default function Navbar() {
           )}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item"><Link className="nav-link active" aria-current="page" to="/">Home</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
+            {/*<li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>*/}
             <li className="nav-item"><Link className="nav-link" to="/shows">Shows</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/group">Group</Link></li>
+            {isLoggedIn && (
+              <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
+            )}
           </ul>
           
           {/* Login/Logout näkymä */}
@@ -155,7 +136,10 @@ export default function Navbar() {
               <span className="navbar-text me-2">Welcome, {username}!</span>
               <button
                 className="btn btn-outline-danger"
-                onClick={handleLogout}
+                onClick={() => {
+                  logout();
+                  navigate('/shows'); // HUOM! muuta ohjaus homescreeniin kun valmistuu
+                }}
               >
                 Logout
               </button>
