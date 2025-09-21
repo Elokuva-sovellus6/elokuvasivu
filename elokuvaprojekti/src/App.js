@@ -5,21 +5,24 @@ import MovieScreen from "./screens/MovieScreen";
 import GroupScreen from "./screens/GroupScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
+import { AuthProvider } from "./context/authContext";
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <div className="container py-4">
-        <Routes>
-          {/* <Route path="/" element={<HomeScreen />} /> */}
-          <Route path="/movie/:id" element={<MovieScreen />} />
-          <Route path="/profile" element={<ProfileScreen />} />
-          <Route path="/shows" element={<ShowScreen />} />
-          <Route path="/group" element={<GroupScreen />} />
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Navbar />
+        <div className="container py-4">
+          <Routes>
+            {/* <Route path="/" element={<HomeScreen />} /> */}
+            <Route path="/movie/:id" element={<MovieScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shows" element={<ShowScreen />} />
+            <Route path="/group" element={<GroupScreen />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
