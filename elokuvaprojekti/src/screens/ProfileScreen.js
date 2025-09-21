@@ -1,7 +1,48 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfileScreen.css';
+import { getUserProfile, deleteUserProfile } from '../api/user';
 
 {/*Profiilin tiedot ja kuva*/}
 function ProfileScreen() {
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+    // Hae käyttäjä
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getUserProfile();
+        setUser(data);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete your profile?')) return;
+    try {
+      await deleteUserProfile();
+      localStorage.removeItem('token');
+      alert('Profile deleted successfully');
+      navigate('/login');
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  if (loading) return <p>Loading profile...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!user) return null;
+
   return (
     <div className="profilescreen-container">
       <div className="profile-header">
@@ -11,12 +52,12 @@ function ProfileScreen() {
         </div>
 
         <div className="profile-info">
-          <h1 className="profile-username">Username</h1>
+          <h1 className="profile-username">{user.username}</h1>
           <p className="profile-description">Description</p>
         </div>
 
         {/*Profiilin poistaminen*/}
-        <button className="delete-button">Delete user</button>
+        <button className="delete-button" onClick={handleDelete}>Delete user</button>
       </div>
 
       {/*Placeholderit suosikeille, arvosteluille ja ryhmille*/}
