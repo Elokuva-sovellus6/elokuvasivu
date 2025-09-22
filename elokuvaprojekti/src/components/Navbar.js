@@ -8,55 +8,56 @@ import RegisterModal from './RegisterModal';
 import axios from 'axios';
 
 export default function Navbar() {
-  const [movies, setMovies] = useState([]);
-  const [query, setQuery] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [movies, setMovies] = useState([])
+  const [query, setQuery] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [showRegisterModal, setShowRegisterModal] = useState(false)
 
   // Hakee elokuvat kun query muuttuu
   useEffect(() => {
     if (query.trim().length > 0) {
      searchMovies(query)
       .then(({ results }) => {
-        setMovies(results);
-        setShowDropdown(true);
+        setMovies(results)
+        setShowDropdown(true)
       })
-       .catch((err) => console.error(err));
+       .catch((err) => console.error(err))
     } else {
-      setMovies([]);
-      setShowDropdown(false);
+      setMovies([])
+      setShowDropdown(false)
     }
-  }, [query]);
+  }, [query])
 
-  const navigate = useNavigate();
-  const { isLoggedIn, username, login, logout, loginData, setLoginData } = useContext(AuthContext);
+  const [loginData, setLoginData] = useState({ email: '', password: '' })
+  const navigate = useNavigate()
+  const { isLoggedIn, username, login, logout } = useContext(AuthContext)
 
   const handleSelectMovie = (movie) => {
-    navigate(`/movie/${movie.id}`);
-    setShowDropdown(false);
-  };
+    navigate(`/movie/${movie.id}`)
+    setShowDropdown(false)
+  }
 
   const handleRegisterClick = () => {
-    setShowRegisterModal(true);
-  };
+    setShowRegisterModal(true)
+  }
 
   const handleCloseRegisterModal = () => {
-    setShowRegisterModal(false);
-  };
+    setShowRegisterModal(false)
+  }
 
   const handleLoginChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  };
+    setLoginData({ ...loginData, [e.target.name]: e.target.value })
+  }
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, loginData);
-      login(response.data.token, response.data.username);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, loginData)
+      login(response.data.token, response.data.username)
     } catch (error) {
-      console.error('Login failed:', error.response?.data?.message);
+      alert('Invalid email or password')
     }
-  };
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -137,8 +138,8 @@ export default function Navbar() {
               <button
                 className="btn btn-outline-danger"
                 onClick={() => {
-                  logout();
-                  navigate('/shows'); // HUOM! muuta ohjaus homescreeniin kun valmistuu
+                  logout()
+                  navigate('/shows') // HUOM! muuta ohjaus homescreeniin kun valmistuu
                 }}
               >
                 Logout

@@ -5,30 +5,30 @@ import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
-const port = process.env.PORT || 3001;
+const app = express()
+const port = process.env.PORT || 3001
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json())
 
 // Reitit auth-kontrollerille
-app.use('/auth', authRouter);
+app.use('/auth', authRouter)
 
 // Reitti user-kontrollerille
-app.use('/users', userRouter);
+app.use('/users', userRouter)
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {
-        return res.status(err.status).json({ message: err.message });
+        return res.status(err.status).json({ message: err.message })
     }
     console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
-});
+    res.status(500).json({ message: 'Internal Server Error' })
+})
 
 // Käynnistää palvelimen
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+    console.log(`Server is running on http://localhost:${port}`)
+})

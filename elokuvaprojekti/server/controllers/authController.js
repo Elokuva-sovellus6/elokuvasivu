@@ -26,29 +26,29 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
     try {
         // Hakee lomakkeelta saadut tiedot
-        const { email, password } = req.body;
+        const { email, password } = req.body
 
         // Hakee käyttäjän tietokannasta sähköpostin perusteella
         const user = await User.findByEmail(email);
         if (!user) {
-            throw new ApiError('Invalid credentials', 401); // 401 Unauthorized
+            throw new ApiError('Invalid credentials', 401)
         }
 
         // Vertailee salasanan tiivistettä
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password)
         if (!isPasswordValid) {
-            throw new ApiError('Invalid credentials', 401);
+            throw new ApiError('Invalid credentials', 401)
         }
 
         // Luo JWT-tokenin
         const token = jwt.sign(
             { id: user.userid, username: user.username },
             process.env.JWT_SECRET_KEY,
-            { expiresIn: '1h' } // Tokenin voimassaoloaika
-        );
+            { expiresIn: '2h' } // Tokenin voimassaoloaika
+        )
 
-        res.status(200).json({ message: 'Login successful', token, username: user.username });
+        res.status(200).json({ message: 'Login successful', token, username: user.username })
     } catch (error) {
-        next(error);
+        next(error)
     }
-};
+}
