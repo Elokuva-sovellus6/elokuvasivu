@@ -1,83 +1,135 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState, useContext  } from "react";
-import { getMovieDetails } from "../api/moviedb";
-import ReviewCard from "../components/ReviewCard";
-import Rating from "../components/Rating";
-import { AuthContext } from '../context/authContext.js';
+import { useState, useEffect, useMemo  } from "react"
+import Movies from "../components/MovieCard"
+import { getMovieDetails, getPopularMovies  } from "../api/moviedb";
 
 export default function MovieScreen() {
-  const { id } = useParams()
-  const [movie, setMovie] = useState(null)
-  const { isLoggedIn, token } = useContext(AuthContext)
+  const [genres, setGenres] = useState([])
+  const [selectedGenre, setSelectedGenre] = useState("")
+  const [selectedDate, setSelectedDate] = useState("")
+  const [movies, setMovies] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
+  const API_KEY = process.env.REACT_APP_TMDB_API_KEY
+
+  // Haetaan TMDB genret dropdownia varten
   useEffect(() => {
-    getMovieDetails(id).then(setMovie)
-  }, [id])
+    const fetchGenres = async () => {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
+        )
+        const data = await res.json()
+        setGenres(data.genres)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchGenres()
+  }, [API_KEY])
 
-  if (!movie) return <p>Ladataan...</p>
+  const genreMap = useMemo(
+    () => Object.fromEntries((genres || []).map((g) => [g.id, g.name])),
+    [genres]
+  )
 
-const arvostelut = [
-    { text: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non provident, sunt in culpa qui official deserunt mollit anim id est laborum." },
-    { text: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non provident, sunt in culpa qui official deserunt mollit anim id est laborum." },
-    { text: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non provident, sunt in culpa qui official deserunt mollit anim id est laborum." },
-    { text: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non provident, sunt in culpa qui official deserunt mollit anim id est laborum." },
-    { text: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non provident, sunt in culpa qui official deserunt mollit anim id est laborum." },
-  ]
+  // Haetaan elokuvat kun genre, päivämäärä tai sivu muuttuu
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true)
+      setError("")
+
+      try {
+        let data
+
+        if (!selectedGenre && !selectedDate) {
+          // Ei filttereitä → näytetään suositut
+          data = await getPopularMovies(page)
+        } else {
+          // Käytetään discover-hakua
+          let url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=fi&sort_by=popularity.desc&page=${page}`
+
+          if (selectedGenre) url += `&with_genres=${selectedGenre}`
+          if (selectedDate) url += `&primary_release_year=${selectedDate}`
+
+          const res = await fetch(url)
+          data = await res.json()
+        }
+
+        setMovies(data.results || [])
+        setTotalPages(data.totalPages || data.total_pages || 1)
+      } catch (err) {
+        console.error(err)
+        setError("Virhe haettaessa elokuvia")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMovies()
+  }, [selectedGenre, selectedDate, page, API_KEY])
+
+  // Jos vaihdetaan genre tai päivä → aloitetaan aina sivulta 1
+  useEffect(() => {
+    setPage(1)
+  }, [selectedGenre, selectedDate])
 
   return (
-    <div className="container py-4">
-      {/* MOVIE SECTION */}
-      <section className="movie-section row mb-5">
-        {/* Vasemmalle kuva ja painikkeet */}
-        <div className="col-md-4 text-center">
-          <div className="img bg-secondary mb-3 d-flex justify-content-center align-items-center" style={{ height: "600px", overflow: "hidden"  }}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          </div>
-          <div className="buttons d-flex gap-2">
-            <button className="btn btn-primary">Share</button>
-            <button className="btn btn-outline-danger">Add to Favorites</button>
-          </div>
-        </div>
-        {/* Oikealle kuvausteksti */}
-        <div className="col-md-6">
-          <h2>{movie.title}</h2>
-          <p>{movie.overview}</p>
-        </div>
-      </section>
+    <div className="container">
+      <h3>Hae elokuvia TMDB:stä</h3>
 
-      {/* REVIEWS SECTION */}
-      <section className="reviews-section mb-5">
-        <h3 className="mb-3">Top Reviews</h3>
-        <div className="reviews-scroll d-flex overflow-auto">
-          {arvostelut.map((a, i) => (
-            <ReviewCard key={i} text={a.text} />
-          ))}
-        </div>
-      </section>
+      {/* Genren valinta */}
+      <select
+        onChange={(e) => setSelectedGenre(e.target.value)}
+        value={selectedGenre}
+      >
+        <option value="">Valitse genre</option>
+        {genres.map((genre) => (
+          <option key={genre.id} value={genre.id}>
+            {genre.name}
+          </option>
+        ))}
+      </select>
 
-      {/* RATING SECTION */}
-      <section className="rating-section row mb-5">
-        {/* Vasen puoli: tähdet, textarea, submit */}
-        <div className="col-md-6">
-            <Rating movieId={id} token={token} />
-        </div>
-        {/* Oikea puoli: aikataulu */}
-        <div className="col-md-6">
-          <div className="schedule p-5 border rounded">
-            <h4>Showtimes</h4>
-            <p>Tähän tuodaan aikataulut myöhemmin.</p>
+      {/* Päivämäärän valinta */}
+      <input
+        type="number"
+        min="1900"
+        max={new Date().getFullYear()}
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        placeholder="Esim. 2020"
+      />
+
+      {/* Tulokset */}
+      <div style={{ marginTop: "2rem" }}>
+        {loading && <p>Ladataan...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <Movies movies={movies} genreMap={genreMap} />
+
+        {/* Pagination */}
+        {movies.length > 0 && (
+          <div style={{ marginTop: "1rem" }}>
+            <button
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              disabled={page === 1}
+            >
+              ← Edellinen
+            </button>
+            <span style={{ margin: "0 1rem" }}>
+              Sivu {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              disabled={page === totalPages}
+            >
+              Seuraava →
+            </button>
           </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="footer text-center py-3 border-top">
-        <small>© 2025 Elokuvasivu</small>
-      </footer>
+        )}
+      </div>
     </div>
   )
 }

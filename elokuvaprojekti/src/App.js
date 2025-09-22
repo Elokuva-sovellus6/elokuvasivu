@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomeScreen from "./screens/HomeScreen";
 import MovieScreen from "./screens/MovieScreen";
+import MoviePage from "./components/MoviePage"
 import GroupScreen from "./screens/GroupScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
@@ -16,7 +17,8 @@ function App() {
         <div className="container py-4">
           <Routes>
             {/* <Route path="/" element={<HomeScreen />} /> */}
-            <Route path="/movie/:id" element={<MovieScreen />} />
+            <Route path="/movie/:id" element={<MoviePage />} />
+            <Route path="/movie" element={<MovieScreen />} />
             <Route path="/shows" element={<ShowScreen />} />
             <Route path="/group" element={<GroupScreen />} />
             
