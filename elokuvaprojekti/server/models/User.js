@@ -22,14 +22,14 @@ class User {
 
     // Etsii käyttäjän id:n perusteella
     static async findById(id) {
-    const result = await pool.query('SELECT userid, username, email, userdescription, userimg, joindate FROM users WHERE userid = $1', [id]);
-    return result.rows[0];
+    const result = await pool.query('SELECT userid, username, email, userdescription, userimg, joindate FROM users WHERE userid = $1', [id])
+    return result.rows[0]
   }
 
   // Poistaa käyttäjän id:n perusteella
   static async delete(id) {
-    const result = await pool.query('DELETE FROM users WHERE userid = $1 RETURNING userid', [id]);
-    return result.rows[0];
+    const result = await pool.query('DELETE FROM users WHERE userid = $1 RETURNING userid', [id])
+    return result.rows[0]
   }
 }
 
