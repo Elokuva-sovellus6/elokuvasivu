@@ -1,0 +1,24 @@
+.stars span {
+  font-size: 2rem;
+  color: #ccc; /* tyhjä tähti */
+  margin-right: 0.2rem;
+  display: inline-block;
+  position: relative;
+}
+
+/* kokonainen tähti */
+.stars span.filled {
+  color: gold;
+}
+
+/* puolikas tähti */
+.stars span.half {
+  background: linear-gradient(to right, gold 50%, #ccc 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* tyhjä tähti */
+.stars span.empty {
+  color: #ccc;
+}
