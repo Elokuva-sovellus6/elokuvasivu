@@ -3,6 +3,7 @@ import cors from 'cors';
 import { ApiError } from './helper/ApiError.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
+import movieRouter from './routers/movieRouter.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -18,6 +19,9 @@ app.use('/auth', authRouter)
 
 // Reitti user-kontrollerille
 app.use('/users', userRouter)
+
+// Reitti movie-kontrollerille
+app.use('/movies', movieRouter)
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
