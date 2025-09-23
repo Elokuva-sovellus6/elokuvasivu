@@ -37,14 +37,6 @@ export default function Navbar() {
     setShowDropdown(false)
   }
 
-  const handleRegisterClick = () => {
-    setShowRegisterModal(true)
-  }
-
-  const handleCloseRegisterModal = () => {
-    setShowRegisterModal(false)
-  }
-
   const handleLoginChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value })
   }
@@ -93,9 +85,9 @@ export default function Navbar() {
           )}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item"><Link className="nav-link active" aria-current="page" to="/">Home</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/movie">Movies</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/movies">Movies</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/shows">Shows</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/group">Group</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/groups">Groups</Link></li>
             {isLoggedIn && (
               <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
             )}
@@ -125,7 +117,7 @@ export default function Navbar() {
               
                 <button 
                   className="btn btn-outline-danger ms-2"
-                  onClick={handleRegisterClick}
+                  onClick={() => setShowRegisterModal(true)}
                   type="button"
                 >
                   Register
@@ -148,7 +140,7 @@ export default function Navbar() {
           )}
         </div>
       </div>
-    {showRegisterModal && <RegisterModal onClose={handleCloseRegisterModal} />}
+    {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </nav>
-  );
+  )
 }

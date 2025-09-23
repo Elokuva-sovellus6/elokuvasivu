@@ -9,28 +9,28 @@ export default function Rating({ movieId, token }) {
   })
 
   const handleRateSubmit = async (e) => {
-  e.preventDefault();
-  // Varmistaa että käyttäjä on kirjautunut sisään ennen arvostelun lähettämistä
-  if (!token) {
-    console.error("Not logged in. Cannot submit review.")
-    return
-  }
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/movies/${movieId}/review`,
-      {
-        rating: parseFloat(rateFormData.rating),
-        review: rateFormData.review,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
-    console.log("Review submitted:", response.data)
-    setRateFormData({ rating: "", review: "" })
-  } catch (err) {
-    console.error("Error submitting review:", err.response?.data || err.message)
-  }
+   e.preventDefault();
+   // Varmistaa että käyttäjä on kirjautunut sisään ennen arvostelun lähettämistä
+   if (!token) {
+     console.error("Not logged in. Cannot submit review.")
+     return
+   }
+  try {
+    const response = await axios.post(
+     `${process.env.REACT_APP_API_URL}/movies/${movieId}/review`,
+      {
+        rating: parseFloat(rateFormData.rating),
+        review: rateFormData.review,
+      },
+      {
+       headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    console.log("Review submitted:", response.data)
+    setRateFormData({ rating: "", review: "" })
+  } catch (err) {
+    console.error("Error submitting review:", err.response?.data || err.message)
+  }
 }
 
   const numericRating = parseFloat(rateFormData.rating) || 0
