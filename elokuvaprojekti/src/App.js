@@ -16,7 +16,7 @@ function App() {
         <Navbar />
         <div className="container py-4">
           <Routes>
-            {/* <Route path="/" element={<HomeScreen />} /> */}
+            <Route path="/" element={<HomeScreen />} />
             <Route path="/movie/:id" element={<MoviePage />} />
             <Route path="/movie" element={<MovieScreen />} />
             <Route path="/shows" element={<ShowScreen />} />
