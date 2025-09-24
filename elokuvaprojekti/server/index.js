@@ -25,6 +25,12 @@ app.use('/users', userRouter)
 // Reitti movie-kontrollerille
 app.use('/movies', movieRouter)
 
+// Reitti group-kontrollerille
+app.use('/groups', groupRouter)
+
+// Reitti favourite-kontrollerille
+app.use('/favourites', favouriteRouter)
+
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {
