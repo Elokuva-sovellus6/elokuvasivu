@@ -18,7 +18,7 @@ function App() {
         <div className="container py-4">
           <Routes>
             <Route path="/" element={<HomeScreen />} />
-            <Route path="/movies/:id" element={<MoviePage />} />
+            <Route path="/movie/:id" element={<MoviePage />} />
             <Route path="/movies" element={<MovieScreen />} />
             <Route path="/shows" element={<ShowScreen />} />
             <Route path="/groups/:groupId" element={<GroupPage />} />
