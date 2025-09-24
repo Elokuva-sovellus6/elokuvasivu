@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomeScreen from "./screens/HomeScreen";
 import MovieScreen from "./screens/MovieScreen";
 import MoviePage from "./components/MoviePage"
 import GroupScreen from "./screens/GroupScreen";
+import GroupPage from "./components/GroupPage";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
 import { AuthProvider } from "./context/authContext";
@@ -17,10 +18,11 @@ function App() {
         <div className="container py-4">
           <Routes>
             <Route path="/" element={<HomeScreen />} />
-            <Route path="/movie/:id" element={<MoviePage />} />
-            <Route path="/movie" element={<MovieScreen />} />
+            <Route path="/movies/:id" element={<MoviePage />} />
+            <Route path="/movies" element={<MovieScreen />} />
             <Route path="/shows" element={<ShowScreen />} />
-            <Route path="/group" element={<GroupScreen />} />
+            <Route path="/groups/:groupId" element={<GroupPage />} />
+            <Route path="/groups" element={<GroupScreen />} />
             
             <Route path="/profile" element={
               <ProtectedRoute>
@@ -31,7 +33,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
-  );
+  )
 }
 
 export default App;

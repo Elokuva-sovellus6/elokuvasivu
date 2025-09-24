@@ -4,6 +4,7 @@ import { ApiError } from './helper/ApiError.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
 import movieRouter from './routers/movieRouter.js';
+import groupRouter from './routers/groupRouter.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -22,6 +23,9 @@ app.use('/users', userRouter)
 
 // Reitti movie-kontrollerille
 app.use('/movies', movieRouter)
+
+// Reitti group-kontrollerille
+app.use('/groups', groupRouter)
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
