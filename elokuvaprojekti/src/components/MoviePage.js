@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext, useMemo  } from "react";
 import { getMovieDetails } from "../api/moviedb";
+import { addFavourite, removeFavourite, getFavourites } from "../api/favourites";
 import ReviewCard from "../components/ReviewCard";
 import Rating from "../components/Rating";
 import { AuthContext } from '../context/authContext.js';
@@ -11,6 +12,7 @@ export default function MoviePge() {
   const [movie, setMovie] = useState(null)
   const [genres, setGenres] = useState([])
   const { isLoggedIn, token } = useContext(AuthContext)
+  const [isFavourite, setIsFavourite] = useState(false);
 
   const API_KEY = process.env.REACT_APP_TMDB_API_KEY
 
@@ -30,6 +32,29 @@ export default function MoviePge() {
       }
       fetchGenres()
     }, [API_KEY])
+
+    // Tarkistaa onko elokuva käyttäjän suosikeissa
+    useEffect(() => {
+      if (isLoggedIn) {
+        getFavourites().then(favs => {
+          setIsFavourite(favs.some(f => String(f.tmdbid) === String(id)));
+        });
+      }
+    }, [id, isLoggedIn]);
+
+    const toggleFavourite = async () => {
+      try {
+        if (isFavourite) {
+          await removeFavourite(id);
+          setIsFavourite(false);
+        } else {
+          await addFavourite(id);
+          setIsFavourite(true);
+        }
+      } catch (err) {
+        alert('Virhe suosikin käsittelyssä');
+      }
+    };
 
     const genreMap = useMemo(
       () => Object.fromEntries((genres || []).map(g => [g.id, g.name])),
@@ -61,7 +86,12 @@ return (
           </div>
           <div className="buttons d-flex gap-2">
             <button className="btn btn-primary">Share</button>
-            <button className="btn btn-outline-danger">Add to Favorites</button>
+            {/*Suosikkinappi*/}
+            <button className={`btn ${isFavourite ? 'btn-danger' : 'btn-outline-danger'}`}
+            onClick={toggleFavourite}
+            >
+              {isFavourite ? 'Suosikki' : 'Lisää suosikiksi'}
+              </button>
           </div>
         </div>
 
