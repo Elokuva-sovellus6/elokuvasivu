@@ -4,6 +4,7 @@ import { getMovieDetails } from "../api/moviedb";
 import ReviewCard from "../components/ReviewCard";
 import Rating from "../components/Rating";
 import { AuthContext } from '../context/authContext.js';
+import "./MoviePage.css"
 
 export default function MoviePge() {
   const { id } = useParams()
@@ -51,11 +52,11 @@ return (
     <div className="container py-4">
       <section className="movie-section row mb-5">
         <div className="col-md-4 text-center">
-          <div className="img bg-secondary mb-3 d-flex justify-content-center align-items-center" style={{ height: "600px", overflow: "hidden"  }}>
+          <div className="img bg-secondary mb-3 d-flex justify-content-center align-items-center">
             <img
+              className="card-img-top movie-img"
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           </div>
           <div className="buttons d-flex gap-2">

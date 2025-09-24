@@ -1,0 +1,6 @@
+.group-card {
+    min-width: 350px;
+    max-width: 350px;
+    flex: 0 0 auto;
+    height: 450px;
+}
