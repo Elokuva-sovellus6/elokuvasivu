@@ -84,7 +84,7 @@ const RegisterModal = ({ onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default RegisterModal
