@@ -8,6 +8,7 @@ import GroupScreen from "./screens/GroupScreen";
 import GroupPage from "./components/GroupPage";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
+import FavouriteList from "./components/FavouriteList";
 import { AuthProvider } from "./context/authContext";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/shows" element={<ShowScreen />} />
             <Route path="/groups/:groupId" element={<GroupPage />} />
             <Route path="/groups" element={<GroupScreen />} />
+            <Route path="/favourites/:userId/public" element={<FavouriteList />} />
             
             <Route path="/profile" element={
               <ProtectedRoute>
