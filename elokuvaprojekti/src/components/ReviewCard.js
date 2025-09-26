@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-function ReviewCard({ text, maxLength = 100 }) {
+function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLength = 100, onDelete }) {
   const [expanded, setExpanded] = useState(false); // Tila, joka määrittää, onko teksti laajennettu vai ei
 
   const isLong = text.length > maxLength; // Tarkistaa, onko teksti pidempi kuin maxLength
@@ -10,14 +11,43 @@ function ReviewCard({ text, maxLength = 100 }) {
     <div
       className={"review card p-5 me-3 "}
       style={{
-        maxHeight: expanded ? "none" : "250px",
+        maxHeight: expanded ? "none" : "350px",
         overflow: expanded ? "visible" : "hidden",
         flex : "0 0 auto",
         width: "350px",
         position: "relative",
         marginRight: "1rem",
       }}
+
+      
     >
+      {/* Poistopainike oikeassa yläkulmassa */}
+      
+        {onDelete && (
+        <button
+          type="button"
+          className="btn-close position-absolute"
+          style={{ top: "8px", right: "8px" }}
+          aria-label="Close"
+          onClick={onDelete}
+        />
+      )}
+      
+
+      {/* Elokuvan nimi linkkinä */}
+      <div className="mb-2">
+        <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none">
+          {movieTitle}
+        </Link>
+      </div>
+
+      {/* Käyttäjä + arvosana */}
+      <div className="d-flex justify-content-between mb-2">
+        <strong>{username}</strong>
+        <span>{rating}/5 ⭐</span>
+      </div>
+
+      {/* Arvosteluteksti */}
       <p style={{ margin: 0 }}>
         {displayText}{" "}
         {isLong && ( // Näytetään "Read more" -linkki vain, jos teksti on pitkä
@@ -29,6 +59,9 @@ function ReviewCard({ text, maxLength = 100 }) {
           </span>
         )}
       </p>
+
+      {/* Alarivi: päivämäärä */}
+      <small className="text-muted">{date}</small>
     </div>
   );
 }

@@ -6,13 +6,15 @@ import ReviewCard from "../components/ReviewCard";
 import Rating from "../components/Rating";
 import { AuthContext } from '../context/authContext.js';
 import "./MoviePage.css"
+import { getReviews } from "../api/review.js";
 
 export default function MoviePge() {
   const { id } = useParams()
   const [movie, setMovie] = useState(null)
   const [genres, setGenres] = useState([])
   const { isLoggedIn, token } = useContext(AuthContext)
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false)
+  const [reviews, setReviews] = useState([]);
 
   const API_KEY = process.env.REACT_APP_TMDB_API_KEY
 
@@ -32,6 +34,13 @@ export default function MoviePge() {
       }
       fetchGenres()
     }, [API_KEY])
+    
+    // Näyttää arvostelut
+    useEffect(() => {
+      getReviews(id)
+        .then(data => setReviews(data))
+        .catch(err => console.error(err))
+    }, [id])
 
     // Tarkistaa onko elokuva käyttäjän suosikeissa
     useEffect(() => {
@@ -113,9 +122,19 @@ return (
       <section className="reviews-section mb-5">
         <h3 className="mb-3">Top Reviews</h3>
         <div className="reviews-scroll d-flex overflow-auto">
-          {arvostelut.map((a, i) => (
-            <ReviewCard key={i} text={a.text} />
-          ))}
+          {reviews.length === 0 ? (
+            <p>No reviews yet.</p>
+          ) : (
+            reviews.map((r) => (
+              <ReviewCard
+                key={r.reviewid}
+                text={r.reviewtext}
+                username={r.username}
+                rating={r.rating}
+                date={new Date(r.reviewdate).toLocaleDateString("fi-FI")}
+              />
+            ))
+          )}
         </div>
       </section>
 

@@ -31,3 +31,33 @@ export const getReviews = async (req, res, next) => {
         next(err)
     }
 }
+
+export const getUserReviews = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const reviews = await Review.findByUserId(userId)
+    res.json(reviews)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const getLatestReviews = async (req, res, next) => {
+  try {
+    const reviews = await Review.findLatest(10); // esim. 10 uusinta
+    res.json(reviews);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteReview = async (req, res, next) => {
+  try {
+    const { reviewId } = req.params
+    const deleted = await Review.delete(reviewId)
+    if (!deleted) throw new ApiError('Review not found', 404)
+    res.json({ message: 'Review deleted successfully' })
+  } catch (err) {
+    next(err)
+  }
+}
