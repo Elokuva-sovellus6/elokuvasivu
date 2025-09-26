@@ -1,5 +1,41 @@
+import { useEffect, useState } from "react";
+import { getLatestReviews } from "../api/review";
+import { getMovieDetails } from "../api/moviedb";
+import ReviewCard from "../components/ReviewCard";
+
+
 //Näyttää elokuvia, arvosteluita ja ryhmiä
 export default function HomeScreen() {
+
+    const [reviews, setReviews] = useState([]);
+    const [reviewMovies, setReviewMovies] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const latest = await getLatestReviews();
+
+          // hae TMDB:stä elokuvan nimet
+          const movies = await Promise.all(
+            latest.map(async (r) => {
+              try {
+                const movie = await getMovieDetails(r.tmdbid);
+                return { ...movie, ...r };
+              } catch (e) {
+                return { title: `Movie ID: ${r.tmdbid}`, ...r };
+              }
+            })
+          );
+
+          setReviewMovies(movies);
+        } catch (err) {
+          console.error("Failed to fetch latest reviews:", err);
+        }
+      };
+
+      fetchData();
+    }, []);
+    
     const HomeMovies = [
         {
             id: 1,
@@ -69,19 +105,26 @@ export default function HomeScreen() {
         ))}
       </div>
 
-      <h3 className="mt-5">Arvostelut</h3>
-      <div className="row">
-        {HomeReviews.map((review) => (
-          <div className="col-md-4 mb-4" key={review.id}>
-            <div className="card h-100 shadow-sm">
-              <div className="card-body">
-                <h6 className="card-title">{review.user}</h6>
-                <p className="card-text">{review.text}</p>
-                <div>{review.stars}</div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="container mt-4">
+        {/* Arvostelut */}
+        <h3 className="mt-5">Arvostelut</h3>
+        <div className="d-flex overflow-auto">
+          {reviewMovies.length === 0 ? (
+            <p>Ei vielä arvosteluja</p>
+          ) : (
+            reviewMovies.map((r) => (
+              <ReviewCard
+                key={r.reviewid}
+                text={r.reviewtext}
+                username={r.username}
+                rating={r.rating}
+                date={new Date(r.reviewdate).toLocaleDateString("fi-FI")}
+                movieTitle={r.title}
+                movieId={r.tmdbid}
+              />
+            ))
+          )}
+        </div>
       </div>
 
       <h3 className="mt-5">Ryhmät</h3>
