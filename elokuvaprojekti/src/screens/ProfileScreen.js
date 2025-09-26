@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getUserProfile, deleteUserProfile } from '../api/user';
-import { getFavourites } from '../api/favourites';
+import { getFavourites, removeFavourite } from '../api/favourites';
 import { getMovieDetails } from '../api/moviedb';
 import { AuthContext } from '../context/authContext';
 
@@ -70,6 +70,27 @@ function ProfileScreen() {
     }
   };
 
+  const handleCopyLink = () => {
+    if (!user) return;
+    const shareURI = `${window.location.origin}/favourites/${user.userid}/public`;
+    navigator.clipboard
+      .writeText(shareURI)
+      .then(() => alert('Linkki kopioitu leikepöydälle!'))
+      .catch(() => alert('Linkkiä ei voitu kopioida.'));
+  };
+
+  // Poista suosikki
+  const handleRemoveFavourite = async (tmdbid) => {
+    try {
+      await removeFavourite(tmdbid);
+      // Päivitä suosikit ja elokuvat
+      setFavourites(favourites.filter(f => f.tmdbid !== tmdbid));
+      setFavouriteMovies(favouriteMovies.filter(m => m.tmdbid !== tmdbid));
+    } catch (err) {
+      alert('Virhe suosikin poistossa');
+    }
+  };
+
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!user) return null;
@@ -94,24 +115,55 @@ function ProfileScreen() {
       <div className="mb-4">
         <div className="card">
           <div className="card-body">
-            <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="d-flex justify-content-between align-items-center mb-3">
               <h5 className="card-title mb-0">Favourites</h5>
-              <a href="#" className="btn btn-link btn-sm">Copy link</a>
+              <button
+                onClick={handleCopyLink}
+                className="btn btn-link btn-sm ms-auto"
+              >
+                Copy link
+              </button>
             </div>
             {favouriteMovies.length === 0 ? (
               <p className="text-muted">Ei vielä suosikkeja</p>
             ) : (
               <ul className="list-unstyled mb-0">
                 {favouriteMovies.map((movie) => (
-                  <li key={movie.tmdbid}>
-                    <Link to={`/movie/${movie.tmdbid}`}>{movie.title}</Link>
+                  <li
+                    key={movie.tmdbid}
+                    className="d-flex align-items-center mb-2"
+                    style={{ gap: "0.3rem" }}
+                  >
+                    <Link
+                      to={`/movie/${movie.tmdbid}`}
+                      className="text-decoration-none"
+                      style={{ fontSize: "1.1rem" }}
+                    >
+                      {movie.title}
+                    </Link>
+                    <button
+                      type="button"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#dc3545",
+                        fontSize: "1.5rem",
+                        cursor: "pointer",
+                        padding: 0,
+                        lineHeight: "1",
+                      }}
+                      onClick={() => handleRemoveFavourite(movie.tmdbid)}
+                      aria-label="Poista suosikeista"
+                    >
+                      ×
+                    </button>
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
-        </div>
-      </div>
+      )}
+    </div>
+  </div>
+</div>
       <div className="mb-4">
         <div className="card">
           <div className="card-body">

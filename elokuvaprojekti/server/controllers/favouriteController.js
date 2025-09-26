@@ -1,3 +1,4 @@
+const { pool } = require('../helper/db.js');
 const Favourite = require('../models/Favourite.js');
 
 // Lisää elokuva käyttäjän suosikkeihin
@@ -44,8 +45,36 @@ const getFavourites = async (req, res) => {
     }
 };
 
+// Hakee käyttäjän suosikkilistan julkisesti
+const getFavouriteList = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT u.username, f.tmdbid
+             FROM favourites f
+             JOIN users u ON f.userid = u.userid
+             WHERE u.userid = $1`,
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Käyttäjällä ei ole suosikkeja' });
+        }
+
+        res.status(200).json({
+            username: result.rows[0].username,
+            favourites: result.rows.map(r => ({ tmdbId: r.tmdbid }))
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     addFavourite,
     removeFavourite,
-    getFavourites
+    getFavourites,
+    getFavouriteList
 };
