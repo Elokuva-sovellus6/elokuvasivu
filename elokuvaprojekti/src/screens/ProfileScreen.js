@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getUserProfile, deleteUserProfile } from '../api/user';
 import { getFavourites, removeFavourite } from '../api/favourites';
+import { getUserReviews, deleteReview } from "../api/review";
+import ReviewCard from '../components/ReviewCard';
 import { getMovieDetails } from '../api/moviedb';
 import { AuthContext } from '../context/authContext';
 
@@ -11,6 +13,8 @@ function ProfileScreen() {
   const [user, setUser] = useState(null);
   const [favourites, setFavourites] = useState([]);
   const [favouriteMovies, setFavouriteMovies] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [reviewMovies, setReviewMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -58,6 +62,31 @@ function ProfileScreen() {
     fetchFavourites();
   }, []);
 
+  // Käyttäjän antamien arvostelujen haku
+  useEffect(() => {
+  if (user) {
+    getUserReviews(user.userid)
+      .then(async (reviewsData) => {
+        setReviews(reviewsData);
+
+        // Hae elokuvien nimet TMDB:stä
+        const movies = await Promise.all(
+          reviewsData.map(async (r) => {
+            try {
+              const movie = await getMovieDetails(r.tmdbid);
+              return { ...movie, ...r }; // yhdistetään TMDB-tiedot arvosteluun
+            } catch (e) {
+              return { title: `Movie ID: ${r.tmdbid}`, ...r };
+            }
+          })
+        );
+        setReviewMovies(movies);
+      })
+      .catch((err) => console.error("Failed to fetch reviews:", err));
+  }
+}, [user]);
+
+  // Profiilin poisto
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete your profile?')) return;
     try {
@@ -90,6 +119,17 @@ function ProfileScreen() {
       alert('Virhe suosikin poistossa');
     }
   };
+
+  //Arvostelun poisto
+  const handleDeleteReview = async (reviewId) => {
+  if (!window.confirm("Haluatko varmasti poistaa arvostelun?")) return;
+  try {
+    await deleteReview(reviewId);
+    setReviewMovies(reviewMovies.filter(r => r.reviewid !== reviewId));
+  } catch (err) {
+    alert(`Virhe arvostelun poistossa: ${err.message}`);
+  }
+};
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -168,7 +208,24 @@ function ProfileScreen() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Reviews</h5>
-            <p className="text-muted">x</p>
+            {reviewMovies.length === 0 ? (
+              <p className="text-muted">Ei vielä arvosteluja</p>
+            ) : (
+              <div className="d-flex overflow-auto">
+                {reviewMovies.map((r) => (
+                  <ReviewCard
+                    key={r.reviewid}
+                    text={r.reviewtext}
+                    username={user.username}
+                    rating={r.rating}
+                    date={new Date(r.reviewdate).toLocaleDateString("fi-FI")}
+                    movieTitle={r.title}
+                    movieId={r.tmdbid}
+                    onDelete={() => handleDeleteReview(r.reviewid)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
