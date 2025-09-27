@@ -22,3 +22,15 @@ export const deleteMe = async (req, res, next) => {
     next(err);
   }
 };
+
+// Kuvan ja kuvauksen päivitys
+export const updateMe = async (req, res, next) => {
+  try {
+    const { userDescription, userImg } = req.body;
+    const updated = await User.update(req.user.id, userDescription, userImg);
+    if (!updated) throw new ApiError('User not found', 404);
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};

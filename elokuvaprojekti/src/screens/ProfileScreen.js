@@ -6,11 +6,13 @@ import { getUserReviews, deleteReview } from "../api/review";
 import ReviewCard from '../components/ReviewCard';
 import { getMovieDetails } from '../api/moviedb';
 import { AuthContext } from '../context/authContext';
+import ProfileEditModal from '../components/ProfileEditModal';
 
 {/*Profiilin tiedot ja kuva*/}
 function ProfileScreen() {
 
   const [user, setUser] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [favourites, setFavourites] = useState([]);
   const [favouriteMovies, setFavouriteMovies] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -36,6 +38,10 @@ function ProfileScreen() {
   }, []);
 
   const { logout } = useContext(AuthContext);
+
+  const handleProfileUpdated = (upDatedUser) => {
+    setUser(upDatedUser);
+  }
 
   //Suosikkien haku ja elokuvien tietojen haku
   useEffect(() => {
@@ -140,12 +146,26 @@ function ProfileScreen() {
     <div className="container py-4">
       <div className="row align-items-center mb-4">
         <div className="col-md-3 text-center">
-          <div className="rounded-circle bg-secondary mx-auto mb-2" style={{ width: 120, height: 120 }}></div>
-          <button className="btn btn-outline-primary btn-sm">Edit</button>
+          <div
+           className="rounded-circle mx-auto mb-2"
+           style={{
+             width: 120,
+             height: 120,
+             backgroundImage: `url(${user.userimg || '/default.png'})`,
+             backgroundSize: 'cover',
+             backgroundPosition: 'center'
+           }}
+         ></div>
+         <button
+           className="btn btn-outline-primary btn-sm"
+           onClick={() => setShowEditModal(true)}
+         >
+           Edit
+         </button>
         </div>
         <div className="col-md-6">
           <h1 className="display-5">{user.username}</h1>
-          <p className="text-muted">Description</p>
+          <p className="text-muted">{user.userdescription || 'No description yet'}</p>
         </div>
         <div className="col-md-3 text-end">
           <button className="btn btn-danger" onClick={handleDelete}>Delete user</button>
@@ -237,6 +257,13 @@ function ProfileScreen() {
           </div>
         </div>
       </div>
+      {showEditModal && (
+        <ProfileEditModal
+          onClose={() => setShowEditModal(false)}
+          initialData={user}
+          onUpdated={handleProfileUpdated}
+        />
+      )}
     </div>
   );
 }

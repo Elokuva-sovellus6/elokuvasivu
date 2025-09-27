@@ -9,6 +9,7 @@ import GroupPage from "./components/GroupPage";
 import ProfileScreen from "./screens/ProfileScreen";
 import ShowScreen from "./screens/ShowScreen";
 import FavouriteList from "./components/FavouriteList";
+import Footer from "./components/Footer";
 import { AuthProvider } from "./context/authContext";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             }/>
           </Routes>
         </div>
+        <Footer />
       </Router>
     </AuthProvider>
   )

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo  } from "react"
 import MovieCard from "../components/MovieCard"
 import { getMovieDetails, getPopularMovies  } from "../api/moviedb";
 import Pagination from "../components/Pagination";
+import GenericDropdown from "../components/Dropdown";
 
 export default function MovieScreen() {
   const [genres, setGenres] = useState([])
@@ -84,17 +85,14 @@ export default function MovieScreen() {
       <h3>Hae elokuvia TMDB:stä</h3>
 
       {/* Genren valinta */}
-      <select
-        onChange={(e) => setSelectedGenre(e.target.value)}
-        value={selectedGenre}
-      >
-        <option value="">Valitse genre</option>
-        {genres.map((genre) => (
-          <option key={genre.id} value={genre.id}>
-            {genre.name}
-          </option>
-        ))}
-      </select>
+      <GenericDropdown
+        label="Valitse genre"
+        items={genres}             
+        selected={selectedGenre}
+        onSelect={setSelectedGenre}
+        itemKey="id"
+        itemLabel="name"
+      />
 
       {/* Päivämäärän valinta */}
       <input

@@ -31,6 +31,18 @@ class User {
     const result = await pool.query('DELETE FROM users WHERE userid = $1 RETURNING userid', [id])
     return result.rows[0]
   }
+
+  // Päivittää käyttäjän profiilin
+  static async update(id, userDescription, userImg) {
+    const result = await pool.query(
+      `UPDATE users 
+       SET userdescription = $1, userimg = $2 
+       WHERE userid = $3 
+       RETURNING userid, username, userdescription, userimg`,
+      [userDescription, userImg, id]
+    );
+    return result.rows[0];
+  }
 }
 
 export default User
