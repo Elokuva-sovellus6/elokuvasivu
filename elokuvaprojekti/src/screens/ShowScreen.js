@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { searchMovieInTMDB } from "../api/moviedb.js"
+//import { searchMovieInTMDB } from "../api/moviedb.js"
+import GenericDropdown from "../components/Dropdown.js"
+
 
 export default function Naytokset() {
     const [movieShows, setMovieShows] = useState([])        //Kaikki näytökset, voi olla sama elokuva moneen kertaan    
@@ -85,7 +87,7 @@ export default function Naytokset() {
             .catch(error => console.log(error))
     }, [selectedArea, selectedDate])
 
-    useEffect(() => {
+   /* useEffect(() => {
       const fetchTMDBIds = async () => {
         const updatedMovies = await Promise.all(uniqueMovies.map(async (movie) => {
           try {
@@ -102,23 +104,21 @@ export default function Naytokset() {
       if (uniqueMovies.length > 0) {
         fetchTMDBIds()
       }
-    }, [uniqueMovies])
+    }, [uniqueMovies])*/
 
 
     return (
         <div>
             <h3>Finnkino näytökset</h3>
             {/* Teatterialueen valinta */}
-            <select onChange={(e) => setSelectedArea(e.target.value)} value={selectedArea}>
-                <option value="">Valitse alue</option>
-                {
-                    areas.map(area => (
-                        <option key={area.id} value={area.id}>
-                            {area.name}
-                        </option>
-                    ))
-                }
-            </select>
+            <GenericDropdown
+              label="Valitse alue"
+              items={areas}
+              selected={selectedArea}
+              onSelect={setSelectedArea}
+              itemKey="id"
+              itemLabel="name"
+            />
             {/*Päivämäärän valinta*/}
             <label style={{ marginLeft: '1rem' }}>Valitse päivämäärä: </label>
             <input
@@ -128,52 +128,52 @@ export default function Naytokset() {
             />
             {/*Bootstrap listaa elokuvat kortteina*/}
             <div className="container mt-4">
-  <div className="row">
-    {uniqueMovies.map((movie) => {
-      const showtimes = movieShows.filter(show => show.name === movie.name)
+              <div className="row">
+                {uniqueMovies.map((movie) => {
+                  const showtimes = movieShows.filter(show => show.name === movie.name)
 
-      const CardContent = (
-        <>
-          <img
-            src={movie.image}
-            className="card-img-top"
-            alt={movie.name}
-            style={{ height: "600px", objectFit: "cover" }}
-          />
-          <div className="card-body">
-            <h5 className="card-title"><strong>{movie.name}</strong></h5>
-            <p className="card-text">
-              <strong>Genre:</strong> {movie.genre}
-            </p>
-            <p className="card-text"><strong>Näytökset:</strong></p>
-            <ul className="mb-0">
-              {showtimes.map((show, idx) => (
-                <li key={idx}>
-                  {new Date(show.time).toLocaleTimeString('fi-FI', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })} ({show.theatre})
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )
+                  const CardContent = (
+                    <>
+                      <img
+                        src={movie.image}
+                        className="card-img-top"
+                        alt={movie.name}
+                        style={{ height: "600px", objectFit: "cover" }}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title"><strong>{movie.name}</strong></h5>
+                        <p className="card-text">
+                          <strong>Genre:</strong> {movie.genre}
+                        </p>
+                        <p className="card-text"><strong>Näytökset:</strong></p>
+                        <ul className="mb-0">
+                          {showtimes.map((show, idx) => (
+                            <li key={idx}>
+                              {new Date(show.time).toLocaleTimeString('fi-FI', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })} ({show.theatre})
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  )
 
-      return (
-        <div className="col-md-6 col-lg-4 mb-4" key={movie.id}>
-          {movie.tmdbId ? (
-            <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
-              <div className="card h-100 shadow-sm">{CardContent}</div>
-            </Link>
-          ) : (
-            <div className="card h-100 shadow-sm">{CardContent}</div>
-          )}
-        </div>
-      )
-    })}
-  </div>
-</div>
+                  return (
+                    <div className="col-md-6 col-lg-4 mb-4" key={movie.id}>
+                      {movie.tmdbId ? (
+                        <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
+                          <div className="card h-100 shadow-sm">{CardContent}</div>
+                        </Link>
+                      ) : (
+                        <div className="card h-100 shadow-sm">{CardContent}</div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
 
         </div>
     )
