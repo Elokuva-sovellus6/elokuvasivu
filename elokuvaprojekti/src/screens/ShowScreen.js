@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-//import { searchMovieInTMDB } from "../api/moviedb.js"
+import { searchMovieInTMDB } from "../api/moviedb.js"
 import GenericDropdown from "../components/Dropdown.js"
 
 
@@ -87,24 +87,23 @@ export default function Naytokset() {
             .catch(error => console.log(error))
     }, [selectedArea, selectedDate])
 
-   /* useEffect(() => {
+    const [tmdbIds, setTmdbIds] = useState({}) // { movieName: tmdbId }
+
+    useEffect(() => {
       const fetchTMDBIds = async () => {
-        const updatedMovies = await Promise.all(uniqueMovies.map(async (movie) => {
+        const results = {}
+        for (const movie of uniqueMovies) {
           try {
             const tmdbId = await searchMovieInTMDB(movie.name, movie.year)
-            return { ...movie, tmdbId }
-          } catch (err) {
-            console.error("Virhe TMDB-haussa:", err)
-            return { ...movie, tmdbId: null }
+            results[movie.id] = tmdbId
+          } catch {
+            results[movie.id] = null
           }
-        }))
-        setUniqueMovies(updatedMovies)
+        }
+        setTmdbIds(results)
       }
-  
-      if (uniqueMovies.length > 0) {
-        fetchTMDBIds()
-      }
-    }, [uniqueMovies])*/
+      if (uniqueMovies.length > 0) fetchTMDBIds()
+    }, [uniqueMovies])
 
 
     return (
@@ -130,8 +129,8 @@ export default function Naytokset() {
             <div className="container mt-4">
               <div className="row">
                 {uniqueMovies.map((movie) => {
-                  const showtimes = movieShows.filter(show => show.name === movie.name)
-
+                  const tmdbId = tmdbIds[movie.id]
+                                
                   const CardContent = (
                     <>
                       <img
@@ -147,23 +146,28 @@ export default function Naytokset() {
                         </p>
                         <p className="card-text"><strong>Näytökset:</strong></p>
                         <ul className="mb-0">
-                          {showtimes.map((show, idx) => (
-                            <li key={idx}>
-                              {new Date(show.time).toLocaleTimeString('fi-FI', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })} ({show.theatre})
-                            </li>
+                          {movieShows
+                            .filter(show => show.name === movie.name)
+                            .map((show, idx) => (
+                              <li key={idx}>
+                                {new Date(show.time).toLocaleTimeString('fi-FI', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })} ({show.theatre})
+                              </li>
                           ))}
                         </ul>
                       </div>
                     </>
                   )
-
+                
                   return (
-                    <div className="col-md-6 col-lg-4 mb-4" key={movie.id}>
-                      {movie.tmdbId ? (
-                        <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
+                    <div key={movie.id} className="col-md-6 col-lg-4 mb-4">
+                      {tmdbId ? (
+                        <Link
+                          to={`/movie/${tmdbId}`}
+                          style={{ textDecoration: "none", color: "inherit" }}
+                        >
                           <div className="card h-100 shadow-sm">{CardContent}</div>
                         </Link>
                       ) : (
