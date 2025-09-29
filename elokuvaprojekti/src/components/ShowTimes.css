@@ -1,0 +1,11 @@
+.showtimes-card {
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
+.showtimes-scroll {
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: none;
+}

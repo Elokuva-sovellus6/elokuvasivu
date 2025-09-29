@@ -1,3 +1,9 @@
+.rating-card {
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
 .stars span {
   font-size: 2rem;
   color: #ccc; /* tyhjä tähti */
