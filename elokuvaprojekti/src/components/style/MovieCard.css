@@ -1,0 +1,8 @@
+.movie-card-img {
+    height: 600px;
+    object-fit: cover;
+}
+
+.movie-card-no-img {
+    height: 600px;
+}
