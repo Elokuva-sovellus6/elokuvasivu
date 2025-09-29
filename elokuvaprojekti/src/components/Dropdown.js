@@ -28,7 +28,6 @@ export default function GenericDropdown({
       <button
         className="btn btn-secondary dropdown-toggle"
         type="button"
-        style={{ width: "450px" }}
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
