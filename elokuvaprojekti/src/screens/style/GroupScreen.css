@@ -1,0 +1,22 @@
+.create-group-btn {
+  width: 15em;
+}
+
+.pagination-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  transition: color 0.2s;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  color: #007bff;
+}
+
