@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import GroupMembers from './GroupMembers';
 import JoinGroup from './JoinGroup';
+import GroupEditModal from "../components/GroupEditModal";
 import './style/GroupPage.css';
 
 export default function GroupPage() {
@@ -18,6 +19,7 @@ export default function GroupPage() {
     const [banError, setBanError] = useState(null)
     const [hasToken, setHasToken] = useState(false)
     const [joinRequestSent, setJoinRequestSent] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false);
 
 
     const handleError = (message) => {
@@ -208,10 +210,30 @@ export default function GroupPage() {
         <div className="groupscreen">
             {/* Ryhmän perustiedot */}
             <section className="group-header">
-                <div className="group-image"></div>
+                <div className="group-image">
+                    <img
+                        src={group.groupimg || "https://placehold.co/250x250?text=Ryhmä"}
+                        alt={group.name}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "10px"
+                        }}
+                    />
+                </div>
                 <div className="group-info">
                     <h1>{group.name}</h1>
-                    <p>{group.description}</p>
+                    <p>{group.description ? group.description : "Ei vielä kuvausta"}</p>
+                    {/*Ryhmän muokkauspainike, näkyy vain omistajalle */}
+                    {String(userId) === String(group.ownerid) && (
+                      <button
+                        className="btn btn-outline-primary btn-sm ms-2"
+                        onClick={() => setShowEditModal(true)}
+                      >
+                        Muokkaa ryhmää
+                      </button>
+                    )}
                 </div>
             </section>
 
@@ -263,6 +285,16 @@ export default function GroupPage() {
                         />
                     </div>
                 </>
+            )}
+
+            {/*Ryhmän muokkaus*/}
+            {showEditModal && (
+              <GroupEditModal
+                onClose={() => setShowEditModal(false)}
+                groupId={group.groupid}
+                initialData={group}
+                onUpdated={updatedGroup => setGroup(updatedGroup)}
+              />
             )}
         </div>
     )

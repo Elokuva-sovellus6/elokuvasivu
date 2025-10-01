@@ -218,3 +218,24 @@ export const unbanMember = async (req, res) => {
     res.status(500).json({ message: "Virhe banin poistossa" })
   }
 }
+
+// Päivitä ryhmän tiedot
+export const updateGroup = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const { description, groupimg } = req.body;
+    const userId = req.user.id;
+
+    // Tarkista että käyttäjä on omistaja
+    const group = await Group.findById(groupId);
+    if (!group) return res.status(404).json({ message: "Ryhmää ei löytynyt" });
+    if (String(group.ownerid) !== String(userId))
+      return res.status(403).json({ message: "Vain omistaja voi muokata ryhmää" });
+
+    const updated = await Group.update(groupId, description, groupimg);
+    res.json(updated);
+  } catch (err) {
+    console.error("Virhe ryhmän päivityksessä:", err);
+    res.status(500).json({ message: "Ryhmän päivitys epäonnistui" });
+  }
+};

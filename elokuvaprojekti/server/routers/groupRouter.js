@@ -1,5 +1,5 @@
 import express from "express"
-import { createGroup, getGroupById, getAllGroups, sendJoinRequest, getOwnerRequests, handleJoinRequest, getGroupMembers, leaveGroup, kickMemberFromGroup, getBannedMembers, unbanMember } from "../controllers/groupController.js"
+import { createGroup, getGroupById, getAllGroups, sendJoinRequest, getOwnerRequests, handleJoinRequest, getGroupMembers, leaveGroup, kickMemberFromGroup, getBannedMembers, unbanMember, updateGroup } from "../controllers/groupController.js"
 import { authenticateToken } from "../helper/auth.js"
 
 const router = express.Router()
@@ -34,5 +34,8 @@ router.delete("/:groupId/kick/:memberId", authenticateToken, kickMemberFromGroup
 router.get('/:groupId/banned', authenticateToken, getBannedMembers)
 
 router.delete('/:groupId/unban/:memberId', authenticateToken, unbanMember)
+
+// Päivitä ryhmän tiedot (kuvaus, kuva) -- vain omistajalle!
+router.put("/:groupId", authenticateToken, updateGroup);
 
 export default router

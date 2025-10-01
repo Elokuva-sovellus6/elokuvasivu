@@ -64,6 +64,15 @@ class Group {
     return result.rows[0]
   }
 
+  // Päivittää ryhmän tiedot
+  static async update(groupId, description, groupimg) {
+    const result = await pool.query(
+      `UPDATE groups SET description = $1, groupimg = $2 WHERE groupid = $3 RETURNING *`,
+      [description, groupimg, groupId]
+    );
+    return result.rows[0];
+  }
+
 
 // ---             JÄSENTEN HALLINTA            ---//
 
