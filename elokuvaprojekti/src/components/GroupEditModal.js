@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { updateUserProfile } from '../api/user';
 
-const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
+const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
   const [formData, setFormData] = useState({
-    userDescription: initialData.userdescription || '',
-    userImg: initialData.userimg || ''
+    description: initialData.description || '',
+    groupimg: initialData.groupimg || ''
   });
 
   const [error, setError] = useState('');
@@ -20,15 +19,15 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
     try {
       const token = localStorage.getItem('token');
       const updated = await axios.put(
-        `${process.env.REACT_APP_API_URL}/users/me`,
+        `${process.env.REACT_APP_API_URL}/groups/${groupId}`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       onUpdated(updated.data);
       onClose();
     } catch (err) {
-      console.error('Error updating profile:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Profile update failed');
+      console.error('Error updating group:', err.response?.data || err.message);
+      setError(err.response?.data?.message || 'Group update failed');
     }
   };
 
@@ -37,7 +36,7 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Muokkaa profiilia</h5>
+            <h5 className="modal-title">Muokkaa ryhmää</h5>
             <button
               type="button"
               className="btn-close"
@@ -48,28 +47,28 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="profileDescription" className="form-label">
+                <label htmlFor="groupDescription" className="form-label">
                   Kuvaus
                 </label>
                 <textarea
-                  name="userDescription"
-                  id="profileDescription"
-                  placeholder="Kerro jotain itsestäsi..."
-                  value={formData.userDescription}
+                  name="description"
+                  id="groupDescription"
+                  placeholder="Kerro jotain ryhmästä..."
+                  value={formData.description}
                   onChange={handleChange}
                   className="form-control"
                 ></textarea>
               </div>
               <div className="mb-3">
-                <label htmlFor="profileImage" className="form-label">
+                <label htmlFor="groupImage" className="form-label">
                   Kuvan URL
                 </label>
                 <input
                   type="text"
-                  name="userImg"
-                  id="profileImage"
+                  name="groupimg"
+                  id="groupImage"
                   placeholder="Image URL"
-                  value={formData.userImg}
+                  value={formData.groupimg}
                   onChange={handleChange}
                   className="form-control"
                 />
@@ -89,4 +88,4 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
   );
 };
 
-export default ProfileEditModal;
+export default GroupEditModal;
