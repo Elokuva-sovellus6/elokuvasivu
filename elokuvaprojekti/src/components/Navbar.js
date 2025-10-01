@@ -3,39 +3,29 @@ import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from '../context/authContext.js';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { searchMovies } from '../api/moviedb.js';
+import "bootstrap-icons/font/bootstrap-icons.css";
 import RegisterModal from './RegisterModal';
 import axios from 'axios';
 
 export default function Navbar() {
-  const [movies, setMovies] = useState([])
-  const [query, setQuery] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [showRegisterModal, setShowRegisterModal] = useState(false)
-
-  // Hakee elokuvat kun query muuttuu
-  useEffect(() => {
-    if (query.trim().length > 0) {
-     searchMovies(query)
-      .then(({ results }) => {
-        setMovies(results)
-        setShowDropdown(true)
-      })
-       .catch((err) => console.error(err))
-    } else {
-      setMovies([])
-      setShowDropdown(false)
-    }
-  }, [query])
-
   const [loginData, setLoginData] = useState({ email: '', password: '' })
   const navigate = useNavigate()
   const { isLoggedIn, username, login, logout } = useContext(AuthContext)
+  const [showRegisterModal, setShowRegisterModal] = useState(false)
+  const [requests, setRequests] = useState([])
+  
 
-  const handleSelectMovie = (movie) => {
-    navigate(`/movie/${movie.id}`)
-    setShowDropdown(false)
-  }
+  // Haetaan liittymispyynnöt jos käyttäjä on kirjautunut
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem("token")
+      axios.get(`${process.env.REACT_APP_API_URL}/groups/owned/requests`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => setRequests(res.data))
+      .catch(err => console.error("Virhe pyyntöjen haussa", err))
+    }
+  }, [isLoggedIn])
 
   const handleLoginChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value })
@@ -51,6 +41,33 @@ export default function Navbar() {
     }
   }
 
+const handleAccept = async (requestId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/groups/join-requests/${requestId}/accept`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setRequests(prev => prev.filter(r => r.requestid !== requestId));
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    alert(err.response?.data?.message || "Virhe pyynnön hyväksymisessä");
+  }
+}
+
+const handleReject = async (requestId) => {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.post(`${process.env.REACT_APP_API_URL}/groups/join-requests/${requestId}/reject`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setRequests(prev => prev.filter(r => r.requestid !== requestId));
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    alert(err.response?.data?.message || "Virhe pyynnön hylkäämisessä");
+  }
+}
+
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -59,39 +76,59 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <form className="d-flex" role="search">
-            <input 
-              className="form-control me-2" 
-              type="search" 
-              placeholder="Search" 
-              aria-label="Search" 
-              value={query} 
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </form>
-          {showDropdown && movies.length > 0 && (
-            <ul className="list-group position-absolute w-100" style={{ top: "100%", zIndex: 1000 }}>
-              {movies.map((movie) => (
-                <li
-                  key={movie.id}
-                  className="list-group-item list-group-item-action"
-                  onClick={() => handleSelectMovie(movie)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {movie.title}
-                </li>
-              ))}
-            </ul>
-          )}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item"><Link className="nav-link active" aria-current="page" to="/">Home</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/movies">Movies</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/shows">Shows</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/groups">Groups</Link></li>
+            <li className="nav-item"><Link className="nav-link active" aria-current="page" to="/">Etusivu</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/movies">Elokuvat</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/shows">Näytökset</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/groups">Ryhmät</Link></li>
             {isLoggedIn && (
-              <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/profile">Profiili</Link></li>
             )}
           </ul>
+          {/* Kello ikoni jossa näkyy ilmoitukset*/}
+          {isLoggedIn && (
+            <div className="nav-item dropdown me-3">
+              <button 
+                className="btn position-relative"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-bell" style={{ fontSize: "1.5rem" }}></i>
+                {requests.length > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    !
+                  </span>
+                )}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end">
+                {requests.length === 0 ? (
+                  <li className="dropdown-item">Ei ilmoituksia</li>
+                ) : (
+                  requests.map(req => (
+                    <li key={req.requestid} className="dropdown-item d-flex justify-content-between align-items-center">
+                      <span>
+                        {req.username ?? "Tuntematon käyttäjä"} - {req.groupname ?? "Tuntematon ryhmä"}
+                      </span>
+                      <div>
+                        <button 
+                          className="btn btn-sm btn-success me-1"
+                          onClick={() => handleAccept(req.requestid)}
+                        >
+                          Hyväksy
+                        </button>
+                        <button 
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleReject(req.requestid)}
+                        >
+                          Hylkää
+                        </button>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          )}
           
           {/* Login/Logout näkymä */}
           {!isLoggedIn ? (
@@ -101,7 +138,7 @@ export default function Navbar() {
                   className="form-control me-2"
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Sähköposti"
                   value={loginData.email}
                   onChange={handleLoginChange}
                 />
@@ -109,32 +146,37 @@ export default function Navbar() {
                   className="form-control me-2"
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="Salasana"
                   value={loginData.password}
                   onChange={handleLoginChange}
                 />
-                <button className="btn btn-outline-primary" type="submit">Login</button>
+                <button 
+                  className="btn btn-outline-primary" 
+                  type="submit"
+                >
+                    Kirjaudu
+                </button>
               
                 <button 
                   className="btn btn-outline-danger ms-2"
                   onClick={() => setShowRegisterModal(true)}
                   type="button"
                 >
-                  Register
+                  Rekisteröidy
                 </button>
               </form>
             </div>
           ) : (
             <div className="d-flex ms-3 align-items-center">
-              <span className="navbar-text me-2">Welcome, {username}!</span>
+              <span className="navbar-text me-2">Tervetuloa, {username}!</span>
               <button
                 className="btn btn-outline-danger"
                 onClick={() => {
                   logout()
-                  navigate('/shows') // HUOM! muuta ohjaus homescreeniin kun valmistuu
+                  navigate('/')
                 }}
               >
-                Logout
+                Kirjaudu ulos
               </button>
             </div>
           )}

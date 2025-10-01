@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import "./Rating.css"
+import "./style/Rating.css"
 import axios from "axios"
 
 export default function Rating({ movieId, token }) {
@@ -12,7 +12,7 @@ export default function Rating({ movieId, token }) {
     e.preventDefault()
     // Varmistaa että käyttäjä on kirjautunut sisään ennen arvostelun lähettämistä
     if (!token) {
-      console.error("Not logged in. Cannot submit review.")
+      console.error("Kirjaudu jättääksesi arvostelu")
       return
     }
     try {
@@ -26,10 +26,10 @@ export default function Rating({ movieId, token }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       )
-      console.log("Review submitted:", response.data)
+      console.log("Arvostelu jätetty:", response.data)
       setRateFormData({ rating: "", review: "" })
     } catch (err) {
-      console.error("Error submitting review:", err.response?.data || err.message)
+      console.error("Virhe arvostelua jättäessä:", err.response?.data || err.message)
     }
   }
 
@@ -46,12 +46,12 @@ export default function Rating({ movieId, token }) {
 
   return (
     <div className="rating-card">
-      <h4 className="mb-3">Rate this movie</h4>
+      <h4 className="mb-3">Arvostele tämä elokuva</h4>
       <div className="stars mb-3">{stars}</div>
       <input
         type="number"
         className="mb-3"
-        placeholder="number of stars..."
+        placeholder="Tähtien määrä..."
         step="0.5"
         min="0"
         max="5"
@@ -72,13 +72,13 @@ export default function Rating({ movieId, token }) {
         <textarea
           className="form-control"
           rows="6"
-          placeholder="Write your review..."
+          placeholder="Kirjoita arvostelu..."
           value={rateFormData.review}
           onChange={(e) => setRateFormData({ ...rateFormData, review: e.target.value })}
         />
       </div>
       <div className="submit_rating">
-        <button className="btn btn-success" onClick={handleRateSubmit}>Rate</button>
+        <button className="btn btn-success" onClick={handleRateSubmit}>Arvostele</button>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./MovieCard.css"
+import "./style/MovieCard.css"
 
 function MovieCard({ movies, genreMap = {} }) {
   if (!movies || movies.length === 0) {
@@ -27,7 +27,7 @@ function MovieCard({ movies, genreMap = {} }) {
                   <div
                     className="card-img-top movie-card-no-img bg-secondary d-flex align-items-center justify-content-center"
                   >
-                    <span className="text-white">No image available</span>
+                    <span className="text-white">Ei kuvaa saatavilla</span>
                   </div>
                 )}
                  
@@ -39,7 +39,7 @@ function MovieCard({ movies, genreMap = {} }) {
                  
                   {movie.release_date && (
                     <p className="card-text">
-                      <strong>Release Year:</strong>{" "}
+                      <strong>Julkaisuvuosi:</strong>{" "}
                       {new Date(movie.release_date).getFullYear()}
                     </p>
                   )}
@@ -51,7 +51,7 @@ function MovieCard({ movies, genreMap = {} }) {
                  
                   {movie.overview && (
                     <p className="card-text">
-                      <strong>Description: </strong>
+                      <strong>Kuvaus: </strong>
                       {movie.overview.slice(0, 120)}...
                     </p>
                   )}

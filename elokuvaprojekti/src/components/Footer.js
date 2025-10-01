@@ -21,8 +21,8 @@ export default function Footer() {
           <div className="col-md-4 mb-3">
             <h6 className="fw-bold">About</h6>
             <ul className="list-unstyled">
-              <li><a href="#" className="text-dark text-decoration-none">About Us</a></li>
-              <li><a href="#" className="text-dark text-decoration-none">Contact Us</a></li>
+              <li><a href="#" className="text-dark text-decoration-none">Tietoa meistä</a></li>
+              <li><a href="#" className="text-dark text-decoration-none">Ota yhteyttä</a></li>
             </ul>
           </div>
 
@@ -30,9 +30,9 @@ export default function Footer() {
           <div className="col-md-4 mb-3">
             <h6 className="fw-bold">Links</h6>
             <ul className="list-unstyled">
-              <li><a href="/" className="text-dark text-decoration-none">Home</a></li>
-              <li><a href="/movies" className="text-dark text-decoration-none">Movies</a></li>
-              <li><a href="/groups" className="text-dark text-decoration-none">Groups</a></li>
+              <li><a href="/" className="text-dark text-decoration-none">Etusivu</a></li>
+              <li><a href="/movies" className="text-dark text-decoration-none">Elokuvat</a></li>
+              <li><a href="/groups" className="text-dark text-decoration-none">Ryhmät</a></li>
             </ul>
           </div>
         </div>

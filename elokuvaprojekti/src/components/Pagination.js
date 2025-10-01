@@ -1,5 +1,5 @@
 import React from "react";
-import "./Pagination.css"
+import "./style/Pagination.css"
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const pageNumbers = []

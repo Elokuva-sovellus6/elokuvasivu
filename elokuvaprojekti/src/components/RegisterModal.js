@@ -27,7 +27,7 @@ const RegisterModal = ({ onClose }) => {
       console.log(response.data.message)
       onClose()
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed')
+      setError(err.response?.data?.message || 'Rekisteröityminen epäonnistui')
     }
   }
 
@@ -36,7 +36,7 @@ const RegisterModal = ({ onClose }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Register</h5>
+            <h5 className="modal-title">Rekisteröidy</h5>
             <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
@@ -45,7 +45,7 @@ const RegisterModal = ({ onClose }) => {
                 <input
                   type="text"
                   name="username"
-                  placeholder="Username"
+                  placeholder="Käyttäjänimi"
                   value={formData.username}
                   onChange={handleChange}
                   required
@@ -56,7 +56,7 @@ const RegisterModal = ({ onClose }) => {
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Sähköposti"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -67,19 +67,19 @@ const RegisterModal = ({ onClose }) => {
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="Salasana"
                   value={formData.password}
                   onChange={handleChange}
                   required
                   className="form-control"
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100 mt-2">Register</button>
+              <button type="submit" className="btn btn-primary w-100 mt-2">Rekisteröidy</button>
               {error && <p className="text-danger mt-3">{error}</p>}
             </form>
           </div>
           <div className="modal-footer d-flex justify-content-center">
-            <p className="mt-2">Already have an account? <a href="#" onClick={onClose}>Login</a></p>
+            <p className="mt-2">Onko sinulla jo käyttäjä? <a href="#" onClick={onClose}>Kirjaudu</a></p>
           </div>
         </div>
       </div>

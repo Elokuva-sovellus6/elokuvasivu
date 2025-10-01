@@ -55,7 +55,7 @@ function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLeng
             style={{ color: "blue", cursor: "pointer", display: "block", marginTop: "0.5rem", textDecoration: "underline" }}
             onClick={() => setExpanded(!expanded)}
           >
-            {expanded ? "Hide" : "Read more"} {/* Näyttää tai piilottaa laajennetun tekstin */}
+            {expanded ? "Piilota" : "Lue lisää"} {/* Näyttää tai piilottaa laajennetun tekstin */}
           </span>
         )}
       </p>

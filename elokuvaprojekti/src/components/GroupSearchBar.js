@@ -33,7 +33,7 @@ export default function GroupSearchBar({ allGroups }) {
                 <input
                     className="form-control"
                     type="search"
-                    placeholder="Search for groups"
+                    placeholder="Etsi ryhmiä"
                     aria-label="Search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}

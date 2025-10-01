@@ -5,7 +5,7 @@ import { addFavourite, removeFavourite, getFavourites } from "../api/favourites"
 import ReviewCard from "../components/ReviewCard"
 import Rating from "../components/Rating"
 import { AuthContext } from '../context/authContext.js'
-import "./MoviePage.css"
+import "./style/MoviePage.css"
 import { getReviews } from "../api/review.js"
 import ShowTimes from "./ShowTimes.js"
 import { getShows, formatDateForAPI } from "../api/finnkino.js" // Tuo tarvittavat Finnkino funktiot
@@ -115,7 +115,7 @@ export default function MoviePage() {
     }
   }
 
-  // Genre map (muistioitu)
+  // Genre map
   const genreMap = useMemo(
     () => Object.fromEntries((genres || []).map(g => [g.id, g.name])),
     [genres]
@@ -137,7 +137,7 @@ export default function MoviePage() {
             />
           </div>
           <div className="buttons d-flex gap-2">
-            <button className="btn btn-primary">Share</button>
+            <button className="btn btn-primary">Jaa</button>
             <button
               className={`btn ${isFavourite ? 'btn-danger' : 'btn-outline-danger'}`}
               onClick={toggleFavourite}
@@ -151,22 +151,22 @@ export default function MoviePage() {
           <h2>{movie.title}</h2>
           {movie.release_date && (
             <p className="card-text">
-              <strong>Release Year:</strong> {new Date(movie.release_date).getFullYear()}
+              <strong>Julkaisuvuosi:</strong> {new Date(movie.release_date).getFullYear()}
             </p>
           )}
           <p className="card-text">
             <strong>Genre:</strong> {genreNames.length > 0 ? genreNames.join(", ") : "Ei määritelty"}
           </p>
-          <p><strong>Description:</strong> {movie.overview}</p>
+          <p><strong>Kuvaus:</strong> {movie.overview}</p>
         </div>
       </section>
 
       {/* REVIEWS */}
       <section className="reviews-section mb-5">
-        <h3 className="mb-3">Top Reviews</h3>
+        <h3 className="mb-3">Parhaat arvostelut</h3>
         <div className="reviews-scroll d-flex overflow-auto">
           {reviews.length === 0 ? (
-            <p>No reviews yet.</p>
+            <p>Ei vielä yhtään arvostelua</p>
           ) : (
             reviews.map((r) => (
               <ReviewCard
@@ -188,7 +188,7 @@ export default function MoviePage() {
         </div>
         <div className="col-md-6">
           <div className="schedule p-5 border rounded">
-            <h4>Showtimes</h4>
+            <h4>Näytösajat</h4>
             <ShowTimes 
               eventId={eventId}
               defaultArea={theatreAreaId} 
