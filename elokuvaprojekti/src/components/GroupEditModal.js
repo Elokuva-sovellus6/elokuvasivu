@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
   const [formData, setFormData] = useState({
+    name: initialData.name || '',
     description: initialData.description || '',
     groupimg: initialData.groupimg || ''
   });
@@ -46,6 +47,21 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
           </div>
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="groupName" className="form-label">
+                  Ryhmän nimi
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  id="groupName"
+                  placeholder="Ryhmän nimi"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
               <div className="mb-3">
                 <label htmlFor="groupDescription" className="form-label">
                   Kuvaus

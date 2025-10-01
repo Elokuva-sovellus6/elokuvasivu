@@ -65,10 +65,10 @@ class Group {
   }
 
   // Päivittää ryhmän tiedot
-  static async update(groupId, description, groupimg) {
+  static async update(groupId, name, description, groupimg) {
     const result = await pool.query(
-      `UPDATE groups SET description = $1, groupimg = $2 WHERE groupid = $3 RETURNING *`,
-      [description, groupimg, groupId]
+      `UPDATE groups SET name = $1, description = $2, groupimg = $3 WHERE groupid = $4 RETURNING *`,
+      [name, description, groupimg, groupId]
     );
     return result.rows[0];
   }

@@ -223,7 +223,7 @@ export const unbanMember = async (req, res) => {
 export const updateGroup = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const { description, groupimg } = req.body;
+    const { name, description, groupimg } = req.body;
     const userId = req.user.id;
 
     // Tarkista että käyttäjä on omistaja
@@ -232,7 +232,7 @@ export const updateGroup = async (req, res) => {
     if (String(group.ownerid) !== String(userId))
       return res.status(403).json({ message: "Vain omistaja voi muokata ryhmää" });
 
-    const updated = await Group.update(groupId, description, groupimg);
+    const updated = await Group.update(groupId, name, description, groupimg);
     res.json(updated);
   } catch (err) {
     console.error("Virhe ryhmän päivityksessä:", err);
