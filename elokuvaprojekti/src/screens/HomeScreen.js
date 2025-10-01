@@ -1,14 +1,32 @@
 import { useEffect, useState } from "react";
+import { getPopularMovies } from "../api/moviedb";
+import { getReviews } from "../api/review";
+import { Link } from "react-router-dom";
+import "../components/style/Rating.css";
 import { getLatestReviews } from "../api/review";
 import { getMovieDetails } from "../api/moviedb";
 import ReviewCard from "../components/ReviewCard";
 
+// Arvostelutähdet
+function StarRating({ rating }) {
+  const numericRating = parseFloat(rating) || 0;
+  const fullStars = Math.floor(numericRating);
+  const halfStars = numericRating % 1 >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - fullStars - halfStars;
+  const stars = [];
+  for (let i = 0; i < fullStars; i++) stars.push(<span key={"f" + i} className="filled">★</span>);
+  for (let i = 0; i < halfStars; i++) stars.push(<span key={"h" + i} className="half">★</span>);
+  for (let i = 0; i < emptyStars; i++) stars.push(<span key={"e" + i} className="empty">★</span>);
+  return <span className="stars">{stars}</span>;
+}
 
 //Näyttää elokuvia, arvosteluita ja ryhmiä
 export default function HomeScreen() {
 
     const [reviews, setReviews] = useState([]);
     const [reviewMovies, setReviewMovies] = useState([]);
+    const [popularMovies, setPopularMovies] = useState([]);
+    const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
     useEffect(() => {
       const fetchData = async () => {
@@ -34,6 +52,41 @@ export default function HomeScreen() {
       };
 
       fetchData();
+    }, []);
+
+    {/* Hakee 3 suosituinta elokuvaa ja niiden arvostelut TMDB:stä */}
+    useEffect(() => {
+      const fetchPopularWithReviews = async () => {
+        try {
+          const popular = await getPopularMovies(1);
+          const top3 = (popular.results || []).slice(0, 3);
+
+          // Hakee elokuvien arvostelut
+          const moviesWithReviews = await Promise.all(
+            top3.map(async (movie) => {
+              let reviews = [];
+              try {
+                reviews = await getReviews(movie.id);
+              } catch {}
+              // Hakee parhaimman arvostelun
+              let bestReview = null;
+              if (reviews.length > 0) {
+                bestReview = reviews.reduce((best, r) =>
+                  r.rating > (best?.rating || 0) ? r : best
+                , null);
+              }
+              return {
+                ...movie,
+                bestReview,
+              };
+            })
+          );
+          setPopularMovies(moviesWithReviews);
+        } catch (err) {
+          console.error("Failed to fetch popular movies or reviews:", err);
+        }
+      };
+      fetchPopularWithReviews();
     }, []);
     
     const HomeMovies = [
@@ -75,34 +128,88 @@ export default function HomeScreen() {
     <div className="container mt-4">
       <h3>Elokuvat</h3>
       <div className="row">
-        {HomeMovies.map((movie) => (
-          <div className="col-md-4 mb-4" key={movie.id}>
-            <div className="card h-100 shadow-sm">
-              <div
-              //Näyttää kuvan harmaana placeholder laatikkona
-                className="card-img-top"
-                style={{
-                  backgroundColor: "#ccc",
-                  width: "100%",
-                  height: "200px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.2rem",
-                  color: "#555"
-                }}
-              >
-                {movie.image === "x" ? "Placeholder" : <img src={movie.image} alt={movie.title} style={{width: "100%", height: "100%", objectFit: "cover"}} />}
-              </div>
-              
-              <div className="card-body">
-                <h5 className="card-title">{movie.title}</h5>
-                <div>{movie.stars}</div>
-                <p className="card-text">{movie.description}</p>
+        {popularMovies.map((movie) => {
+          {/*Rajaa elokuvan kuvauksen näytettävää osuutta*/}
+          const maxLength = 200;
+          const overview = movie.overview || "";
+          const isLong = overview.length > maxLength;
+          const expanded = expandedDescriptions[movie.id] || false;
+          const displayText =
+            expanded || !isLong
+              ? overview
+              : overview.slice(0, maxLength) + "...";
+
+          return (
+            <div className="col-md-4 mb-4" key={movie.id}>
+              <div className="card h-100 shadow-sm">
+                <Link to={`/movie/${movie.id}`} className="text-decoration-none text-dark">
+                  {movie.poster_path ? (
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      className="card-img-top"
+                      alt={movie.title}
+                      style={{ height: "350px", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      className="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                      style={{ height: "350px" }}
+                    >
+                      <span className="text-white">Ei kuvaa saatavilla</span>
+                    </div>
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title">{movie.title}</h5>
+                    {/*Jakaa arvostelun 2, jotta saadaan muunnettua TMDB:n asteikosta 10 asteikolle 5*/}
+                    <StarRating rating={movie.vote_average / 2} />
+                    <p className="card-text">
+                      {overview
+                        ? displayText
+                        : <span className="text-muted">Ei kuvausta</span>} 
+                    </p>
+                    {/*Rajoittaa kuvausta*/}
+                    {overview && isLong && (
+                      <div>
+                        <span
+                          style={{
+                            color: "blue",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                          }}
+                          onClick={e => {
+                            e.preventDefault();
+                            setExpandedDescriptions(prev => ({
+                              ...prev,
+                              [movie.id]: !expanded
+                            }));
+                          }}
+                        >
+                          {expanded ? "Piilota" : "Lue lisää..."}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+                {/* Arvostelu laatikot suosituimmille elokuville */}
+                <div className="px-3 pb-3">
+                  <div className="mt-3 border rounded bg-light p-3">
+                    <h6 className="mb-2" style={{ fontWeight: "bold" }}>Paras arvostelu</h6>
+                    {movie.bestReview ? (
+                      <>
+                        <div style={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          {movie.bestReview.username || "Käyttäjä"}: {movie.bestReview.rating}/5 <span>⭐</span>
+                        </div>
+                        <div>{movie.bestReview.reviewtext}</div>
+                      </>
+                    ) : (
+                      <div className="text-muted">Ei arvosteluja</div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="container mt-4">
