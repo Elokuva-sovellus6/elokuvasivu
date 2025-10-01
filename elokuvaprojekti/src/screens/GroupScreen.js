@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import "./GroupScreen.css"
+import "./style/GroupScreen.css"
 import CreateGroupModal from '../components/CreateGroupModal.js';
 import axios from 'axios';
 import GroupSearchBar from '../components/GroupSearchBar.js';
@@ -53,12 +53,12 @@ export default function GroupScreen() {
         <div className="container py-4">
             {/* Header and search bar */}
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="mb-0">Groups</h1>
+                <h1 className="mb-0">Ryhmät</h1>
                 <button
                     className="btn btn-primary create-group-btn"
                     onClick={() => setShowCreateGroupModal(true)}
                 >
-                    + Create new group
+                    + Luo uusi ryhmä
                 </button>
             </div>
             {/* Search bar + dropdown */}
@@ -68,7 +68,7 @@ export default function GroupScreen() {
             
             {/* Popular groups section */}
             <section className="popular-section mb-5">
-                <h2 className="mb-3">Popular groups</h2>
+                <h2 className="mb-3">Suositut ryhmät</h2>
                 <div className="d-flex overflow-auto gap-3 pb-2">
                 {popularGroups.map(group => (
                     <GroupCard key={group.groupid} group={group} />
@@ -78,7 +78,7 @@ export default function GroupScreen() {
 
             {/* Newest groups */}
             <section className="newest-section mb-5">
-              <h2 className="mb-3">Newest groups</h2>
+              <h2 className="mb-3">Uudet ryhmät</h2>
               <div className="d-flex overflow-auto gap-3 pb-2">
                 {newestGroups.map(group => (
                     <GroupCard key={group.groupid} group={group} />
@@ -88,7 +88,7 @@ export default function GroupScreen() {
 
             {/* All groups */}
             <section className="all-section mb-5">
-                <h2 className="mb-3">All groups</h2>
+                <h2 className="mb-3">Kaikki ryhmät</h2>
                 <div className="d-grid gap-3" style={{
                     gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
                     maxHeight: "1350px"

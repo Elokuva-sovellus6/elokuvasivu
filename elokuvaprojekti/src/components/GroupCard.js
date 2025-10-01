@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./GroupCard.css"
+import "./style/GroupCard.css"
 
 export default function GroupCard({ group }) {
     return (
         <div className="card group-card">
             <Link to={`/groups/${group.groupid}`} className="text-decoration-none text-dark">
                 <img
-                    src={group.groupimg || "https://placehold.co/300x200?text=Group"}
+                    src={group.groupimg || "https://placehold.co/300x200?text=Ryhmä"}
                     className="card-img-top"
                     alt={group.name}
                 />

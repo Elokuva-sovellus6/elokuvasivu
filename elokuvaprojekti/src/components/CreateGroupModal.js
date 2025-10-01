@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const CreateGroupModal = ({ onClose, token }) => {
+const CreateGroupModal = ({ onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -32,18 +32,18 @@ const CreateGroupModal = ({ onClose, token }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Create new group</h5>
+            <h5 className="modal-title">Luo uusi ryhmä</h5>
             <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="groupName" className="form-label">Group name</label>
+                <label htmlFor="groupName" className="form-label">Ryhmän nimi</label>
                 <input
                   type="text"
                   name="name"
                   id="groupName"
-                  placeholder="Group Name"
+                  placeholder="Ryhmän nimi"
                   value={formData.name}
                   onChange={handleChange}
                   required
@@ -51,29 +51,29 @@ const CreateGroupModal = ({ onClose, token }) => {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="groupDescription" className="form-label">Description (optional)</label>
+                <label htmlFor="groupDescription" className="form-label">Kuvaus (vapaaehtoinen)</label>
                 <textarea
                   name="description"
                   id="groupDescription"
-                  placeholder="Description"
+                  placeholder="Kuvaus"
                   value={formData.description}
                   onChange={handleChange}
                   className="form-control"
                 ></textarea>
               </div>
               <div className="mb-3">
-                <label htmlFor="groupImage" className="form-label">Image URL (optional)</label>
+                <label htmlFor="groupImage" className="form-label">Kuvan URL (vapaaehtoinen)</label>
                 <input
                   type="text"
                   name="groupimg"
                   id="groupImage"
-                  placeholder="Image URL"
+                  placeholder="Kuvan URL"
                   value={formData.groupimg}
                   onChange={handleChange}
                   className="form-control"
                 />
               </div>
-              <button type="submit" className="btn btn-primary w-100 mt-2">Create group</button>
+              <button type="submit" className="btn btn-primary w-100 mt-2">Luo ryhmä</button>
               {error && <p className="text-danger mt-3">{error}</p>}
             </form>
           </div>

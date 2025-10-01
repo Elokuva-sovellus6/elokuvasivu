@@ -4,7 +4,7 @@ const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 export const searchMovies = async (query, page = 1) => {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&include_adult=false&language=en-US&page=${page}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&include_adult=false&language=fi-FI&page=${page}`
     )
 
     if (!response.ok) {
@@ -25,7 +25,7 @@ export const searchMovies = async (query, page = 1) => {
 // Käytetään tätä defaultin hakuna, jos hakukenttä on tyhjä
 export const getPopularMovies = async (page = 1) => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`
+    `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=fi-FI&page=${page}`
   );
   const data = await response.json()
   return {
@@ -37,7 +37,7 @@ export const getPopularMovies = async (page = 1) => {
 export const getMovieDetails = async (id) => {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=fi-FI`
     )
 
     if (!response.ok) {

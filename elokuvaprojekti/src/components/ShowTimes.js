@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.js"
 import GenericDropdown from "./Dropdown.js"
-import "./ShowTimes.css"
+import "./style/ShowTimes.css"
 
 export default function ShowTimes({ eventId, defaultArea, defaultDate }) {
   const [areas, setAreas] = useState([])

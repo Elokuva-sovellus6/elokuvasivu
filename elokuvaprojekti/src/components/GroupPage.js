@@ -1,87 +1,269 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './GroupPage.css';
+import GroupMembers from './GroupMembers';
+import JoinGroup from './JoinGroup';
+import './style/GroupPage.css';
 
 export default function GroupPage() {
-  const { groupId } = useParams()
+    const { groupId } = useParams()
+    const navigate = useNavigate()
     const [group, setGroup] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [isMember, setIsMember] = useState(false)
+    const [members, setMembers] = useState([])
+    const [userId, setUserId] = useState(undefined)
+    const [bannedMembers, setBannedMembers] = useState([])
+    const [banError, setBanError] = useState(null)
+    const [hasToken, setHasToken] = useState(false)
+    const [joinRequestSent, setJoinRequestSent] = useState(false)
 
-  useEffect(() => {
-    const fetchGroup = async () => {
+
+    const handleError = (message) => {
+        setError(message)
+    }
+
+    // Parsii käyttäjän ID:n tokenista ja asettaa hasToken-tilan
+    useEffect(() => {
+        const token = localStorage.getItem("token")
+        if (token) {
+            setHasToken(true)
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]))
+                setUserId(payload.id)
+            } catch (err) {
+                console.error("Virhe tokenin parsinnassa:", err)
+                setUserId(null)
+            }
+        } else {
+            setHasToken(false)
+            setUserId(null)
+        }
+    }, [])
+
+
+    // Hakee ryhmän tiedot, jäsenet ja jäsenyyden tilan
+    const fetchGroupAndMembers = useCallback(async () => {
+        if (!groupId) return
+
+        setLoading(true)
+        setError(null)
+        setBanError(null)
+
+        const token = localStorage.getItem("token")
+
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}`)
+            // 1. Hae ryhmän perustiedot
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}`, {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            })
             setGroup(response.data)
+
+            setIsMember(false)
+            setJoinRequestSent(false)
+            setMembers([])
+
+            // 2. Hae jäsenyys ja pyynnöt, jos käyttäjä on kirjautunut sisään
+            if (token && userId) {
+                try {
+                    // A) Hae ryhmän jäsenet
+                    const membersRes = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/members`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                    setMembers(membersRes.data)
+
+                    // Tarkista onko kirjautunut käyttäjä jäsen
+                    const isUserAMember = membersRes.data.some(m => String(m.userid) === String(userId));
+                    setIsMember(isUserAMember)
+
+                    // B) Hae liittymispyynnöt (vain jos ei jäsen)
+                    if (!isUserAMember) {
+                        const joinRequestsRes = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/join-requests`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        });
+                        const hasPendingRequest = joinRequestsRes.data.some(r => String(r.userid) === String(userId));
+                        setJoinRequestSent(hasPendingRequest);
+                    }
+                } catch (memberError) {
+                    // Jatketaan ilman jäsen-/pyyntötietoja, jos API estää pääsyn
+                    console.warn("Virhe jäsenyystietojen haussa:", memberError.response?.status);
+                    setIsMember(false);
+                    setJoinRequestSent(false);
+                    setMembers([]);
+                }
+            }
             setLoading(false)
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch group data')
+            console.error("Virhe ryhmätietojen haussa:", err.response?.data || err.message);
+            setError(err.response?.data?.message || 'Ryhmän haku epäonnistui')
             setLoading(false)
+        }
+    }, [groupId, userId])
+
+
+    // Käynnistää ryhmän latauksen, kun käyttäjä-ID on tunnettu
+    useEffect(() => {
+        if (userId !== undefined) {
+            fetchGroupAndMembers()
+        }
+    }, [fetchGroupAndMembers, userId])
+
+
+    // Hae bannatut jäsenet (vain ryhmän omistajalle)
+    useEffect(() => {
+        const fetchBannedMembers = async () => {
+            if (!group || !userId || String(userId) !== String(group.ownerid)) return
+
+            try {
+                const token = localStorage.getItem("token")
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/banned`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                setBannedMembers(res.data)
+            } catch (err) {
+                console.error("Virhe bannattujen haussa:", err)
+            }
+        }
+
+        if (group && userId) fetchBannedMembers()
+    }, [group, userId, groupId])
+
+
+    // Käsittelee liittymisen (pyynnön lähetyksen) tai ryhmästä eroamisen
+    const handleMembershipAction = async (onLeaveCallback) => {
+        const token = localStorage.getItem("token")
+        if (!token) {
+            alert("Sinun täytyy kirjautua sisään suorittaaksesi toiminnon.");
+            return;
+        }
+        setError('')
+        setBanError(null)
+    
+        const wasOwner = String(userId) === String(group?.ownerid);
+    
+        try {
+            if (!isMember) {
+                // Lähettää liittymispyyntö
+                await axios.post(`${process.env.REACT_APP_API_URL}/groups/${groupId}/join-request`, {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                alert('Liittymispyyntö lähetetty!')
+                setJoinRequestSent(true)
+                setBanError(null)
+            
+            } else {
+                // Eroa ryhmästä
+                const leaveResponse = await axios.post(`${process.env.REACT_APP_API_URL}/groups/${groupId}/leave`, {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+            
+                // Tarkistaa, poistettiinko ryhmä
+                if (leaveResponse.data.groupDeleted) {
+                    alert('Ryhmä poistettu, koska se jäi ilman jäseniä.');
+                    navigate('/'); // Ohjaa etusivulle ryhmän poiston jälkeen
+                    return;
+                }
+            
+                alert('Olet poistunut ryhmästä.')
+            
+                setIsMember(false)
+                setJoinRequestSent(false)
+            
+                if (wasOwner) {
+                    // Jos omistajuus siirtyi, päivittää tiedot
+                    await fetchGroupAndMembers()
+                } else {
+                    if (onLeaveCallback) onLeaveCallback(userId)
+                }
+            }
+        } catch (err) {
+            console.error("Virhe:", err.response?.data || err.message)
+        
+            // Käsittelee 403 bännivirhe
+            if (err.response?.status === 403 && err.response?.data?.message === "Olet estetty tästä ryhmästä") {
+                setBanError({
+                    message: err.response.data.message,
+                    bannedUntil: err.response.data.bannedUntil 
+                }) 
+                setError(null)
+            } else {
+                // Muut virheet
+                setError(err.response?.data?.message || 'Toiminto epäonnistui')
+                setBanError(null)
+            }
         }
     }
 
-    if (groupId) {
-        fetchGroup()
-    }
-  }, [groupId])
 
-  return (
-  <div className="groupscreen">
-    {loading && <p>Loading group...</p>}
-    {error && <p style={{ color: "red" }}>{error}</p>}
+    // --- Renderöinti ---
 
-    {group && (
-      <>
-        {/* Ryhmän tiedot */}
-        <section className="group-header">
-          <div className="group-image"></div>
-          <div className="group-info">
-            <h1>{group.name}</h1>
-            <p>{group.description}</p>
-          </div>
-        </section>
+    if (loading) return <p>Ladataan Ryhmää...</p>
+    if (error) return <p style={{ color: "red" }}>{error}</p>
+    if (!group) return null
 
-        {/* Ryhmän suosikkielokuvat */}
-        <section className="favourites">
-          <h2>Ryhmän suosikkielokuvat</h2>
-          <div className="favourite-list">
-            <div className="movie-card">
-              <div className="movie-image"></div>
-              <div className="movie-title">Elokuva 1</div>
-            </div>
-            <div className="movie-card">
-              <div className="movie-image"></div>
-              <div className="movie-title">Elokuva 2</div>
-            </div>
-            <div className="movie-card">
-              <div className="movie-image"></div>
-              <div className="movie-title">Elokuva 3</div>
-            </div>
-          </div>
-        </section>
+    const shouldShowFullContent = isMember;
 
-        <div className="middle-content">
-          {/* Foorumi */}
-          <section className="forum">
-            <h2>Foorumi</h2>
-            <div className="forum-messages">Foorumi</div>
-            <textarea placeholder="Kirjoita viesti"></textarea>
-            <button>Lähetä</button>
-          </section>
+    return (
+        <div className="groupscreen">
+            {/* Ryhmän perustiedot */}
+            <section className="group-header">
+                <div className="group-image"></div>
+                <div className="group-info">
+                    <h1>{group.name}</h1>
+                    <p>{group.description}</p>
+                </div>
+            </section>
 
-          {/* Jäsenet */}
-          <section className="members">
-            <h2>Ryhmän jäsenet</h2>
-            <div className="member-list">Jäsenet</div>
-            <input type="text" placeholder="Lisää jäsen" />
-            <button>Lähetä liittymispyyntö</button>
-          </section>
+            <hr />
+
+            {/* --- Rajoitettu näkymä (Kun ei ole jäsen) --- */}
+            {!shouldShowFullContent && (
+                <JoinGroup 
+                    hasToken={hasToken}
+                    joinRequestSent={joinRequestSent}
+                    handleMembershipAction={handleMembershipAction} // Lähetä liittymistoiminto
+                    banError={banError} // Näytä mahdollinen bännivirhe
+                />
+            )}
+
+            {/* --- Täysi sisältö (Kun on jäsen) --- */}
+            {shouldShowFullContent && (
+                <>
+                    {/* Ryhmän suosikkielokuvat (Paikkamerkki) */}
+                    <section className="favourites">
+                        <h2>Ryhmän suosikkielokuvat</h2>
+                        <div className="favourite-list">
+                            <p>Elokuvakortit näkyvät täällä...</p>
+                        </div>
+                    </section>
+
+                    <div className="middle-content">
+                        {/* Foorumi (Paikkamerkki) */}
+                        <section className="forum">
+                            <h2>Foorumi</h2>
+                            <div className="forum-messages">Foorumiviestit näkyvät täällä.</div>
+                            <textarea placeholder="Kirjoita viesti"></textarea>
+                            <button className="btn btn-primary w-100 mt-2">Lähetä</button>
+                        </section>
+
+                        {/* Jäsenluettelo ja hallinta */}
+                        <GroupMembers
+                            groupId={groupId}
+                            ownerId={group.ownerid}
+                            userId={userId}
+                            isOwner={String(userId) === String(group.ownerid)}
+                            isMember={isMember}
+                            members={members}
+                            setMembers={setMembers}
+                            bannedMembers={bannedMembers}
+                            setBannedMembers={setBannedMembers}
+                            handleMembershipAction={handleMembershipAction} // Ryhmästä eroaminen
+                            handleError={handleError}
+                        />
+                    </div>
+                </>
+            )}
         </div>
-
-        <footer className="footer">Elokuvasovellus</footer>
-      </>
-    )}
-  </div>
-)
+    )
 }
