@@ -6,6 +6,8 @@ import "../components/style/Rating.css";
 import { getLatestReviews } from "../api/review";
 import { getMovieDetails } from "../api/moviedb";
 import ReviewCard from "../components/ReviewCard";
+import axios from "axios";
+import GroupCard from "../components/GroupCard";
 
 // Arvostelutähdet
 function StarRating({ rating }) {
@@ -87,6 +89,24 @@ export default function HomeScreen() {
         }
       };
       fetchPopularWithReviews();
+    }, []);
+
+    {/*Hakee uusimmat ryhmät*/}
+    const [newestGroups, setNewestGroups] = useState([]);
+
+    useEffect(() => {
+      const fetchGroups = async () => {
+        try {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`);
+          const sorted = [...response.data].sort(
+            (a, b) => new Date(b.createddate) - new Date(a.createdDate)
+          );
+          setNewestGroups(sorted.slice(0, 5)); //Näyttää 5 uusinta ryhmää
+        } catch (err) {
+          console.error("Error fetching groups:", err);
+        }
+      };
+      fetchGroups();
     }, []);
     
     const HomeMovies = [
@@ -234,13 +254,16 @@ export default function HomeScreen() {
         </div>
       </div>
 
-      <h3 className="mt-5">Ryhmät</h3>
-      <div className="card p-3">
-        <ul className="list-unstyled mb-0">
-          {HomeGroups.map((group, idx) => (
-            <li key={idx}>{group}</li>
-          ))}
-        </ul>
+      {/*Uusimmat ryhmät*/}
+      <h3 className="mt-5">Uusimmat ryhmät</h3>
+      <div className="d-flex overflow-auto gap-3 pb-2">
+          {newestGroups.length === 0 ? (
+            <p>Ei ryhmiä</p>
+          ) : (
+            newestGroups.map(group => (
+              <GroupCard key={group.groupid} group={group} />
+            ))
+          )}
       </div>
     </div>
   );
