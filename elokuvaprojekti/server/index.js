@@ -7,6 +7,7 @@ import movieRouter from './routers/movieRouter.js';
 import groupRouter from './routers/groupRouter.js';
 import favouriteRouter from './routers/favouriteRouter.js';
 import groupShowRouter from './routers/groupShowRouter.js';
+import moviedbRouter from './routers/moviedbRouter.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -34,11 +35,13 @@ app.use('/favourites', favouriteRouter)
 
 //Reitti groupshow-kontrollerille
 app.use('/groupshows', groupShowRouter)
+// Reitti moviedb-kontrollerille
+app.use('/tmdb', moviedbRouter)
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {
-        return res.status(err.status).json({ message: err.message })
+        return res.status(err.statusCode).json({ message: err.message })
     }
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' })

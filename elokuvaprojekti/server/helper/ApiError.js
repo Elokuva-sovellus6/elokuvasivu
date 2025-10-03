@@ -1,9 +1,9 @@
 // Mahdollistaa virheilmoituksen ja status koodin välittämisen
 class ApiError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.status = status;
-    }
+  constructor(statusCode, message) {
+    super(message)
+    this.statusCode = statusCode
+  }
 }
 
 export { ApiError }

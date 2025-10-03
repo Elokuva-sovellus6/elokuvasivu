@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import "./style/ShowScreen.css"
 import { Link } from "react-router-dom"
-import { searchMovieInTMDB } from "../api/moviedb.js"
 import GenericDropdown from "../components/Dropdown.js"
 import ShareShowModal from "../components/ShareShowModal.js"
 import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.js"
+import { matchFinnkinoWithTMDB } from '../api/moviedb.js'
 
 export default function ShowScreen() {
   const [movieShows, setMovieShows] = useState([])
@@ -52,20 +52,20 @@ export default function ShowScreen() {
 
   // Hakee TMDB ID:t
   useEffect(() => {
-    const getTmdbIds = async () => {
-      const results = {}
-      for (const movie of uniqueMovies) {
-        try {
-          const tmdbId = await searchMovieInTMDB(movie.name, movie.year)
-          results[movie.eventId] = tmdbId
-        } catch {
-          results[movie.eventId] = null
-        }
-      }
-      setTmdbIds(results)
+  const getTmdbIds = async () => {
+    const results = {}
+
+    const matches = await matchFinnkinoWithTMDB(uniqueMovies)
+
+    for (const m of matches) {
+      results[m.finnkino.eventId] = m.tmdb.id
     }
-    if (uniqueMovies.length > 0) getTmdbIds()
-  }, [uniqueMovies])
+
+    setTmdbIds(results)
+  }
+
+  if (uniqueMovies.length > 0) getTmdbIds()
+}, [uniqueMovies])
 
   // Suodatettu lista valinnan mukaan
   const moviesToShow =
