@@ -66,6 +66,79 @@
   color: #333;
 }
 
+/*Jaettujen näytösten tyylit*/
+.shared-shows {
+  margin: 2rem 0;
+}
+
+.shared-show-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
+}
+
+.shared-show-card {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+}
+
+.shared-show-image {
+  flex: 0 0 150px;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shared-show-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shared-show-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.shared-show-content p {
+  margin: 0 0 0.5rem 0;
+}
+
+.shared-show-content .comment {
+  font-style: italic;
+  color: #555;
+}
+
+.showtime-box {
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.showtime-box .theatre-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.showtime-box .theatre-link:hover {
+  text-decoration: underline;
+}
+
+.showtime-box .time {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
 /*Foorumin tyylit*/
 .middle-content {
   display: grid;

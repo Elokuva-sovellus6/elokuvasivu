@@ -55,7 +55,10 @@ function getFinnkinoShows(xml) {
       length: show.getElementsByTagName("LengthInMinutes")[0]?.textContent, //Elokuvan pituus min
       genre: show.getElementsByTagName("Genres")[0]?.textContent, //Genre
       theatre: show.getElementsByTagName("Theatre")[0]?.textContent, //Näytöspaikka
+      auditorium: show.getElementsByTagName("TheatreAuditorium")[0]?.textContent, //sali
       image: show.getElementsByTagName("EventLargeImagePortrait")[0]?.textContent, //Kuva
+      url: show.getElementsByTagName("ShowURL")[0]?.textContent //Linkki haluttuun näytökseen
+
     }
     tempMovieShows.push(movieObj)
 

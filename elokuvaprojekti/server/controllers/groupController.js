@@ -40,6 +40,16 @@ export const getAllGroups = async (req, res, next) => {
   }
 }
 
+//Hakee ryhmät, joihin käyttäjä kuuluu
+export const getMyGroups = async (req, res, next) => {
+  try {
+    const groups = await Group.findMyGroups(req.user.id);
+    res.json(groups);
+  } catch (err) {
+    next(err);
+  }
+}
+
 // ---             LIITTYMISPYYNNÖT            ---//
 
 // Käyttäjä lähettää liittymispyynnön

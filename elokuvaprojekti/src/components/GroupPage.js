@@ -4,6 +4,7 @@ import axios from 'axios';
 import GroupMembers from './GroupMembers';
 import JoinGroup from './JoinGroup';
 import GroupEditModal from "../components/GroupEditModal";
+import GroupShowCard from './GroupShowCard';
 import './style/GroupPage.css';
 
 export default function GroupPage() {
@@ -20,11 +21,33 @@ export default function GroupPage() {
     const [hasToken, setHasToken] = useState(false)
     const [joinRequestSent, setJoinRequestSent] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false);
+    const [groupShows, setGroupShows] = useState([]);
 
 
     const handleError = (message) => {
         setError(message)
     }
+
+    //Poista jaetty näytös
+    const handleDeleteShow = async (shareId) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Kirjaudu sisään poistaaksesi näytöksen");
+            return;
+        }
+
+        try {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/groupshows/${shareId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Päivitä state poistamalla kyseinen show
+            setGroupShows((prev) => prev.filter((s) => s.shareid !== shareId));
+        } catch (err) {
+            console.error("Virhe poistettaessa jakoa:", err);
+            alert("Poistaminen epäonnistui");
+        }
+        };
 
     // Parsii käyttäjän ID:n tokenista ja asettaa hasToken-tilan
     useEffect(() => {
@@ -197,6 +220,26 @@ export default function GroupPage() {
         }
     }
 
+    // Hakee ryhmän jaetut näytökset
+        useEffect(() => {
+            const fetchGroupShows = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await axios.get(
+                `${process.env.REACT_APP_API_URL}/groupshows/${groupId}`,
+                { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+                );
+                setGroupShows(res.data);
+            } catch (err) {
+                console.error("Virhe jaettujen näytösten haussa:", err);
+            }
+            };
+
+            if (isMember) {
+            fetchGroupShows();
+            }
+        }, [groupId, isMember]);
+
 
     // --- Renderöinti ---
 
@@ -259,6 +302,28 @@ export default function GroupPage() {
                             <p>Elokuvakortit näkyvät täällä...</p>
                         </div>
                     </section>
+
+                    {/* Ryhmän jaetut näytökset */}
+                    <section className="shared-shows my-4">
+                        <h2>Jaetut näytökset</h2>
+                        {groupShows.length > 0 ? (
+                            <div className="row">
+                            {groupShows.map((show) => (
+                                <div key={show.shareid} className="col-md-6 d-flex">
+                                <GroupShowCard
+                                    key={show.shareid}
+                                    show={show}
+                                    userId={userId}
+                                    ownerId={group.ownerid}
+                                    onDelete={handleDeleteShow}
+                                />
+                                </div>
+                            ))}
+                            </div>
+                        ) : (
+                            <p>Ei jaettuja näytöksiä vielä.</p>
+                        )}
+                        </section>
 
                     <div className="middle-content">
                         {/* Foorumi (Paikkamerkki) */}

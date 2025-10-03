@@ -6,6 +6,7 @@ import userRouter from './routers/userRouter.js';
 import movieRouter from './routers/movieRouter.js';
 import groupRouter from './routers/groupRouter.js';
 import favouriteRouter from './routers/favouriteRouter.js';
+import groupShowRouter from './routers/groupShowRouter.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -30,6 +31,9 @@ app.use('/groups', groupRouter)
 
 // Reitti favourite-kontrollerille
 app.use('/favourites', favouriteRouter)
+
+//Reitti groupshow-kontrollerille
+app.use('/groupshows', groupShowRouter)
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
