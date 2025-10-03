@@ -11,6 +11,8 @@ import ShowScreen from "./screens/ShowScreen";
 import FavouriteList from "./components/FavouriteList";
 import Footer from "./components/Footer";
 import { AuthProvider } from "./context/authContext";
+import "bootstrap/dist/css/bootstrap.min.css"
+
 
 function App() {
   return (
