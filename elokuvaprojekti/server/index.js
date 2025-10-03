@@ -6,6 +6,7 @@ import userRouter from './routers/userRouter.js';
 import movieRouter from './routers/movieRouter.js';
 import groupRouter from './routers/groupRouter.js';
 import favouriteRouter from './routers/favouriteRouter.js';
+import groupShowRouter from './routers/groupShowRouter.js';
 import moviedbRouter from './routers/moviedbRouter.js';
 import dotenv from 'dotenv';
 
@@ -32,6 +33,8 @@ app.use('/groups', groupRouter)
 // Reitti favourite-kontrollerille
 app.use('/favourites', favouriteRouter)
 
+//Reitti groupshow-kontrollerille
+app.use('/groupshows', groupShowRouter)
 // Reitti moviedb-kontrollerille
 app.use('/tmdb', moviedbRouter)
 

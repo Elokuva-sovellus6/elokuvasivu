@@ -73,6 +73,18 @@ class Group {
     return result.rows[0];
   }
 
+  // Hakee ryhmät, joihin käyttäjä kuuluu
+  static async findMyGroups(userId) {
+    const result = await pool.query(
+      `SELECT g.* 
+      FROM groupmembers gm
+      JOIN groups g ON gm.groupid = g.groupid
+      WHERE gm.userid = $1 AND gm.ismember = true`,
+      [userId]
+    );
+    return result.rows;
+  }
+
 
 // ---             JÄSENTEN HALLINTA            ---//
 
