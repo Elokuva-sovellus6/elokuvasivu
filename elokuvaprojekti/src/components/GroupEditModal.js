@@ -5,7 +5,7 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
   const [formData, setFormData] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
-    groupimg: initialData.groupimg || ''
+    groupimg: null
   });
 
   const [error, setError] = useState('');
@@ -14,16 +14,31 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+    const handleFileChange = (e) => {
+      setFormData({ ...formData, groupimg: e.target.files[0] });
+    };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       const token = localStorage.getItem('token');
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('description', formData.description);
+      if (formData.groupimg) data.append('groupimg', formData.groupimg);
+
       const updated = await axios.put(
         `${process.env.REACT_APP_API_URL}/groups/${groupId}`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
+
       onUpdated(updated.data);
       onClose();
     } catch (err) {
@@ -80,13 +95,12 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
                   Kuvan URL
                 </label>
                 <input
-                  type="text"
+                  type="file"
                   name="groupimg"
                   id="groupImage"
-                  placeholder="Image URL"
-                  value={formData.groupimg}
-                  onChange={handleChange}
+                  accept="image/*"
                   className="form-control"
+                  onChange={handleFileChange}
                 />
               </div>
               <button

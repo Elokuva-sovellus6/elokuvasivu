@@ -42,7 +42,7 @@ router.get('/:groupId/banned', authenticateToken, getBannedMembers)
 router.delete('/:groupId/unban/:memberId', authenticateToken, unbanMember)
 
 // Päivitä ryhmän tiedot (kuvaus, kuva) -- vain omistajalle!
-router.put("/:groupId", authenticateToken, updateGroup);
+router.put("/:groupId", authenticateToken, uploadGroup.single("groupimg"), updateGroup)
 
 
 export default router
