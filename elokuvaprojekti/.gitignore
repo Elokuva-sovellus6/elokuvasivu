@@ -25,3 +25,5 @@ yarn-error.log*
 README.md
 .env
 
+server/uploads/*
+!server/uploads/.gitkeep

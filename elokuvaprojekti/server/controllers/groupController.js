@@ -1,15 +1,16 @@
-import { ApiError } from "../helper/ApiError.js";
-import Group from "../models/Group.js";
-import JoinRequest from "../models/JoinRequest.js";
+import { ApiError } from "../helper/ApiError.js"
+import Group from "../models/Group.js"
+import JoinRequest from "../models/JoinRequest.js"
 
-// ---             RYHMIEN HAKU & LUONTI            ---//
+// ---             RYHMIEN HAKU & LUONTI            --- //
 
 // Uuden ryhmän luonti
 export const createGroup = async (req, res, next) => {
   try {
-    const { name, description, groupimg } = req.body
+    const { name, description } = req.body
     const ownerId = req.user.id
-    const newGroup = await Group.create(name, description, ownerId, groupimg)
+    const file = req.file
+    const newGroup = await Group.create(name, description, ownerId, file ? file.filename : null)
     res.status(201).json({ message: "Group created successfully", group: newGroup })
   } catch (err) {
       next(err)
@@ -43,14 +44,40 @@ export const getAllGroups = async (req, res, next) => {
 //Hakee ryhmät, joihin käyttäjä kuuluu
 export const getMyGroups = async (req, res, next) => {
   try {
-    const groups = await Group.findMyGroups(req.user.id);
-    res.json(groups);
+    const groups = await Group.findMyGroups(req.user.id)
+    res.json(groups)
   } catch (err) {
-    next(err);
+    next(err)
   }
 }
 
-// ---             LIITTYMISPYYNNÖT            ---//
+// Päivitä ryhmän tiedot
+export const updateGroup = async (req, res) => {
+  try {
+    const { groupId } = req.params
+    const { name, description } = req.body
+    const userId = req.user.id
+
+    const group = await Group.findById(groupId)
+    if (!group) return res.status(404).json({ message: "Ryhmää ei löytynyt" })
+    if (String(group.ownerid) !== String(userId))
+      return res.status(403).json({ message: "Vain omistaja voi muokata ryhmää" })
+
+    let groupimg = group.groupimg
+    if (req.file) {
+      groupimg = req.file.filename
+    }
+
+    const updated = await Group.update(groupId, name, description, groupimg)
+    res.json(updated)
+  } catch (err) {
+    console.error("Virhe ryhmän päivityksessä:", err)
+    res.status(500).json({ message: "Ryhmän päivitys epäonnistui" })
+  }
+}
+
+
+// ---             LIITTYMISPYYNNÖT            --- //
 
 // Käyttäjä lähettää liittymispyynnön
 export const sendJoinRequest = async (req, res) => {
@@ -137,7 +164,7 @@ export const handleJoinRequest = async (req, res) => {
   }
 }
 
-// ---             JÄSENTEN HALLINTA            ---//
+// ---             JÄSENTEN HALLINTA            --- //
 
 // Hakee kaikki ryhmän jäsenet
 export const getGroupMembers = async (req, res) => {
@@ -174,7 +201,7 @@ export const leaveGroup = async (req, res) => {
       }
     }
 
-      await Group.removeMember(groupId, userId);
+      await Group.removeMember(groupId, userId)
       res.json({ message: "Olet poistunut ryhmästä", groupDeleted: false }) 
   } catch (err) {
     console.error(err)
@@ -203,7 +230,7 @@ export const kickMemberFromGroup = async (req, res) => {
   }
 }
 
-// ---             BANNIEN HALLINTA            ---//
+// ---             BANNIEN HALLINTA            --- //
 
 // Hakee kaikki bannatut jäsenet
 export const getBannedMembers = async (req, res) => {
@@ -228,24 +255,3 @@ export const unbanMember = async (req, res) => {
     res.status(500).json({ message: "Virhe banin poistossa" })
   }
 }
-
-// Päivitä ryhmän tiedot
-export const updateGroup = async (req, res) => {
-  try {
-    const { groupId } = req.params;
-    const { name, description, groupimg } = req.body;
-    const userId = req.user.id;
-
-    // Tarkista että käyttäjä on omistaja
-    const group = await Group.findById(groupId);
-    if (!group) return res.status(404).json({ message: "Ryhmää ei löytynyt" });
-    if (String(group.ownerid) !== String(userId))
-      return res.status(403).json({ message: "Vain omistaja voi muokata ryhmää" });
-
-    const updated = await Group.update(groupId, name, description, groupimg);
-    res.json(updated);
-  } catch (err) {
-    console.error("Virhe ryhmän päivityksessä:", err);
-    res.status(500).json({ message: "Ryhmän päivitys epäonnistui" });
-  }
-};
