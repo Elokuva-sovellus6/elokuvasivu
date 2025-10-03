@@ -1,11 +1,15 @@
 import express from "express"
 import { createGroup, getGroupById, getAllGroups, sendJoinRequest, getOwnerRequests, handleJoinRequest, getGroupMembers, leaveGroup, kickMemberFromGroup, getBannedMembers, unbanMember, updateGroup, getMyGroups } from "../controllers/groupController.js"
 import { authenticateToken } from "../helper/auth.js"
+import multer from "multer"
 
 const router = express.Router()
 
+// määritellään minne tallennetaan
+const uploadGroup = multer({ dest: "uploads/groupimg/" })
+
 // Luo uusi ryhmä
-router.post("/", authenticateToken, createGroup)
+router.post("/", authenticateToken, uploadGroup.single("groupimg"), createGroup)
 
 // Haetaan kaikki ryhmät
 router.get("/", getAllGroups)

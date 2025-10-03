@@ -5,25 +5,32 @@ import { updateUserProfile } from '../api/user';
 const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
   const [formData, setFormData] = useState({
     userDescription: initialData.userdescription || '',
-    userImg: initialData.userimg || ''
+    userImg: null
   });
 
   const [error, setError] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
       const token = localStorage.getItem('token');
+      const data = new FormData();
+      data.append('userDescription', formData.userDescription);
+      if (formData.userImg) data.append('userImg', formData.userImg);
+
       const updated = await axios.put(
         `${process.env.REACT_APP_API_URL}/users/me`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
+
       onUpdated(updated.data);
       onClose();
     } catch (err) {
@@ -31,6 +38,15 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
       setError(err.response?.data?.message || 'Profile update failed');
     }
   };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, userImg: e.target.files[0] });
+  };
+
 
   return (
     <div className="modal d-block" tabIndex="-1" role="dialog">
@@ -62,16 +78,15 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
               </div>
               <div className="mb-3">
                 <label htmlFor="profileImage" className="form-label">
-                  Kuvan URL
+                  Profiilikuva
                 </label>
                 <input
-                  type="text"
+                  type="file"
                   name="userImg"
                   id="profileImage"
-                  placeholder="Image URL"
-                  value={formData.userImg}
-                  onChange={handleChange}
+                  accept="image/*"
                   className="form-control"
+                  onChange={handleFileChange}
                 />
               </div>
               <button

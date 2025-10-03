@@ -7,9 +7,10 @@ import JoinRequest from "../models/JoinRequest.js";
 // Uuden ryhmän luonti
 export const createGroup = async (req, res, next) => {
   try {
-    const { name, description, groupimg } = req.body
+    const { name, description } = req.body
     const ownerId = req.user.id
-    const newGroup = await Group.create(name, description, ownerId, groupimg)
+    const file = req.file
+    const newGroup = await Group.create(name, description, ownerId, file ? file.filename : null)
     res.status(201).json({ message: "Group created successfully", group: newGroup })
   } catch (err) {
       next(err)

@@ -17,9 +17,26 @@ const CreateGroupModal = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+  
     try {
       const token = localStorage.getItem("token")
-      await axios.post(`${process.env.REACT_APP_API_URL}/groups`, formData, { headers: { Authorization: `Bearer ${token}` }})
+      const data = new FormData()
+      data.append("name", formData.name)
+      data.append("description", formData.description)
+      if (formData.groupimg) {
+        data.append("groupimg", formData.groupimg)
+      }
+    
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/groups`,
+        data,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
       onClose()
     } catch (err) {
       console.error("Error creating group:", err.response?.data || err.message)
@@ -62,15 +79,14 @@ const CreateGroupModal = ({ onClose }) => {
                 ></textarea>
               </div>
               <div className="mb-3">
-                <label htmlFor="groupImage" className="form-label">Kuvan URL (vapaaehtoinen)</label>
+                <label htmlFor="groupImage" className="form-label">Kuva (vapaaehtoinen)</label>
                 <input
-                  type="text"
+                  type="file"
                   name="groupimg"
                   id="groupImage"
-                  placeholder="Kuvan URL"
-                  value={formData.groupimg}
-                  onChange={handleChange}
+                  accept="image/*"
                   className="form-control"
+                  onChange={(e) => setFormData({ ...formData, groupimg: e.target.files[0] })}
                 />
               </div>
               <button type="submit" className="btn btn-primary w-100 mt-2">Luo ryhmä</button>

@@ -255,14 +255,13 @@ export default function GroupPage() {
             <section className="group-header">
                 <div className="group-image">
                     <img
-                        src={group.groupimg || "https://placehold.co/250x250?text=Ryhmä"}
-                        alt={group.name}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "10px"
-                        }}
+                      src={
+                        group.groupimg
+                          ? `${process.env.REACT_APP_API_URL}/uploads/groupimg/${group.groupimg}`
+                          : "https://placehold.co/300x200?text=Ryhmä"
+                      }
+                      className="card-img-top"
+                      alt={group.name}
                     />
                 </div>
                 <div className="group-info">

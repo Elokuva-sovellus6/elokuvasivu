@@ -7,6 +7,7 @@ import ReviewCard from '../components/ReviewCard';
 import { getMovieDetails } from '../api/moviedb';
 import { AuthContext } from '../context/authContext';
 import ProfileEditModal from '../components/ProfileEditModal';
+import "./style/ProfileScreen.css"
 
 {/*Profiilin tiedot ja kuva*/}
 function ProfileScreen() {
@@ -146,16 +147,15 @@ function ProfileScreen() {
     <div className="container py-4">
       <div className="row align-items-center mb-4">
         <div className="col-md-3 text-center">
-          <div
-           className="rounded-circle mx-auto mb-2"
-           style={{
-             width: 120,
-             height: 120,
-             backgroundImage: `url(${user.userimg || '/default.png'})`,
-             backgroundSize: 'cover',
-             backgroundPosition: 'center'
-           }}
-         ></div>
+          <img
+            src={
+              user.userimg
+                ? `${process.env.REACT_APP_API_URL}/uploads/userimg/${user.userimg}`
+                : '/default.png'
+            }
+            alt="Profiilikuva"
+            className="profile-avatar"
+          />
          <button
            className="btn btn-outline-primary btn-sm"
            onClick={() => setShowEditModal(true)}

@@ -35,8 +35,11 @@ app.use('/favourites', favouriteRouter)
 
 //Reitti groupshow-kontrollerille
 app.use('/groupshows', groupShowRouter)
+
 // Reitti moviedb-kontrollerille
 app.use('/tmdb', moviedbRouter)
+
+app.use("/uploads", express.static("uploads"))
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
