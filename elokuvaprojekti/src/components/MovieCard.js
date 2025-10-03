@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./style/MovieCard.css"
 
-function MovieCard({ movies, genreMap = {} }) {
+export  default function MovieCard({ movies, genreMap = {} }) {
   if (!movies || movies.length === 0) {
     return <p>Ei löytynyt tuloksia</p>
   }
@@ -64,5 +64,3 @@ function MovieCard({ movies, genreMap = {} }) {
     </div>
   )
 }
-
-export default MovieCard;
