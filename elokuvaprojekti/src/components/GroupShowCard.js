@@ -44,6 +44,9 @@ export default function GroupShowCard({ show, userId, ownerId, onDelete }) {
         {/* Tekstit oikealle */}
         <div className="col-8">
           <div className="card-body d-flex flex-column justify-content-between h-100">
+            <small className="text-muted d-block mb-1">
+              {show.username} jakoi näytöksen
+            </small>
             <h5 className="card-title mb-2">
               {show.movieName || "Tuntematon elokuva"}
             </h5>
@@ -57,35 +60,7 @@ export default function GroupShowCard({ show, userId, ownerId, onDelete }) {
                 dateStyle: "short",
                 timeStyle: "short",
               })}
-            </p>
-
-            {/* Jakajan tiedot */}
-            <div className="d-flex align-items-center mb-2">
-              {show.userimg ? (
-                <img
-                  src={show.userimg}
-                  alt={show.username}
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    marginRight: "6px",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    backgroundColor: "#ccc",
-                    marginRight: "6px",
-                  }}
-                />
-              )}
-              <span style={{ fontWeight: "bold" }}>{show.username}</span>
-            </div>
+            </p>           
 
             {/* Perusteluteksti */}
             {show.reason && (

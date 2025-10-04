@@ -8,6 +8,7 @@ import groupRouter from './routers/groupRouter.js';
 import favouriteRouter from './routers/favouriteRouter.js';
 import groupShowRouter from './routers/groupShowRouter.js';
 import moviedbRouter from './routers/moviedbRouter.js';
+import groupMovieRouter from './routers/groupMovieRouter.js'
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -35,6 +36,9 @@ app.use('/favourites', favouriteRouter)
 
 //Reitti groupshow-kontrollerille
 app.use('/groupshows', groupShowRouter)
+
+//Reitti groupmovie-kontrollerille
+app.use("/groupmovies", groupMovieRouter)
 
 // Reitti moviedb-kontrollerille
 app.use('/tmdb', moviedbRouter)

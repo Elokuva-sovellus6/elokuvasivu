@@ -1,0 +1,41 @@
+/* --- Kortin perusrakenne --- */
+.group-movie-card {
+  width: 270px;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative; /* tarvitaan delete-btnille */
+}
+
+/* --- Kuvan hover-efekti --- */
+.group-movie-card .movie-link img {
+  height: 370px;              /* kuvan korkeus vain tässä kortissa */
+  object-fit: cover;
+  background-color: #ddd;
+  transition: 0.3s ease;
+}
+
+.group-movie-card .movie-link:hover img {
+  filter: brightness(85%);
+}
+
+/* --- Poistonappi (X) oikeaan yläkulmaan --- */
+.group-movie-card .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+}
+
+/* --- Kommentin rajoitus kahteen riviin --- */
+.group-movie-card .comment-text {
+  --lines: 2;
+  line-height: 1.4;
+  line-clamp: var(--lines);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(var(--lines) * 1.4em);
+}
