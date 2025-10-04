@@ -4,7 +4,8 @@ import axios from 'axios';
 import GroupMembers from './GroupMembers';
 import JoinGroup from './JoinGroup';
 import GroupEditModal from "../components/GroupEditModal";
-import GroupShowCard from './GroupShowCard';
+import GroupMoviesList from './GroupMoviesList';
+import GroupShowsList from './GroupShowsList';
 import './style/GroupPage.css';
 
 export default function GroupPage() {
@@ -22,6 +23,7 @@ export default function GroupPage() {
     const [joinRequestSent, setJoinRequestSent] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false);
     const [groupShows, setGroupShows] = useState([]);
+    const [groupMovies, setGroupMovies] = useState([]);
 
 
     const handleError = (message) => {
@@ -295,34 +297,26 @@ export default function GroupPage() {
             {shouldShowFullContent && (
                 <>
                     {/* Ryhmän suosikkielokuvat (Paikkamerkki) */}
-                    <section className="favourites">
-                        <h2>Ryhmän suosikkielokuvat</h2>
-                        <div className="favourite-list">
-                            <p>Elokuvakortit näkyvät täällä...</p>
-                        </div>
+                    <section className="shared-movies my-4">
+                        <h2>Jaetut elokuvat</h2>
+                        <GroupMoviesList
+                            groupID={groupId}
+                            token={localStorage.getItem("token")}
+                            userId={userId}
+                            ownerId={group.ownerid}
+                        />
                     </section>
 
                     {/* Ryhmän jaetut näytökset */}
                     <section className="shared-shows my-4">
-                        <h2>Jaetut näytökset</h2>
-                        {groupShows.length > 0 ? (
-                            <div className="row">
-                            {groupShows.map((show) => (
-                                <div key={show.shareid} className="col-md-6 d-flex">
-                                <GroupShowCard
-                                    key={show.shareid}
-                                    show={show}
-                                    userId={userId}
-                                    ownerId={group.ownerid}
-                                    onDelete={handleDeleteShow}
-                                />
-                                </div>
-                            ))}
-                            </div>
-                        ) : (
-                            <p>Ei jaettuja näytöksiä vielä.</p>
-                        )}
-                        </section>
+                    <h2>Jaetut näytökset</h2>
+                    <GroupShowsList
+                        shows={groupShows}
+                        userId={userId}
+                        ownerId={group.ownerid}
+                        onDelete={handleDeleteShow}
+                    />
+                    </section>
 
                     <div className="middle-content">
                         {/* Foorumi (Paikkamerkki) */}

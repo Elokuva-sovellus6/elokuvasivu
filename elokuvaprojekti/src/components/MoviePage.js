@@ -8,6 +8,7 @@ import { AuthContext } from '../context/authContext.js'
 import ReviewCard from "../components/ReviewCard"
 import Rating from "../components/Rating"
 import ShowTimes from "./ShowTimes.js"
+import ShareMovieModal from "./ShareMovieModal.js"
 import "./style/MoviePage.css"
 
 export default function MoviePage() {
@@ -27,6 +28,9 @@ export default function MoviePage() {
     const [movie, setMovie] = useState(null)
     const [isFavourite, setIsFavourite] = useState(false)
     const [reviews, setReviews] = useState([])
+
+    //Elokuvan jako ryhmään
+    const [showShareMovieModal, setShowShareMovieModal] = useState(false);
 
     // Palauttaa tämän päivän päivämäärän
     function getTodayDate() {
@@ -123,7 +127,9 @@ export default function MoviePage() {
                         />
                     </div>
                     <div className="buttons d-flex gap-2">
-                        <button className="btn btn-primary">Jaa</button>
+                        <button className="btn btn-primary" onClick={() => setShowShareMovieModal(true)}>
+                            Jaa
+                        </button>
                         <button
                             className={`btn ${isFavourite ? 'btn-danger' : 'btn-outline-danger'}`}
                             onClick={toggleFavourite}
@@ -185,6 +191,22 @@ export default function MoviePage() {
                     </div>
                 </div>
             </section>
+            {showShareMovieModal && (
+                <ShareMovieModal
+                    onClose={() => setShowShareMovieModal(false)}
+                    movieData={{
+                    tmdbId: tmdbId,
+                    name: movie.title,
+                    image: movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                        : null,
+                    url: window.location.href
+                    }}
+                    onShared={(res) => {
+                    console.log("Elokuva jaettu:", res);
+                    }}
+                />
+                )}
         </div>
     )
 }

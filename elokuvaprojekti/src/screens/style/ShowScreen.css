@@ -1,6 +1,8 @@
 .movie-poster {
-  height: 600px;
-  object-fit: cover;
+  max-height: 600px ;
+  width: 100% ;
+  object-fit: contain ;
+  background-color: #000; /* lisää mustat reunat jos kuva ei täytä koko aluetta */
 }
 
 .movie-link {
