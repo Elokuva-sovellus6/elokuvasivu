@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getPopularMovies, getMovieDetails } from "../api/moviedb";
-import { getReviews, getLatestReviews } from "../api/review";
+import { getPopularMovies, getMovieDetails } from "../api/moviedb.jsx";
+import { getReviews, getLatestReviews } from "../api/review.jsx";
 import { Link } from "react-router-dom";
 import "../components/style/Rating.css";
-import ReviewCard from "../components/ReviewCard";
+import ReviewCard from "../components/ReviewCard.jsx";
 import axios from "axios";
-import GroupCard from "../components/GroupCard";
+import GroupCard from "../components/GroupCard.jsx";
 import { Carousel } from "react-bootstrap";
 
 // Arvostelutähdet
@@ -97,7 +97,7 @@ export default function HomeScreen() {
     const fetchGroups = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/groups`
+          `${import.meta.env.VITE_API_URL}/groups`
         );
         const sorted = [...response.data].sort(
           (a, b) => new Date(b.createddate) - new Date(a.createdDate)

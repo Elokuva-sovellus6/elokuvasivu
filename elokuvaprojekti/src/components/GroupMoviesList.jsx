@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getGroupMovies, deleteGroupMovie } from "../api/groupmovies";
-import GroupMovieCard from "./GroupMovieCard";
+import { getGroupMovies, deleteGroupMovie } from "../api/groupmovies.jsx";
+import GroupMovieCard from "./GroupMovieCard.jsx";
 
 export default function GroupMoviesList({ groupID, token, userId, ownerId }) {
   const [movies, setMovies] = useState([]);

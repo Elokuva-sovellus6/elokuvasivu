@@ -28,7 +28,7 @@ const CreateGroupModal = ({ onClose }) => {
       }
     
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/groups`,
+        `${import.meta.env.VITE_API_URL}/groups`,
         data,
         {
           headers: { 

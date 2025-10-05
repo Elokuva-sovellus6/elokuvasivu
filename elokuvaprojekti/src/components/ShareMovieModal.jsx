@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { addGroupMovie } from "../api/groupmovies.jsx";
+import axios from "axios";
 
-const ShareShowModal = ({ onClose, showData, onShared }) => {
+const ShareMovieModal = ({ onClose, movieData, onShared }) => {
   const [groups, setGroups] = useState([]);
   const [formData, setFormData] = useState({
-    groupID: '',
-    reason: ''
+    groupID: "",
+    reason: ""
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [hasToken, setHasToken] = useState(false);
 
-  const navigate = useNavigate();
-
-  // Haetaan kirjautuneen käyttäjän ryhmät
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       setHasToken(false);
       setGroups([]);
@@ -26,13 +23,13 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
     const fetchGroups = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/groups/mine`,
+          `${import.meta.env.VITE_API_URL}/groups/mine`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setGroups(res.data);
       } catch (err) {
-        console.error('Virhe ryhmien haussa:', err);
-        setError('Ryhmiä ei voitu hakea');
+        console.error("Virhe ryhmien haussa:", err);
+        setError("Ryhmiä ei voitu hakea");
       }
     };
 
@@ -45,40 +42,31 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError("Sinun täytyy kirjautua sisään jakaaksesi näytöksen.");
+      setError("Sinun täytyy kirjautua sisään jakaaksesi elokuvan.");
       return;
     }
 
     try {
       const payload = {
         groupID: formData.groupID,
-        showID: showData.id,
-        eventID: showData.eventId,
-        tmdbID: showData.tmdbId || null,
-        theatre: showData.theatre,
-        auditorium: showData.auditorium,
-        showTime: showData.time,
-        reason: formData.reason,
-        image: showData.image || null,
-        url: showData.url || null,
-        movieName: showData.name || null
+        tmdbID: movieData.tmdbId,
+        movieName: movieData.name,
+        image: movieData.image || null,
+        url: movieData.url || null,
+        reason: formData.reason
       };
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/groupshows`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const newShare = await addGroupMovie(payload, token);  // 👈 API-kutsu
 
-      if (onShared) onShared(res.data);
+      if (onShared) onShared(newShare);
       onClose();
     } catch (err) {
-      console.error('Virhe jaettaessa näytöstä:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Näytöksen jako epäonnistui');
+      console.error("Virhe jaettaessa elokuvaa:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Elokuvan jako epäonnistui");
     }
   };
 
@@ -87,7 +75,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Jaa näytös ryhmälle</h5>
+            <h5 className="modal-title">Jaa elokuva ryhmälle</h5>
             <button
               type="button"
               className="btn-close"
@@ -96,24 +84,24 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
             ></button>
           </div>
           <div className="modal-body">
-            {/* Näytöksen tiedot */}
-            <div className="mb-3">
-              <strong>{showData.name}</strong><br />
-              {showData.theatre}{showData.auditorium ? `, ${showData.auditorium}` : ''}<br />
-              {new Date(showData.time).toLocaleString('fi-FI', {
-                dateStyle: 'short',
-                timeStyle: 'short'
-              })}
+            <div className="mb-3 text-center">
+              {movieData.image && (
+                <img
+                  src={movieData.image}
+                  alt={movieData.name}
+                  style={{ maxWidth: "150px", borderRadius: "10px" }}
+                  className="mb-2"
+                />
+              )}
+              <div><strong>{movieData.name}</strong></div>
             </div>
 
-            {/* Jos ei ole kirjautunut */}
             {!hasToken ? (
               <div className="alert alert-warning text-center">
-                <p>Kirjaudu sisään jakaaksesi näytöksen.</p>
+                <p>Kirjaudu sisään jakaaksesi elokuvan.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                {/* Dropdown ryhmille */}
                 <div className="mb-3">
                   <label htmlFor="groupID" className="form-label">Valitse ryhmä</label>
                   <select
@@ -133,9 +121,8 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
                   </select>
                 </div>
 
-                {/* Perusteluteksti */}
                 <div className="mb-3">
-                  <label htmlFor="reason" className="form-label">Miksi jaat tämän näytöksen?</label>
+                  <label htmlFor="reason" className="form-label">Miksi jaat tämän elokuvan?</label>
                   <textarea
                     name="reason"
                     id="reason"
@@ -148,7 +135,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100 mt-2">
-                  Jaa näytös
+                  Jaa elokuva
                 </button>
                 {error && <p className="text-danger mt-3">{error}</p>}
               </form>
@@ -160,4 +147,4 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
   );
 };
 
-export default ShareShowModal;
+export default ShareMovieModal;

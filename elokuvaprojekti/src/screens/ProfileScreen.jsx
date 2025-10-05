@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getUserProfile, deleteUserProfile } from '../api/user';
-import { getFavourites, removeFavourite } from '../api/favourites';
-import { getUserReviews, deleteReview } from "../api/review";
-import ReviewCard from '../components/ReviewCard';
-import { getMovieDetails } from '../api/moviedb';
-import { AuthContext } from '../context/authContext';
-import ProfileEditModal from '../components/ProfileEditModal';
+import { getUserProfile, deleteUserProfile } from '../api/user.jsx';
+import { getFavourites, removeFavourite } from '../api/favourites.jsx';
+import { getUserReviews, deleteReview } from "../api/review.jsx";
+import ReviewCard from '../components/ReviewCard.jsx';
+import { getMovieDetails } from '../api/moviedb.jsx';
+import { AuthContext } from '../context/authContext.jsx';
+import ProfileEditModal from '../components/ProfileEditModal.jsx';
 import "./style/ProfileScreen.css"
 
-{/*Profiilin tiedot ja kuva*/}
+// Profiilin tiedot ja kuva
 function ProfileScreen() {
 
   const [user, setUser] = useState(null);
@@ -150,7 +150,7 @@ function ProfileScreen() {
           <img
             src={
               user.userimg
-                ? `${process.env.REACT_APP_API_URL}/uploads/userimg/${user.userimg}`
+                ? `${import.meta.env.VITE_API_URL}/uploads/userimg/${user.userimg}`
                 : '/default.png'
             }
             alt="Profiilikuva"

@@ -9,7 +9,7 @@ export default function GroupCard({ group }) {
                 <img
                   src={
                     group.groupimg
-                      ? `${process.env.REACT_APP_API_URL}/uploads/groupimg/${group.groupimg}`
+                      ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
                       : "https://placehold.co/300x200?text=Ryhmä"
                   }
                   className="card-img-top"

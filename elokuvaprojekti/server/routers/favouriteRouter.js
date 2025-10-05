@@ -1,6 +1,6 @@
-const express = require('express');
-const { getFavourites, addFavourite, removeFavourite, getFavouriteList } = require('../controllers/favouriteController.js');
-const { authenticateToken } = require('../helper/auth.js');
+import express from 'express';
+import { getFavourites, addFavourite, removeFavourite, getFavouriteList } from '../controllers/favouriteController.js';
+import { authenticateToken } from '../helper/auth.js';
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.get('/', authenticateToken, getFavourites);
 // Hae käyttäjän suosikkilista julkisesti
 router.get('/:userId/public', getFavouriteList);
 
-module.exports = router;
+export default router;

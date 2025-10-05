@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import "./style/ShowScreen.css"
 import { Link } from "react-router-dom"
-import GenericDropdown from "../components/Dropdown.js"
-import ShareShowModal from "../components/ShareShowModal.js"
-import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.js"
-import { matchFinnkinoWithTMDB } from '../api/moviedb.js'
+import GenericDropdown from "../components/Dropdown.jsx"
+import ShareShowModal from "../components/ShareShowModal.jsx"
+import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx"
+import { matchFinnkinoWithTMDB } from '../api/moviedb.jsx'
 
 export default function ShowScreen() {
   const [movieShows, setMovieShows] = useState([])
