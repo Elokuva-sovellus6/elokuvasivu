@@ -36,7 +36,7 @@ export default function GroupMembers({
     const token = localStorage.getItem("token")
       try {
         // Lähettää pyynnön jäsenen poistamiseksi ja bannaamiseksi (sisältäen keston)
-        await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${groupId}/kick/${memberId}?duration=${duration}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/groups/${groupId}/kick/${memberId}?duration=${duration}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         // Päivittää paikallisen jäsenlistan
@@ -54,7 +54,7 @@ export default function GroupMembers({
     const token = localStorage.getItem("token")
     try {
       // Lähettää pyynnön bannin poistamiseksi
-      await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${groupId}/unban/${memberId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/groups/${groupId}/unban/${memberId}`, {
           headers: { Authorization: `Bearer ${token}` }
       })
       // Päivittää bannattujen listan

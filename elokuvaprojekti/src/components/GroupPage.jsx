@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import GroupMembers from './GroupMembers';
-import JoinGroup from './JoinGroup';
+import GroupMembers from './GroupMembers.jsx';
+import JoinGroup from './JoinGroup.jsx';
 import GroupEditModal from "../components/GroupEditModal";
-import GroupMoviesList from './GroupMoviesList';
-import GroupShowsList from './GroupShowsList';
+import GroupMoviesList from './GroupMoviesList.jsx';
+import GroupShowsList from './GroupShowsList.jsx';
 import './style/GroupPage.css';
 
 export default function GroupPage() {
@@ -39,7 +39,7 @@ export default function GroupPage() {
         }
 
         try {
-            await axios.delete(`${process.env.REACT_APP_API_URL}/groupshows/${shareId}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/groupshows/${shareId}`, {
             headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -82,7 +82,7 @@ export default function GroupPage() {
 
         try {
             // 1. Hae ryhmän perustiedot
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}`, {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${groupId}`, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {}
             })
             setGroup(response.data)
@@ -95,7 +95,7 @@ export default function GroupPage() {
             if (token && userId) {
                 try {
                     // A) Hae ryhmän jäsenet
-                    const membersRes = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/members`, {
+                    const membersRes = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${groupId}/members`, {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                     setMembers(membersRes.data)
@@ -106,7 +106,7 @@ export default function GroupPage() {
 
                     // B) Hae liittymispyynnöt (vain jos ei jäsen)
                     if (!isUserAMember) {
-                        const joinRequestsRes = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/join-requests`, {
+                        const joinRequestsRes = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${groupId}/join-requests`, {
                             headers: { Authorization: `Bearer ${token}` }
                         });
                         const hasPendingRequest = joinRequestsRes.data.some(r => String(r.userid) === String(userId));
@@ -144,7 +144,7 @@ export default function GroupPage() {
 
             try {
                 const token = localStorage.getItem("token")
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${groupId}/banned`, {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${groupId}/banned`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setBannedMembers(res.data)
@@ -172,7 +172,7 @@ export default function GroupPage() {
         try {
             if (!isMember) {
                 // Lähettää liittymispyyntö
-                await axios.post(`${process.env.REACT_APP_API_URL}/groups/${groupId}/join-request`, {}, {
+                await axios.post(`${import.meta.env.VITE_API_URL}/groups/${groupId}/join-request`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 alert('Liittymispyyntö lähetetty!')
@@ -181,7 +181,7 @@ export default function GroupPage() {
             
             } else {
                 // Eroa ryhmästä
-                const leaveResponse = await axios.post(`${process.env.REACT_APP_API_URL}/groups/${groupId}/leave`, {}, {
+                const leaveResponse = await axios.post(`${import.meta.env.VITE_API_URL}/groups/${groupId}/leave`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             
@@ -228,7 +228,7 @@ export default function GroupPage() {
             try {
                 const token = localStorage.getItem("token");
                 const res = await axios.get(
-                `${process.env.REACT_APP_API_URL}/groupshows/${groupId}`,
+                `${import.meta.env.VITE_API_URL}/groupshows/${groupId}`,
                 { headers: token ? { Authorization: `Bearer ${token}` } : {} }
                 );
                 setGroupShows(res.data);
@@ -259,7 +259,7 @@ export default function GroupPage() {
                     <img
                       src={
                         group.groupimg
-                          ? `${process.env.REACT_APP_API_URL}/uploads/groupimg/${group.groupimg}`
+                          ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
                           : "https://placehold.co/300x200?text=Ryhmä"
                       }
                       className="card-img-top"

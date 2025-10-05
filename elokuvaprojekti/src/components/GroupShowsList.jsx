@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import GroupShowCard from "./GroupShowCard";
+import GroupShowCard from "./GroupShowCard.jsx";
 
 export default function GroupShowsList({ shows, userId, ownerId, onDelete }) {
   const [visibleCount, setVisibleCount] = useState(4);

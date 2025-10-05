@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import "./style/GroupScreen.css"
-import CreateGroupModal from '../components/CreateGroupModal.js';
+import CreateGroupModal from '../components/CreateGroupModal.jsx';
 import axios from 'axios';
-import GroupSearchBar from '../components/GroupSearchBar.js';
-import GroupCard from "../components/GroupCard.js";
-import Pagination from '../components/Pagination.js';
+import GroupSearchBar from '../components/GroupSearchBar.jsx';
+import GroupCard from "../components/GroupCard.jsx";
+import Pagination from '../components/Pagination.jsx';
 
 export default function GroupScreen() {
     const [showCreateGroupModal, setShowCreateGroupModal] = useState(false)
@@ -19,7 +19,7 @@ export default function GroupScreen() {
     useEffect(() => {
     const fetchGroups = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`)
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/groups`)
 
             // Haetaan kaikki ryhmät
             setAllGroups(response.data)

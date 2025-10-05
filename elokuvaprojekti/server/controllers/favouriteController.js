@@ -1,8 +1,9 @@
-const { pool } = require('../helper/db.js');
-const Favourite = require('../models/Favourite.js');
+// controllers/favouriteController.js
+import { pool } from '../helper/db.js';
+import Favourite from '../models/Favourite.js';
 
 // Lisää elokuva käyttäjän suosikkeihin
-const addFavourite = async (req, res) => {
+export const addFavourite = async (req, res) => {
     const userId = req.user.id;
     const { tmdbId } = req.body;
     if (!tmdbId) return res.status(400).json({ message: 'tmdbId puuttuu' });
@@ -17,7 +18,7 @@ const addFavourite = async (req, res) => {
 };
 
 // Poistaa elokuvan käyttäjän suosikeista
-const removeFavourite = async (req, res) => {
+export const removeFavourite = async (req, res) => {
     const userId = req.user.id;
     const { tmdbId } = req.params;
 
@@ -33,7 +34,7 @@ const removeFavourite = async (req, res) => {
 };
 
 // Hakee kaikki käyttäjän suosikit
-const getFavourites = async (req, res) => {
+export const getFavourites = async (req, res) => {
     const userId = req.user.id;
 
     try {
@@ -41,12 +42,12 @@ const getFavourites = async (req, res) => {
         res.status(200).json(favourites);
     } catch (error) {
         console.error(error);
-            res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Hakee käyttäjän suosikkilistan julkisesti
-const getFavouriteList = async (req, res) => {
+export const getFavouriteList = async (req, res) => {
     const { userId } = req.params;
 
     try {
@@ -70,11 +71,4 @@ const getFavouriteList = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: error.message });
     }
-};
-
-module.exports = {
-    addFavourite,
-    removeFavourite,
-    getFavourites,
-    getFavouriteList
 };

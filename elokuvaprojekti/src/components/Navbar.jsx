@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from '../context/authContext.js';
+import { AuthContext } from '../context/authContext.jsx';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -19,7 +19,7 @@ export default function Navbar() {
   useEffect(() => {
     if (isLoggedIn) {
       const token = localStorage.getItem("token")
-      axios.get(`${process.env.REACT_APP_API_URL}/groups/owned/requests`, {
+      axios.get(`${import.meta.env.VITE_API_URL}/groups/owned/requests`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => setRequests(res.data))
@@ -34,7 +34,7 @@ export default function Navbar() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, loginData)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, loginData)
       login(response.data.token, response.data.username)
     } catch (error) {
       alert('Invalid email or password')
@@ -44,7 +44,7 @@ export default function Navbar() {
 const handleAccept = async (requestId) => {
   const token = localStorage.getItem("token");
   try {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/groups/join-requests/${requestId}/accept`, {}, {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/groups/join-requests/${requestId}/accept`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setRequests(prev => prev.filter(r => r.requestid !== requestId));
@@ -57,7 +57,7 @@ const handleAccept = async (requestId) => {
 const handleReject = async (requestId) => {
   const token = localStorage.getItem("token");
   try {
-    await axios.post(`${process.env.REACT_APP_API_URL}/groups/join-requests/${requestId}/reject`, {}, {
+    await axios.post(`${import.meta.env.VITE_API_URL}/groups/join-requests/${requestId}/reject`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setRequests(prev => prev.filter(r => r.requestid !== requestId));

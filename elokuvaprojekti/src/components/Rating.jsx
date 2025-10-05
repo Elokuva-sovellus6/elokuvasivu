@@ -17,7 +17,7 @@ export default function Rating({ movieId, token }) {
     }
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/movies/${movieId}/review`,
+        `${import.meta.env.VITE_API_URL}/movies/${movieId}/review`,
         {
           rating: parseFloat(rateFormData.rating),
           review: rateFormData.review,

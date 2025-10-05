@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { updateUserProfile } from '../api/user';
 
 const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
   const [formData, setFormData] = useState({
@@ -21,7 +20,7 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
       if (formData.userImg) data.append('userImg', formData.userImg);
 
       const updated = await axios.put(
-        `${process.env.REACT_APP_API_URL}/users/me`,
+        `${import.meta.env.VITE_API_URL}/users/me`,
         data,
         {
           headers: {

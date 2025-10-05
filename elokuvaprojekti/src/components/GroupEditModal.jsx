@@ -29,7 +29,7 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
       if (formData.groupimg) data.append('groupimg', formData.groupimg);
 
       const updated = await axios.put(
-        `${process.env.REACT_APP_API_URL}/groups/${groupId}`,
+        `${import.meta.env.VITE_API_URL}/groups/${groupId}`,
         data,
         {
           headers: {

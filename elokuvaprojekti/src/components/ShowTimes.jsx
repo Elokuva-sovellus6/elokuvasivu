@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.js"
-import GenericDropdown from "./Dropdown.js"
+import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx"
+import GenericDropdown from "./Dropdown.jsx"
 import "./style/ShowTimes.css"
 
 export default function ShowTimes({ eventId, defaultArea, defaultDate }) {

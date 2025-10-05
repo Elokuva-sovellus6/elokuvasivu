@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react"
-import MovieCard from "../components/MovieCard"
-import { getPopularMovies, searchMovies, discoverMovies, fetchGenres } from "../api/moviedb"
-import Pagination from "../components/Pagination"
-import GenericDropdown from "../components/Dropdown"
+import MovieCard from "../components/MovieCard.jsx"
+import { getPopularMovies, searchMovies, discoverMovies, fetchGenres } from "../api/moviedb.jsx"
+import Pagination from "../components/Pagination.jsx"
+import GenericDropdown from "../components/Dropdown.jsx"
 
 export default function MovieScreen() {
   const [genres, setGenres] = useState([])

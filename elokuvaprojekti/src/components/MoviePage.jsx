@@ -1,14 +1,14 @@
 import { useParams, useLocation } from "react-router-dom"
 import { useEffect, useState, useContext, useMemo } from "react"
-import { getMovieDetails } from "../api/moviedb"
-import { addFavourite, removeFavourite, getFavourites } from "../api/favourites"
-import { getReviews } from "../api/review.js"
-import { getShows, formatDateForAPI } from "../api/finnkino.js" 
-import { AuthContext } from '../context/authContext.js'
-import ReviewCard from "../components/ReviewCard"
-import Rating from "../components/Rating"
-import ShowTimes from "./ShowTimes.js"
-import ShareMovieModal from "./ShareMovieModal.js"
+import { getMovieDetails } from "../api/moviedb.jsx"
+import { addFavourite, removeFavourite, getFavourites } from "../api/favourites.jsx"
+import { getReviews } from "../api/review.jsx"
+import { getShows, formatDateForAPI } from "../api/finnkino.jsx" 
+import { AuthContext } from '../context/authContext.jsx'
+import ReviewCard from "./ReviewCard.jsx"
+import Rating from "../components/Rating.jsx"
+import ShowTimes from "./ShowTimes.jsx"
+import ShareMovieModal from "./ShareMovieModal.jsx"
 import "./style/MoviePage.css"
 
 export default function MoviePage() {

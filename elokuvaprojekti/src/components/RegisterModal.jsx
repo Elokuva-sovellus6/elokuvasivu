@@ -23,7 +23,7 @@ const RegisterModal = ({ onClose }) => {
     setError('')
     try {
       // Lähettää rekisteröintipyynnön palvelimelle
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth/register`, formData)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData)
       console.log(response.data.message)
       onClose()
     } catch (err) {
