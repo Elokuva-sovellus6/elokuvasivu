@@ -29,7 +29,7 @@ const fetchWithFallback = async (id, originalMovie) => {
 // Hakee elokuvia TMDB:stä hakusanalla (search).
 export const searchMovies = async (req, res, next) => {
     const { query, page = 1 } = req.query
-    if (!query) return next(new ApiError(400, "Missing query param"))
+    if (!query) return next(new ApiError("Missing query param", 400))
 
     try {
         const response = await axios.get("https://api.themoviedb.org/3/search/movie", {
@@ -53,7 +53,7 @@ export const searchMovies = async (req, res, next) => {
         })
     } catch (err) {
         console.error("TMDB search failed:", err.message)
-        next(new ApiError(500, "TMDB search failed"))
+        next(new ApiError("TMDB search failed", 500))
     }
 }
 
@@ -79,7 +79,7 @@ export const getPopularMovies = async (req, res, next) => {
             totalPages: Math.min(response.data.total_pages || 1, 500),
         })
     } catch (err) {
-        next(new ApiError(500, "TMDB popular failed"))
+        next(new ApiError("TMDB popular failed", 500))
     }
 }
 
@@ -96,7 +96,7 @@ export const getMovieDetails = async (req, res, next) => {
         res.json(movie)
     } catch (err) {
         console.error("TMDB details failed:", err.message)
-        next(new ApiError(500, "TMDB details failed"))
+        next(new ApiError("TMDB details failed", 500))
     }
 }
 
@@ -138,7 +138,7 @@ export const discoverMovies = async (req, res, next) => {
         })
     } catch (err) {
         console.error("TMDB discover/search failed:", err.message)
-        next(new ApiError(500, "TMDB discover/search failed"))
+        next(new ApiError("TMDB discover/search failed", 500))
     }
 }
 
@@ -151,7 +151,7 @@ export const getGenres = async (req, res, next) => {
         res.json({ genres: response.data.genres || [] })
     } catch (err) {
         console.error("TMDB genres failed:", err.message)
-        next(new ApiError(500, "TMDB genres fetch failed"))
+        next(new ApiError("TMDB genres fetch failed", 500))
     }
 }
 
@@ -180,6 +180,6 @@ export const fetchTMDBMovies = async (req, res, next) => {
             totalPages: Math.min(response.data.total_pages || 0, 500),
         })
     } catch (err) {
-        next(new ApiError(500, "TMDB fetch failed"))
+        next(new ApiError("TMDB fetch failed", 500))
     }
 }

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import "./style/ShowScreen.css"
 import { Link } from "react-router-dom"
 import GenericDropdown from "../components/Dropdown.jsx"
-import ShareShowModal from "../components/ShareShowModal.jsx"
 import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx"
+import ShareShow from "../components/ShareShow.jsx"
 import { matchFinnkinoWithTMDB } from '../api/moviedb.jsx'
 
 export default function ShowScreen() {
@@ -14,7 +14,6 @@ export default function ShowScreen() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate())
   const [tmdbIds, setTmdbIds] = useState({})
   const [selectedMovie, setSelectedMovie] = useState("all")
-  const [shareShow, setShareShow] = useState(null)
 
   function getTodayDate() {
     const today = new Date()
@@ -179,40 +178,12 @@ export default function ShowScreen() {
                       {movieShows
                         .filter((show) => show.name === movie.name)
                         .map((show, idx) => (
-                          <div key={idx} className="showtime-row">
-                            <a 
-                              href={show.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="theatre-link"
-                            >
-                              {show.theatre}{show.auditorium ? `, ${show.auditorium}` : ""}
-                            </a>
-                            <span className="showtime">
-                              {new Date(show.time).toLocaleTimeString("fi-FI", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                            <button
-                              className="share-btn"
-                              onClick={() => setShareShow({
-                                ...show, 
-                                tmdbId: tmdbIds[show.eventId], 
-                                name: movie.name
-                              })}
-                            >
-                              Jaa
-                            </button>
-
-                            {shareShow && (
-                              <ShareShowModal
-                                showData={shareShow}
-                                onClose={() => setShareShow(null)}
-                                onShared={(data) => console.log("Jaettu:", data)}
-                              />
-                            )}
-                          </div>
+                          <ShareShow 
+                            key={idx} 
+                            show={show} 
+                            tmdbId={tmdbIds[show.eventId]} 
+                            movieName={movie.name}
+                          />
                         ))}
                     </div>
                   </div>

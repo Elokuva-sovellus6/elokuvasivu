@@ -1,0 +1,47 @@
+.showtime-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  gap: 0.5rem;
+}
+
+.showtime-row:last-child {
+  border-bottom: none;
+}
+
+.theatre-link {
+  flex: 1;                
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.theatre-link:hover {
+  text-decoration: underline;
+}
+
+.showtime {
+  font-weight: bold;
+  margin-right: 1rem;
+  min-width: 50px;       
+  text-align: right;     
+  color: #000;
+}
+
+.share-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 60px;
+  text-align: center;
+}
+
+.share-btn:hover {
+  background-color: #0056b3;
+}

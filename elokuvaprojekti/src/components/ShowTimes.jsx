@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx"
 import GenericDropdown from "./Dropdown.jsx"
+import ShareShow from "./ShareShow.jsx"
 import "./style/ShowTimes.css"
 
-export default function ShowTimes({ eventId, defaultArea, defaultDate }) {
+export default function ShowTimes({ eventId, tmdbId, defaultArea, defaultDate }) {
   const [areas, setAreas] = useState([])
   const [selectedArea, setSelectedArea] = useState(defaultArea || "1014")
   const [selectedDate, setSelectedDate] = useState(defaultDate || getTodayDate())
@@ -29,23 +30,19 @@ export default function ShowTimes({ eventId, defaultArea, defaultDate }) {
 
   // Hakee ja suodattaa näytökset kun alue, päivä tai eventId muuttuu
   useEffect(() => {
-    // Keskeyttää jos eventId puuttuu (MoviePage hakee tarvittaessa)
     if (!eventId) {
       setShows([])
       return
     }
 
     const fetchShows = async () => {
-      setIsLoading(true) // Asetetaan lataustila päälle ennen hakua koska joskus haussa kestää
+      setIsLoading(true)
       setShows([])
       
       try {
         const dateForAPI = formatDateForAPI(selectedDate)
         const { movieShows } = await getShows(selectedArea, dateForAPI)
-
-        // Suodattaa vaan annetun elokuvan näytökset eventId:n perusteella
         const filteredShows = movieShows.filter(show => String(show.eventId) === String(eventId))
-
         setShows(filteredShows)
       } catch (err) {
         console.error("Virhe näytöksiä haettaessa:", err)
@@ -55,40 +52,9 @@ export default function ShowTimes({ eventId, defaultArea, defaultDate }) {
       }
     }
 
-    
     fetchShows()
   }, [selectedArea, selectedDate, eventId])
 
-    // Ladataan näytettävä sisältö erilliseen muuttujaan
-    const content = () => {
-      if (isLoading) {
-        return <p>Ladataan näytöksiä...</p>
-      }
-      
-      if (shows.length === 0) {
-        return <p>Ei näytöksiä valitulle päivälle.</p>
-      }
-
-  return (
-      <ul className="list-group">
-        {shows.map((s) => (
-          <li key={s.id} className="list-group-item d-flex justify-content-between align-items-center">
-            <div className="text-truncate me-2">
-              {s.theatre}
-            </div>
-            <div className="text-nowrap">
-              <strong>
-                {new Date(s.time).toLocaleTimeString("fi-FI", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </strong>
-            </div>
-          </li>
-        ))}
-      </ul>
-    )
-  }
   return (
     <div className="showtimes-card">
       <div className="row g-2 mb-3 align-items-center">
@@ -112,11 +78,17 @@ export default function ShowTimes({ eventId, defaultArea, defaultDate }) {
           />
         </div>
       </div>
-      
-      {/* Scroll-alue käyttää uutta content-funktiota */}
-      <div className="showtimes-scroll">
-        {content()}
-      </div>
+
+      {isLoading && <p>Ladataan näytöksiä...</p>}
+      {!isLoading && shows.length === 0 && <p>Ei näytöksiä valitulle päivälle.</p>}
+
+      <ul className="list-group">
+        {shows.map((s, idx) => (
+          <li key={idx} className="list-group-item">
+            <ShareShow show={s} tmdbId={tmdbId} />
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
