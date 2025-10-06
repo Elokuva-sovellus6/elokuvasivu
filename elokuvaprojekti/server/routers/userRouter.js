@@ -5,7 +5,7 @@ import multer from "multer"
 
 const router = express.Router();
 
-// määritellään minne tallennetaan
+// Määritellään minne tallennetaan
 const uploadUser = multer({ dest: "uploads/userimg/" });
 
 router.get('/me', authenticateToken, getMe);        // Hakee käyttäjän tiedot

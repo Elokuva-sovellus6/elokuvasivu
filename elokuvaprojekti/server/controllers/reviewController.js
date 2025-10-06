@@ -9,12 +9,12 @@ export const createReview = async (req, res, next) => {
         const userId = req.user.id
 
         if (!rating || rating < 0 || rating > 5) {
-            throw new ApiError("Rating must be between 0 and 5", 400)
+            throw new ApiError("Arvosanan pitää olla 0 ja 5 väliltä", 400)
         }
 
         await Review.create(movieId, userId, rating, review);
 
-        res.status(201).json({ message: "Review created successfully" })
+        res.status(201).json({ message: "Arvostelu luotu onnistuneesti" })
     } catch (err) {
         next(err)
     }
@@ -22,7 +22,11 @@ export const createReview = async (req, res, next) => {
 
 export const getReviews = async (req, res, next) => {
     try {
-        const { movieId } = req.params;
+        const { movieId } = req.params
+
+        if (!movieId) {
+            throw new ApiError('Elokuvan ID puuttuu', 400)
+        }
 
         const reviews = await Review.findByTmdbId(movieId)
 

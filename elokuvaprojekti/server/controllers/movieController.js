@@ -1,5 +1,5 @@
-import { ApiError } from "../helper/ApiError.js";
-import Review from "../models/Review.js";
+import { ApiError } from "../helper/ApiError.js"
+import Review from "../models/Review.js"
 
 // Uuden arvostelun lisääminen
 export const createReview = async (req, res, next) => {
@@ -9,20 +9,21 @@ export const createReview = async (req, res, next) => {
         const userId = req.user.id
 
         if (!rating || rating < 0 || rating > 5) {
-            throw new ApiError("Rating must be between 0 and 5", 400)
+            throw new ApiError("Arvosanan tulee olla 0 ja 5 välillä", 400)
         }
 
-        await Review.create(movieId, userId, rating, review);
+        await Review.create(movieId, userId, rating, review)
 
-        res.status(201).json({ message: "Review created successfully" })
+        res.status(201).json({ message: "Arvostelu luotu onnistuneesti" })
     } catch (err) {
         next(err)
     }
 }
 
+// Hakee arvostelut elokuvan TMDB ID:n perusteella
 export const getReviews = async (req, res, next) => {
     try {
-        const { movieId } = req.params;
+        const { movieId } = req.params
 
         const reviews = await Review.findByTmdbId(movieId)
 
@@ -32,9 +33,10 @@ export const getReviews = async (req, res, next) => {
     }
 }
 
+// Hakee käyttäjän arvostelut
 export const getUserReviews = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params
     const reviews = await Review.findByUserId(userId)
     res.json(reviews)
   } catch (err) {
@@ -42,21 +44,28 @@ export const getUserReviews = async (req, res, next) => {
   }
 }
 
+// Hakee uusimmat arvostelut
 export const getLatestReviews = async (req, res, next) => {
   try {
-    const reviews = await Review.findLatest(10); // esim. 10 uusinta
-    res.json(reviews);
+    const reviews = await Review.findLatest(10)
+    res.json(reviews)
   } catch (err) {
-    next(err);
+    next(err)
   }
-};
+}
 
+// Poistaa arvostelun
 export const deleteReview = async (req, res, next) => {
   try {
     const { reviewId } = req.params
     const deleted = await Review.delete(reviewId)
-    if (!deleted) throw new ApiError('Review not found', 404)
-    res.json({ message: 'Review deleted successfully' })
+    
+    // Tarkistetaan löytyykö arvostelua
+    if (!deleted) {
+        throw new ApiError('Arvostelua ei löytynyt', 404)
+    }
+    
+    res.json({ message: 'Arvostelu poistettu onnistuneesti' })
   } catch (err) {
     next(err)
   }

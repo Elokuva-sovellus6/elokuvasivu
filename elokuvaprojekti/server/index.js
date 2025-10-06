@@ -48,10 +48,14 @@ app.use("/uploads", express.static("uploads"))
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {
-        return res.status(err.statusCode).json({ message: err.message })
+        // TÄMÄ ON KORJATTU VERSIO: Statuskoodi pakotetaan numeroksi
+        const status = Number(err.statusCode) || 500; 
+ 
+        // TÄMÄ RIVI KORJATTU: Käytetään laskettua 'status'-muuttujaa!
+        return res.status(status).json({ message: err.message }); 
     }
     console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' })
+    res.status(500).json({ message: 'Internal Server Error' });
 })
 
 // Käynnistää palvelimen
