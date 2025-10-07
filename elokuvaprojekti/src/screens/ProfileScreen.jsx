@@ -7,6 +7,8 @@ import ReviewCard from '../components/ReviewCard.jsx';
 import { getMovieDetails } from '../api/moviedb.jsx';
 import { AuthContext } from '../context/authContext.jsx';
 import ProfileEditModal from '../components/ProfileEditModal.jsx';
+import GroupCard from "../components/GroupCard.jsx";
+import axios from "axios";
 import "./style/ProfileScreen.css"
 
 // Profiilin tiedot ja kuva
@@ -20,6 +22,7 @@ function ProfileScreen() {
   const [reviewMovies, setReviewMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [myGroups, setMyGroups] = useState([]);
   const navigate = useNavigate();
 
     // Hae käyttäjä
@@ -92,6 +95,24 @@ function ProfileScreen() {
       .catch((err) => console.error("Failed to fetch reviews:", err));
   }
 }, [user]);
+
+  // Ryhmien haku
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const token = localStorage.getItem("token");
+      if (!token || !user) return;
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/groups/mine`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setMyGroups(res.data);
+      } catch (err) {
+        console.error("Virhe ryhmien haussa:", err);
+      }
+    };
+    fetchGroups();
+  }, [user]);
 
   // Profiilin poisto
   const handleDelete = async () => {
@@ -253,7 +274,15 @@ function ProfileScreen() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Ryhmät</h5>
-            <p className="text-muted">x</p>
+            {myGroups.lenght === 0 ? (
+            <p className="text-muted">Ei ryhmiä</p>
+            ) : (
+              <div className="d-flex overflow-auto gap-3 pb-2">
+                {myGroups.map(group => (
+                  <GroupCard key={group.groupid} group={group} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
