@@ -186,7 +186,7 @@ function ProfileScreen() {
         </div>
         <div className="col-md-6">
           <h1 className="display-5">{user.username}</h1>
-          <p className="text-muted">{user.userdescription || 'Ei vielä kuvausta'}</p>
+          <p className="text-white">{user.userdescription || 'Ei vielä kuvausta'}</p>
         </div>
         <div className="col-md-3 text-end">
           <button className="btn btn-danger" onClick={handleDelete}>Poista käyttäjä</button>
@@ -206,7 +206,7 @@ function ProfileScreen() {
               </button>
             </div>
             {favouriteMovies.length === 0 ? (
-              <p className="text-muted">Ei vielä suosikkeja</p>
+              <p className="text-white">Ei vielä suosikkeja</p>
             ) : (
               <ul className="list-unstyled mb-0">
                 {favouriteMovies.map((movie) => (
@@ -250,7 +250,7 @@ function ProfileScreen() {
           <div className="card-body">
             <h5 className="card-title">Arvostelut</h5>
             {reviewMovies.length === 0 ? (
-              <p className="text-muted">Ei vielä arvosteluja</p>
+              <p className="text-white">Ei vielä arvosteluja</p>
             ) : (
               <div className="d-flex overflow-auto">
                 {reviewMovies.map((r) => (
@@ -274,8 +274,8 @@ function ProfileScreen() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Ryhmät</h5>
-            {myGroups.lenght === 0 ? (
-            <p className="text-muted">Ei ryhmiä</p>
+            {myGroups.length === 0 ? (
+            <p className="text-white">Ei ryhmiä</p>
             ) : (
               <div className="d-flex overflow-auto gap-3 pb-2">
                 {myGroups.map(group => (
