@@ -1,8 +1,11 @@
+// MovieScreen.js (Muutettu arvosanan näyttötapaa)
+
 import { useState, useEffect, useMemo } from "react"
 import MovieCard from "../components/MovieCard.jsx"
 import { getPopularMovies, searchMovies, discoverMovies, fetchGenres } from "../api/moviedb.jsx"
 import Pagination from "../components/Pagination.jsx"
 import GenericDropdown from "../components/Dropdown.jsx"
+import RatingStars from "../components/RatingStars.jsx" 
 
 export default function MovieScreen() {
   const [genres, setGenres] = useState([])
@@ -140,7 +143,56 @@ export default function MovieScreen() {
       <div style={{ marginTop: "2rem" }}>
         {loading && <p>Ladataan...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <MovieCard movies={movies} genreMap={genreMap} />
+
+        <div className="container mt-4">
+          <div className="row">
+            {movies.length === 0 && !loading ? (
+                <p>Ei löytynyt tuloksia</p>
+            ) : (
+                movies.map((movie) => {
+                const genreNames = (movie.genre_ids || [])
+                    .map((id) => genreMap[id])
+                    .filter(Boolean)
+                    .join(", ")
+
+                const descriptionText = movie.overview 
+                    ? movie.overview.slice(0, 120) + "..."
+                    : "Ei kuvausta"
+                
+                const customExtraContent = (
+                    <div className="d-flex align-items-center">
+                        <RatingStars rating={movie.vote_average / 2} />
+                        <small className="ms-2">
+                            {movie.vote_average ? `TMDB: ${movie.vote_average.toFixed(1)}/10` : ''}
+                        </small>
+                    </div>
+                )
+
+                return (
+                    <MovieCard
+                    key={movie.id}
+                    id={movie.id}
+                    title={movie.title}
+                    imageSrc={
+                        movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                        : null
+                    }
+                    description={descriptionText}
+                    linkTo={`/movie/${movie.id}`}
+                    releaseYear={
+                        movie.release_date
+                        ? new Date(movie.release_date).getFullYear()
+                        : null
+                    }
+                    genres={genreNames.length > 0 ? genreNames : "Ei määritelty"}
+                    extraContent={customExtraContent} 
+                    />
+                )
+                })
+            )}
+          </div>
+        </div>
 
         {movies.length > 0 && (
           <Pagination

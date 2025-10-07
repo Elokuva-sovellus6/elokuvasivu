@@ -1,6 +1,7 @@
-import React, { useState } from "react"
-import "./style/Rating.css"
-import axios from "axios"
+import React, { useState } from "react";
+import "./style/Rating.css";
+import axios from "axios";
+import RatingStars from "./RatingStars.jsx";
 
 export default function Rating({ movieId, token }) {
   const [rateFormData, setRateFormData] = useState({
@@ -33,21 +34,14 @@ export default function Rating({ movieId, token }) {
     }
   }
 
-  const numericRating = parseFloat(rateFormData.rating) || 0
-
-  const fullStars = Math.floor(numericRating)
-  const halfStars = numericRating % 1 >= 0.5 ? 1 : 0
-  const emptyStars = 5 - fullStars - halfStars
-
-  const stars = []
-  for (let i = 0; i < fullStars; i++) stars.push(<span key={"f" + i} className="filled">★</span>)
-  for (let i = 0; i < halfStars; i++) stars.push(<span key={"h" + i} className="half">★</span>)
-  for (let i = 0; i < emptyStars; i++) stars.push(<span key={"e" + i} className="empty">★</span>)
-
+  const currentRating = rateFormData.rating
+  
   return (
     <div className="rating-card">
       <h4 className="mb-3">Arvostele tämä elokuva</h4>
-      <div className="stars mb-3">{stars}</div>
+      
+      <RatingStars rating={currentRating} />
+      
       <input
         type="number"
         className="mb-3"

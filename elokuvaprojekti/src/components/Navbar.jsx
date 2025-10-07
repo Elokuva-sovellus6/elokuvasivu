@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, NavLink  } from "react-router-dom";
 import { AuthContext } from '../context/authContext.jsx';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import RegisterModal from './RegisterModal';
 import axios from 'axios';
+import logo from '../assets/logo.png'
+import "./style/Navbar.css";
 
 export default function Navbar() {
   const [loginData, setLoginData] = useState({ email: '', password: '' })
@@ -42,28 +44,28 @@ export default function Navbar() {
   }
 
 const handleAccept = async (requestId) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")
   try {
     const res = await axios.post(`${import.meta.env.VITE_API_URL}/groups/join-requests/${requestId}/accept`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    setRequests(prev => prev.filter(r => r.requestid !== requestId));
+    setRequests(prev => prev.filter(r => r.requestid !== requestId))
   } catch (err) {
-    console.error(err.response?.data || err.message);
-    alert(err.response?.data?.message || "Virhe pyynnön hyväksymisessä");
+    console.error(err.response?.data || err.message)
+    alert(err.response?.data?.message || "Virhe pyynnön hyväksymisessä")
   }
 }
 
 const handleReject = async (requestId) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")
   try {
     await axios.post(`${import.meta.env.VITE_API_URL}/groups/join-requests/${requestId}/reject`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    setRequests(prev => prev.filter(r => r.requestid !== requestId));
+    setRequests(prev => prev.filter(r => r.requestid !== requestId))
   } catch (err) {
     console.error(err.response?.data || err.message);
-    alert(err.response?.data?.message || "Virhe pyynnön hylkäämisessä");
+    alert(err.response?.data?.message || "Virhe pyynnön hylkäämisessä")
   }
 }
 
@@ -71,29 +73,34 @@ const handleReject = async (requestId) => {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Logo</Link>
+        <NavLink  className="navbar-brand d-flex aling-items-center" to="/">
+          <img 
+            src={logo}
+            alt="Movie fans logo"
+          />
+        </NavLink >
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item"><Link className="nav-link active" aria-current="page" to="/">Etusivu</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/movies">Elokuvat</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/shows">Näytökset</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/groups">Ryhmät</Link></li>
+            <li className="nav-item"><NavLink  className={({ isActive }) => isActive ? "nav-link active-nav" : "nav-link"} to="/">Etusivu</NavLink ></li>
+            <li className="nav-item"><NavLink  className={({ isActive }) => isActive ? "nav-link active-nav" : "nav-link"} to="/movies">Elokuvat</NavLink ></li>
+            <li className="nav-item"><NavLink  className={({ isActive }) => isActive ? "nav-link active-nav" : "nav-link"} to="/shows">Näytökset</NavLink ></li>
+            <li className="nav-item"><NavLink  className={({ isActive }) => isActive ? "nav-link active-nav" : "nav-link"} to="/groups">Ryhmät</NavLink ></li>
             {isLoggedIn && (
-              <li className="nav-item"><Link className="nav-link" to="/profile">Profiili</Link></li>
+              <li className="nav-item"><NavLink  className={({ isActive }) => isActive ? "nav-link active-nav" : "nav-link"} to="/profile">Profiili</NavLink ></li>
             )}
           </ul>
           {/* Kello ikoni jossa näkyy ilmoitukset*/}
           {isLoggedIn && (
             <div className="nav-item dropdown me-3">
               <button 
-                className="btn position-relative"
+                className="btn position-relative no-bg"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i className="bi bi-bell" style={{ fontSize: "1.5rem" }}></i>
+                <i className="bi bi-bell"></i>
                 {requests.length > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     !
@@ -151,14 +158,14 @@ const handleReject = async (requestId) => {
                   onChange={handleLoginChange}
                 />
                 <button 
-                  className="btn btn-outline-primary" 
+                  className="btn" 
                   type="submit"
                 >
                     Kirjaudu
                 </button>
               
                 <button 
-                  className="btn btn-outline-danger ms-2"
+                  className="btn ms-2"
                   onClick={() => setShowRegisterModal(true)}
                   type="button"
                 >
@@ -170,7 +177,7 @@ const handleReject = async (requestId) => {
             <div className="d-flex ms-3 align-items-center">
               <span className="navbar-text me-2">Tervetuloa, {username}!</span>
               <button
-                className="btn btn-outline-danger"
+                className="btn"
                 onClick={() => {
                   logout()
                   navigate('/')

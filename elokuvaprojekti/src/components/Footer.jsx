@@ -1,38 +1,35 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { NavLink } from "react-router-dom";
+import logo from "../assets/logo.png"
+import "./style/Footer.css"
 
 export default function Footer() {
+
   return (
-    <footer className="bg-light text-dark py-5 mt-auto border-top">
+    <footer className="footer py-5">
       <div className="container">
         <div className="row">
           {/* Logo ja some-linkit */}
           <div className="col-md-4 mb-3">
-            <h5 className="mb-3">Logo</h5>
-            <p className="text-muted">Description placeholder.</p>
-            <div>
-              <a href="#" className="text-dark me-3">Instagram</a>
-              <a href="#" className="text-dark me-3">Facebook</a>
-              <a href="#" className="text-dark">Twitter</a>
-            </div>
-          </div>
-
-          {/* Ensimmäinen linkkikolumni */}
-          <div className="col-md-4 mb-3">
-            <h6 className="fw-bold">About</h6>
-            <ul className="list-unstyled">
-              <li><a href="#" className="text-dark text-decoration-none">Tietoa meistä</a></li>
-              <li><a href="#" className="text-dark text-decoration-none">Ota yhteyttä</a></li>
-            </ul>
+            {/* HUOM: Korjasin aiemman aling-items-center kirjoitusvirheen tähän */}
+            <NavLink className="navbar-brand d-flex align-items-center" to="/">
+              <img 
+                src={logo}
+                alt="Movie fans logo"
+              />
+            </NavLink >
           </div>
 
           {/* Toinen linkkikolumni */}
           <div className="col-md-4 mb-3">
-            <h6 className="fw-bold">Links</h6>
-            <ul className="list-unstyled">
-              <li><a href="/" className="text-dark text-decoration-none">Etusivu</a></li>
-              <li><a href="/movies" className="text-dark text-decoration-none">Elokuvat</a></li>
-              <li><a href="/groups" className="text-dark text-decoration-none">Ryhmät</a></li>
+            <h6 className="fw-bold">Linkit</h6>
+            {/* MUUTOS: Lisätty d-flex ja gap-3, jotta linkit menevät riviin ja niissä on väliä */}
+            <ul className="list-unstyled d-flex gap-3">
+              {/* MUUTOS: nav-item poistettu, koska se pakottaa rivin */}
+              <li><NavLink className="nav-link" to="/">Etusivu</NavLink ></li>
+              <li><NavLink className="nav-link" to="/movies">Elokuvat</NavLink ></li>
+              <li><NavLink className="nav-link" to="/shows">Näytökset</NavLink ></li>
+              <li><NavLink className="nav-link" to="/groups">Ryhmät</NavLink ></li>
             </ul>
           </div>
         </div>

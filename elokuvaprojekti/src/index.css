@@ -5,9 +5,51 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-color: #000 !important;
+   color: #fff !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Yhtenäiset värit ja muotoilut kaikille sivun painikkeille */
+button {
+  background-color: #4f46e5 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  margin: 0.2px !important;
+  transition: background-color 0.2s !important;
+}
+
+button.no-bg {
+  background-color: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+}
+
+button:hover {
+  background-color: #756ef0 !important;
+}
+
+.card {
+  background-color: rgb(30, 31, 32) !important;
+  border-radius: 8px !important;
+}
+
+.card-text {
+  color: #fff !important;
+}
+
+.card-title {
+  color:#fff !important;
+}
+
+a {
+  color: inherit !important;
+  text-decoration: none !important;
 }

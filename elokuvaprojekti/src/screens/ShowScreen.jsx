@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
-import "./style/ShowScreen.css"
-import { Link } from "react-router-dom"
-import GenericDropdown from "../components/Dropdown.jsx"
-import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx"
-import ShareShow from "../components/ShareShow.jsx"
-import { matchFinnkinoWithTMDB } from '../api/moviedb.jsx'
+import React, { useEffect, useState } from "react";
+import "./style/ShowScreen.css";
+import GenericDropdown from "../components/Dropdown.jsx";
+import { getTheatreAreas, getShows, formatDateForAPI } from "../api/finnkino.jsx";
+import ShareShow from "../components/ShareShow.jsx";
+import { matchFinnkinoWithTMDB } from '../api/moviedb.jsx';
+import MovieCard from "../components/MovieCard.jsx";
 
 export default function ShowScreen() {
   const [movieShows, setMovieShows] = useState([])
@@ -36,12 +36,12 @@ export default function ShowScreen() {
   useEffect(() => {
     (async () => {
       try {
-        const { movieShows, uniqueMovies } = await getShows(
+        const { movieShows: shows, uniqueMovies: movies } = await getShows(
           selectedArea,
           formatDateForAPI(selectedDate)
         )
-        setMovieShows(movieShows)
-        setUniqueMovies(uniqueMovies)
+        setMovieShows(shows)
+        setUniqueMovies(movies)
         setSelectedMovie("all") // resetoi valinnan kun alue/pvm vaihtuu
       } catch (err) {
         console.error("Virhe haettaessa näytöksiä:", err)
@@ -49,22 +49,22 @@ export default function ShowScreen() {
     })()
   }, [selectedArea, selectedDate])
 
-  // Hakee TMDB ID:t
+  // Hakee tmdbId:t
   useEffect(() => {
-  const getTmdbIds = async () => {
-    const results = {}
+    const getTmdbIds = async () => {
+      const results = {}
 
-    const matches = await matchFinnkinoWithTMDB(uniqueMovies)
+      const matches = await matchFinnkinoWithTMDB(uniqueMovies)
 
-    for (const m of matches) {
-      results[m.finnkino.eventId] = m.tmdb.id
+      for (const m of matches) {
+        results[m.finnkino.eventId] = m.tmdb.id
+      }
+
+      setTmdbIds(results)
     }
 
-    setTmdbIds(results)
-  }
-
-  if (uniqueMovies.length > 0) getTmdbIds()
-}, [uniqueMovies])
+    if (uniqueMovies.length > 0) getTmdbIds()
+  }, [uniqueMovies])
 
   // Suodatettu lista valinnan mukaan
   const moviesToShow =
@@ -115,80 +115,40 @@ export default function ShowScreen() {
         <div className="row">
           {moviesToShow.map((movie) => {
             const tmdbId = tmdbIds[movie.eventId]
+            const linkTarget = tmdbId ? `/movie/${tmdbId}` : null
 
-            const MovieImage = (
-              <img
-                src={movie.image}
-                className="card-img-top movie-poster"
-                alt={movie.name}
-              />
-            )
-
-            const MovieTitle = (
-              <h5 className="card-title">
-                <strong>{movie.name}</strong>
-              </h5>
+            // Sisältö näytöksille
+            const showtimesContent = (
+              <>
+                <p className="card-text">
+                  <strong>Näytökset:</strong>
+                </p>
+                <div className="showtimes-list">
+                  {movieShows
+                    .filter((show) => show.name === movie.name)
+                    .map((show, idx) => (
+                      <ShareShow
+                        key={idx}
+                        show={show}
+                        tmdbId={tmdbIds[show.eventId]}
+                        movieName={movie.name}
+                      />
+                    ))}
+                </div>
+              </>
             )
 
             return (
-              <div key={movie.eventId} className="col-md-6 col-lg-4 mb-4">
-                <div className="card h-100 shadow-sm">
-                  {/* Kuva linkkinä vain jos TMDB ID löytyy */}
-                  {tmdbId ? (
-                    <Link
-                      to={`/movie/${tmdbId}`}
-                      state={{
-                        eventId: movie.eventId,
-                        theatreAreaId: selectedArea,
-                        showDate: selectedDate,
-                      }}
-                      className="movie-link"
-                    >
-                      {MovieImage}
-                    </Link>
-                  ) : (
-                    MovieImage
-                  )}
-
-                  <div className="card-body">
-                    {/* Nimi linkkinä vain jos TMDB ID löytyy */}
-                    {tmdbId ? (
-                      <Link
-                        to={`/movie/${tmdbId}`}
-                        state={{
-                          eventId: movie.eventId,
-                          theatreAreaId: selectedArea,
-                          showDate: selectedDate,
-                        }}
-                        className="movie-link"
-                      >
-                        {MovieTitle}
-                      </Link>
-                    ) : (
-                      MovieTitle
-                    )}
-
-                    <p className="card-text">
-                      <strong>Genre:</strong> {movie.genre}
-                    </p>
-                    <p className="card-text">
-                      <strong>Näytökset:</strong>
-                    </p>
-                    <div className="showtimes-list">
-                      {movieShows
-                        .filter((show) => show.name === movie.name)
-                        .map((show, idx) => (
-                          <ShareShow 
-                            key={idx} 
-                            show={show} 
-                            tmdbId={tmdbIds[show.eventId]} 
-                            movieName={movie.name}
-                          />
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MovieCard
+                key={movie.eventId}
+                id={movie.eventId}
+                title={movie.name}
+                imageSrc={movie.image} // Finnkino antaa koko kuvan URL:n
+                linkTo={linkTarget}
+                genres={movie.genre} // Finnkinon data antaa genren stringinä
+                extraContent={showtimesContent}
+                isLink={!!tmdbId} // Linkki on aktiivinen vain, jos tmdbId löytyy
+              />
             )
           })}
         </div>

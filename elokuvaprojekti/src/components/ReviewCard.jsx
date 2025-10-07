@@ -1,39 +1,26 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import "./style/ReviewCard.css"; 
 
 function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLength = 100, onDelete }) {
-  const [expanded, setExpanded] = useState(false); // Tila, joka määrittää, onko teksti laajennettu vai ei
+  const [expanded, setExpanded] = useState(false); 
 
-  const isLong = text.length > maxLength; // Tarkistaa, onko teksti pidempi kuin maxLength
-  const displayText = expanded || !isLong ? text : text.slice(0, maxLength) + "..."; // Näytettävä teksti riippuen tilasta
+  const isLong = text.length > maxLength; 
+  const displayText = expanded || !isLong ? text : text.slice(0, maxLength) + "..."; 
 
+  // HUOM: Vain ehdolliset tyylit jätetty, ja niistä on poistettu puolipisteet.
   return (
-    <div
-      className={"review card p-5 me-3 "}
-      style={{
-        maxHeight: expanded ? "none" : "350px",
-        overflow: expanded ? "visible" : "hidden",
-        flex : "0 0 auto",
-        width: "350px",
-        position: "relative",
-        marginRight: "1rem",
-      }}
-
-      
-    >
+    <div className={`card review-card me-3 ${expanded ? 'expanded' : ''}`}>
       {/* Poistopainike oikeassa yläkulmassa */}
-      
-        {onDelete && (
+      {onDelete && (
         <button
           type="button"
-          className="btn-close position-absolute"
-          style={{ top: "8px", right: "8px" }}
+          className="btn-close position-absolute review-delete-btn"
           aria-label="Close"
           onClick={onDelete}
         />
       )}
       
-
       {/* Elokuvan nimi linkkinä */}
       <div className="mb-2">
         <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none">
@@ -48,14 +35,15 @@ function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLeng
       </div>
 
       {/* Arvosteluteksti */}
-      <p style={{ margin: 0 }}>
+      {/* POISTETTU INLINE STYLE `margin: 0` -> käytetään CSS-luokkaa tai suoraa CSS:ää */}
+      <p className="review-text-content"> 
         {displayText}{" "}
-        {isLong && ( // Näytetään "Read more" -linkki vain, jos teksti on pitkä
+        {isLong && ( 
           <span
-            style={{ color: "blue", cursor: "pointer", display: "block", marginTop: "0.5rem", textDecoration: "underline" }}
+            className="review-read-more" 
             onClick={() => setExpanded(!expanded)}
           >
-            {expanded ? "Piilota" : "Lue lisää"} {/* Näyttää tai piilottaa laajennetun tekstin */}
+            {expanded ? "Piilota" : "Lue lisää"} 
           </span>
         )}
       </p>
