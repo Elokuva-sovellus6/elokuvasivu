@@ -1,0 +1,12 @@
+.footer {
+    background-color: rgb(30, 31, 32) !important;
+    border-top: none !important; 
+}
+
+.nav-link {
+  color: #e0e0e0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}

@@ -1,0 +1,29 @@
+/* Tavoiteltu tyyli ReviewCard-komponentin pääelementille */
+.review-card {
+    padding: 25px 25px 15px 25px;
+    flex: 0 0 auto;
+    min-height: 200px;
+    min-width: 200px;
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+}
+
+.review.card:not(.expanded) {
+    max-height: 350px;
+    overflow: hidden;
+}
+
+/* Read more/Piilota linkin tyyli */
+.review-read-more {
+    color: #4f46e5;
+    cursor: pointer;
+    display: block;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+}
+
+.review-delete-btn {
+    top: 8px;
+    right: 8px;
+}
