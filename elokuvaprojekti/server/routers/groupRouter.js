@@ -1,6 +1,7 @@
 import express from "express"
 import { createGroup, getGroupById, getAllGroups, sendJoinRequest, getOwnerRequests, handleJoinRequest, getGroupMembers, leaveGroup, kickMemberFromGroup, getBannedMembers, unbanMember, updateGroup, getMyGroups } from "../controllers/groupController.js"
 import { authenticateToken } from "../helper/auth.js"
+import { deleteGroup } from "../controllers/groupController.js"
 import multer from "multer"
 
 const router = express.Router()
@@ -44,5 +45,7 @@ router.delete('/:groupId/unban/:memberId', authenticateToken, unbanMember)
 // Päivitä ryhmän tiedot (kuvaus, kuva) -- vain omistajalle!
 router.put("/:groupId", authenticateToken, uploadGroup.single("groupimg"), updateGroup)
 
+// Ryhmän poistaminen
+router.delete("/:groupId", authenticateToken, deleteGroup);
 
 export default router
