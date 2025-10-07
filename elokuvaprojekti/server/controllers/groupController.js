@@ -243,3 +243,21 @@ export const unbanMember = async (req, res, next) => {
     next(err)
   }
 }
+
+// Poistaa ryhmän (vain omistajalle)
+export const deleteGroup = async (req, res, next) => {
+  try {
+    const { groupId } = req.params;
+    const userId = req.user.id;
+
+    const group = await Group.findById(groupId);
+    if (!group) throw new ApiError("Ryhmää ei löytynyt", 404);
+    if (String(group.ownerid) !== String(userId))
+      throw new ApiError("Vain omistaja voi poistaa ryhmän!", 403);
+
+    await Group.delete(groupId); 
+    res.json({ message: "Ryhmä poistettu onnistuneesti" });
+  } catch (err) {
+    next(err);
+  }
+}

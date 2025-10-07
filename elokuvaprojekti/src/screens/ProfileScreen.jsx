@@ -7,6 +7,8 @@ import ReviewCard from '../components/ReviewCard.jsx';
 import { getMovieDetails } from '../api/moviedb.jsx';
 import { AuthContext } from '../context/authContext.jsx';
 import ProfileEditModal from '../components/ProfileEditModal.jsx';
+import GroupCard from "../components/GroupCard.jsx";
+import axios from "axios";
 import "./style/ProfileScreen.css"
 
 // Profiilin tiedot ja kuva
@@ -20,6 +22,7 @@ function ProfileScreen() {
   const [reviewMovies, setReviewMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [myGroups, setMyGroups] = useState([]);
   const navigate = useNavigate();
 
     // Hae käyttäjä
@@ -93,6 +96,24 @@ function ProfileScreen() {
   }
 }, [user]);
 
+  // Ryhmien haku
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const token = localStorage.getItem("token");
+      if (!token || !user) return;
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/groups/mine`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setMyGroups(res.data);
+      } catch (err) {
+        console.error("Virhe ryhmien haussa:", err);
+      }
+    };
+    fetchGroups();
+  }, [user]);
+
   // Profiilin poisto
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete your profile?')) return;
@@ -165,7 +186,7 @@ function ProfileScreen() {
         </div>
         <div className="col-md-6">
           <h1 className="display-5">{user.username}</h1>
-          <p className="text-muted">{user.userdescription || 'Ei vielä kuvausta'}</p>
+          <p className="text-white">{user.userdescription || 'Ei vielä kuvausta'}</p>
         </div>
         <div className="col-md-3 text-end">
           <button className="btn btn-danger" onClick={handleDelete}>Poista käyttäjä</button>
@@ -185,7 +206,7 @@ function ProfileScreen() {
               </button>
             </div>
             {favouriteMovies.length === 0 ? (
-              <p className="text-muted">Ei vielä suosikkeja</p>
+              <p className="text-white">Ei vielä suosikkeja</p>
             ) : (
               <ul className="list-unstyled mb-0">
                 {favouriteMovies.map((movie) => (
@@ -229,7 +250,7 @@ function ProfileScreen() {
           <div className="card-body">
             <h5 className="card-title">Arvostelut</h5>
             {reviewMovies.length === 0 ? (
-              <p className="text-muted">Ei vielä arvosteluja</p>
+              <p className="text-white">Ei vielä arvosteluja</p>
             ) : (
               <div className="d-flex overflow-auto">
                 {reviewMovies.map((r) => (
@@ -253,7 +274,15 @@ function ProfileScreen() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Ryhmät</h5>
-            <p className="text-muted">x</p>
+            {myGroups.length === 0 ? (
+            <p className="text-white">Ei ryhmiä</p>
+            ) : (
+              <div className="d-flex overflow-auto gap-3 pb-2">
+                {myGroups.map(group => (
+                  <GroupCard key={group.groupid} group={group} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -30,6 +30,22 @@ export default function GroupPage() {
         setError(message)
     }
 
+    //Ryhmän poistaminen
+    const handleDeleteGroup = async () => {
+        if (!window.confirm("Haluatko varmasti poistaa tämän ryhmän?")) return;
+        try {
+            const token = localStorage.getItem("token");
+            await axios.delete(`${import.meta.env.VITE_API_URL}/groups/${group.groupid}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert("Ryhmä poistettu onnistuneesti");
+            navigate("/groups");
+        } catch (err) {
+            alert("Ryhmän poisto epäonnistui");
+            console.error(err);
+        }
+    }
+
     //Poista jaetty näytös
     const handleDeleteShow = async (shareId) => {
         const token = localStorage.getItem("token");
@@ -276,6 +292,12 @@ export default function GroupPage() {
                         onClick={() => setShowEditModal(true)}
                       >
                         Muokkaa ryhmää
+                      </button>
+                    )}
+                    
+                    {String(userId) === String(group.ownerid) && (
+                      <button className="btn btn-danger" onClick={handleDeleteGroup}>
+                        Poista ryhmä
                       </button>
                     )}
                 </div>
