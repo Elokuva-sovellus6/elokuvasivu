@@ -107,7 +107,7 @@ const ShareMovieModal = ({ onClose, movieData, onShared }) => {
             {/* Jos ei ole kirjautunut näytetään varoitus */}
             {!hasToken ? (
               <div className="alert alert-warning text-center">
-                <p>Kirjaudu sisään jakaaksesi elokuvan.</p>
+                <p className="card-text-black">Kirjaudu sisään jakaaksesi elokuvan.</p>
               </div>
             ) : (
               // Jakolomake

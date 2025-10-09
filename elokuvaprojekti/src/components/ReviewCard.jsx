@@ -10,47 +10,58 @@ function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLeng
   const displayText = expanded || !isLong ? text : text.slice(0, maxLength) + "..." 
 
   return (
-    <div className={`card review-card me-3 ${expanded ? 'expanded' : ''}`}>
-      {/* Poistopainike näkyy vain, jos onDelete-funktio on annettu (eli omistaja voi poistaa) */}
+<div className={`card review-card position-relative ${expanded ? "expanded" : ""}`}>
+      
+      {/* Poistopainike */}
       {onDelete && (
         <button
           type="button"
-          className="btn-close delete-btn position-absolute"
-          aria-label="Close"
+          className="delete-btn position-absolute top-0 end-0 m-2"
+          aria-label="Poista arvostelu"
           onClick={onDelete}
-        />
+        >
+          <i className="bi bi-trash-fill text-danger"></i>
+        </button>
       )}
-      
-      {/* Elokuvan nimi linkkinä elokuvakortille */}
-      <div className="mb-2">
-        <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none card-title">
-          {movieTitle}
-        </Link>
+
+      <div className="card-body d-flex flex-column justify-content-between h-100">
+
+        {/* Elokuvan nimi, käyttäjä ja arvosana */}
+        <div>
+          <div className="mb-2">
+            <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none card-title">
+              {movieTitle}
+            </Link>
+          </div>
+
+          <div className="d-flex justify-content-between mb-2 card-text">
+            <strong>{username}</strong>
+            <span>{rating}/5 ⭐</span>
+          </div>
+
+          {/* Arvosteluteksti */}
+          <div className="review-text-area mb-3">
+            <p className="review-text-content mb-0">
+              {displayText}{" "}
+              {isLong && (
+                <span
+                  className="review-read-more"
+                  onClick={() => setExpanded(!expanded)}
+                >
+                  {expanded ? "Piilota" : "Lue lisää"}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+
+        {/* Päivämäärä vasemmassa alakulmassa */}
+        <div className="d-flex justify-content-start align-items-end mt-auto">
+          <small className="text-muted card-date card-text">{date}</small>
+        </div>
+
       </div>
-
-      {/* Käyttäjä + arvosana */}
-      <div className="d-flex justify-content-between mb-2 card-text">
-        <strong>{username}</strong>
-        <span>{rating}/5 ⭐</span>
-      </div>
-
-      {/* Arvosteluteksti */}
-      <p className="review-text-content"> 
-        {displayText}{" "}
-        {isLong && ( // Näytä "Lue lisää/Piilota" linkki jos teksti on pitkä
-          <span
-            className="review-read-more" 
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? "Piilota" : "Lue lisää"} 
-          </span>
-        )}
-      </p>
-
-      {/* Päivämäärä */}
-      <small className="text-muted card-text">{date}</small>
     </div>
   )
 }
-
 export default ReviewCard

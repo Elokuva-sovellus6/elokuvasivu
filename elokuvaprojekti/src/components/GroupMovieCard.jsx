@@ -56,7 +56,7 @@ export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
               {/* Näytä "Lue lisää" vain jos kommentti on pidempi kuin 100 merkkiä */}
               {movie.reason.length > 100 && (
                 <button
-                  className="btn btn-link p-0 small"
+                  className="btn p-0 small"
                   onClick={() => setShowFullComment(true)}
                 >
                   Lue lisää
@@ -85,7 +85,7 @@ export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
                 ></button>
               </div>
               <div className="modal-body">
-                <p className="fst-italic">"{movie.reason}"</p>
+                <p className="fst-italic card-text-black">"{movie.reason}"</p>
               </div>
               <div className="modal-footer">
                 <button
