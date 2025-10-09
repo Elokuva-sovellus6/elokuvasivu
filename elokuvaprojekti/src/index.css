@@ -33,6 +33,10 @@ h1, h3, h5 {
   color: #fff !important;
 }
 
+.card-text-black {
+  color: #000 !important;
+}
+
 .card-bg {
   background-color: rgb(30, 31, 32) !important;
   border-radius: 8px;

@@ -47,7 +47,7 @@ export default function GroupShowCard({ show, userId, ownerId, onDelete }) {
             
             {/* Jakajan tiedot ja Elokuvan nimi */}
             <div className="mb-2">
-              <small className="text-muted d-block mb-1">
+              <small className="text-muted d-block mb-1 card-text">
                 {show.username} jakoi näytöksen
               </small>
               <h5 className="card-title fw-bold mb-0">
