@@ -9,6 +9,7 @@ import ReviewCard from "./ReviewCard.jsx"
 import Rating from "../components/Rating.jsx"
 import ShowTimes from "./ShowTimes.jsx"
 import ShareMovieModal from "./ShareMovieModal.jsx"
+import Carousel from "./Carousel.jsx"
 import "./style/MoviePage.css"
 
 export default function MoviePage() {
@@ -116,7 +117,7 @@ export default function MoviePage() {
 
     return (
         <div className="container py-4">
-            {/* ELOKUVAN PÄÄTIEDOT (KUVA, OTSIKKO, KUVAUS) */}
+            {/* Elokuvan tiedot */}
             <section className="movie-section row mb-5">
                 <div className="col-md-4 text-center">
                     <div className="img bg-secondary mb-3 d-flex justify-content-center align-items-center">
@@ -153,35 +154,41 @@ export default function MoviePage() {
                 </div>
             </section>
 
-            {/* ARVOSTELUT */}
+            {/* Arvostelut */}
             <section className="reviews-section mb-5">
-                <h3 className="mb-3">Käyttäjien arvostelut</h3>
-                <div className="reviews-scroll d-flex overflow-auto">
-                    {reviews.length === 0 ? (
-                        <p>Ei vielä yhtään arvostelua</p>
-                    ) : (
-                        reviews.map((r) => (
-                            <ReviewCard
-                                key={r.reviewid}
-                                text={r.reviewtext}
-                                username={r.username}
-                                rating={r.rating}
-                                date={new Date(r.reviewdate).toLocaleDateString("fi-FI")}
-                            />
-                        ))
-                    )}
+              <h3 className="mb-3">Käyttäjien arvostelut</h3>
+
+              {reviews.length === 0 ? (
+                <p>Ei vielä yhtään arvostelua</p>
+              ) : (
+                <div className="horizontal-list-wrapper review-carousel">
+                  <Carousel>
+                    {reviews.slice(0, 12).map((r) => (
+                      <div key={r.reviewid} className="horizontal-scroll-item" style={{ minWidth: "280px" }}>
+                        <ReviewCard
+                          text={r.reviewtext}
+                          username={r.username}
+                          rating={r.rating}
+                          date={new Date(r.reviewdate).toLocaleDateString("fi-FI")}
+                          movieTitle={movie.title}
+                          movieId={tmdbId}
+                        />
+                      </div>
+                    ))}
+                  </Carousel>
                 </div>
+              )}
             </section>
 
-            {/* ARVIOINTI JA NÄYTÖSAJAT */}
-            <section className="rating-showtimes-section row mb-5">
+            {/* Arviointi ja näytösajat */}
+            <section className="rating-showtimes-section row g-4">
                 {/* Käyttäjän arviointikomponentti */}
-                <div className="col-md-6 p-5 border rounded">
+                <div className="col-md-6 p-4 card-bg">
                     <Rating movieId={tmdbId} token={token} />
                 </div>
                 {/* Finnkino-näytösajat */}
                 <div className="col-md-6">
-                    <div className="schedule p-5 border rounded">
+                    <div className="schedule p-4 card-bg">
                         <h4>Näytösajat</h4>
                         <ShowTimes 
                             eventId={eventId}
@@ -191,6 +198,7 @@ export default function MoviePage() {
                     </div>
                 </div>
             </section>
+
             {showShareMovieModal && (
                 <ShareMovieModal
                     onClose={() => setShowShareMovieModal(false)}

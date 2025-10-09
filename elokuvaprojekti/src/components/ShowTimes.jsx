@@ -11,6 +11,7 @@ export default function ShowTimes({ eventId, tmdbId, defaultArea, defaultDate })
   const [shows, setShows] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
+  // Hakee tämän päivän päivämäärän YYYY-MM-DD muodossa
   function getTodayDate() {
     const today = new Date()
     return today.toISOString().split("T")[0]
@@ -28,7 +29,7 @@ export default function ShowTimes({ eventId, tmdbId, defaultArea, defaultDate })
     })()
   }, [])
 
-  // Hakee ja suodattaa näytökset kun alue, päivä tai eventId muuttuu
+  // Hakee ja suodattaa näytökset, kun valinnat muuttuu
   useEffect(() => {
     if (!eventId) {
       setShows([])
@@ -38,10 +39,15 @@ export default function ShowTimes({ eventId, tmdbId, defaultArea, defaultDate })
     const fetchShows = async () => {
       setIsLoading(true)
       setShows([])
-      
+
       try {
-        const dateForAPI = formatDateForAPI(selectedDate)
+        // Muotoilee valitun päivämäärän Finnkino API:n vaatimaan muotoon
+        const dateForAPI = formatDateForAPI(selectedDate) 
+        
+        // Hakee kaikki näytökset valitulta alueelta ja päivältä
         const { movieShows } = await getShows(selectedArea, dateForAPI)
+        
+        // Suodatetaan haetuista näytöksistä vaan tämä elokuva
         const filteredShows = movieShows.filter(show => String(show.eventId) === String(eventId))
         setShows(filteredShows)
       } catch (err) {
@@ -53,42 +59,43 @@ export default function ShowTimes({ eventId, tmdbId, defaultArea, defaultDate })
     }
 
     fetchShows()
-  }, [selectedArea, selectedDate, eventId])
+    // Suoritetaan aina kun alue, päivä tai eventId vaihtuu
+  }, [selectedArea, selectedDate, eventId]) 
 
   return (
     <div className="showtimes-card">
-      <div className="row g-2 mb-3 align-items-center">
-        <div className="col-6">
-          <GenericDropdown
-            label="Valitse teatteri"
-            items={areas}
-            selected={selectedArea}
-            onSelect={setSelectedArea}
-            itemKey="id"
-            itemLabel="name"
-          />
-        </div>
+      <div className="showtimes-filters mb-3">
+        {/* Teatterivalinnan pudotusvalikko */}
+        <GenericDropdown
+          label="Valitse teatteri"
+          items={areas}
+          selected={selectedArea}
+          onSelect={setSelectedArea}
+          itemKey="id"
+          itemLabel="name"
+        />
 
-        <div className="col-6">
-          <input
-            type="date"
-            className="form-control w-100"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
-        </div>
+        {/* Päivämäärän valintakenttä */}
+        <input
+          type="date"
+          className="form-control"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
       </div>
 
+      {/* Latauksen ja tyhjän tilan ilmoitukset */}
       {isLoading && <p>Ladataan näytöksiä...</p>}
       {!isLoading && shows.length === 0 && <p>Ei näytöksiä valitulle päivälle.</p>}
 
-      <ul className="list-group">
-        {shows.map((s, idx) => (
-          <li key={idx} className="list-group-item">
-            <ShareShow show={s} tmdbId={tmdbId} />
-          </li>
-        ))}
-      </ul>
+      <div className={shows.length > 3 ? "showtimes-scroll" : ""}>
+        <ul className="list-group">
+          {shows.map((s, idx) => (
+            // Komponentti, joka näyttää yksittäisen näytöksen ja jakamisnapin
+            <ShareShow key={s.ID} show={s} tmdbId={tmdbId} />
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

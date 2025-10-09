@@ -52,7 +52,7 @@ const ProfileEditModal = ({ onClose, initialData, onUpdated }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Muokkaa profiilia</h5>
+            <h5 className="modal-title modal-content">Muokkaa profiilia</h5>
             <button
               type="button"
               className="btn-close"

@@ -36,7 +36,7 @@ const RegisterModal = ({ onClose }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Rekisteröidy</h5>
+            <h5 className="modal-title modal-content">Rekisteröidy</h5>
             <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
           </div>
           <div className="modal-body">

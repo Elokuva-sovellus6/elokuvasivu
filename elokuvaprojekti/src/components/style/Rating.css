@@ -1,5 +1,6 @@
 .rating-card {
-    height: 340px;
+    min-height: 340px;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }

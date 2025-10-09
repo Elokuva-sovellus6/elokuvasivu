@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import GroupMembers from './GroupMembers.jsx';
-import JoinGroup from './JoinGroup.jsx';
-import GroupEditModal from "../components/GroupEditModal";
-import GroupMoviesList from './GroupMoviesList.jsx';
-import GroupShowsList from './GroupShowsList.jsx';
-import './style/GroupPage.css';
+import { useParams, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import GroupMembers from './GroupMembers.jsx'
+import JoinGroup from './JoinGroup.jsx'
+import GroupEditModal from "../components/GroupEditModal"
+import GroupMoviesList from './GroupMoviesList.jsx'
+import GroupShowsList from './GroupShowsList.jsx'
+import './style/GroupPage.css'
 
 export default function GroupPage() {
     const { groupId } = useParams()
@@ -21,9 +21,9 @@ export default function GroupPage() {
     const [banError, setBanError] = useState(null)
     const [hasToken, setHasToken] = useState(false)
     const [joinRequestSent, setJoinRequestSent] = useState(false)
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [groupShows, setGroupShows] = useState([]);
-    const [groupMovies, setGroupMovies] = useState([]);
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [groupShows, setGroupShows] = useState([])
+    const [groupMovies, setGroupMovies] = useState([])
 
 
     const handleError = (message) => {
@@ -32,40 +32,40 @@ export default function GroupPage() {
 
     //Ryhmän poistaminen
     const handleDeleteGroup = async () => {
-        if (!window.confirm("Haluatko varmasti poistaa tämän ryhmän?")) return;
+        if (!window.confirm("Haluatko varmasti poistaa tämän ryhmän?")) return
         try {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token")
             await axios.delete(`${import.meta.env.VITE_API_URL}/groups/${group.groupid}`, {
                 headers: { Authorization: `Bearer ${token}` }
-            });
-            alert("Ryhmä poistettu onnistuneesti");
-            navigate("/groups");
+            })
+            alert("Ryhmä poistettu onnistuneesti")
+            navigate("/groups")
         } catch (err) {
-            alert("Ryhmän poisto epäonnistui");
-            console.error(err);
+            alert("Ryhmän poisto epäonnistui")
+            console.error(err)
         }
     }
 
     //Poista jaetty näytös
     const handleDeleteShow = async (shareId) => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token")
         if (!token) {
-            alert("Kirjaudu sisään poistaaksesi näytöksen");
-            return;
+            alert("Kirjaudu sisään poistaaksesi näytöksen")
+            return
         }
 
         try {
             await axios.delete(`${import.meta.env.VITE_API_URL}/groupshows/${shareId}`, {
             headers: { Authorization: `Bearer ${token}` }
-            });
+            })
 
             // Päivitä state poistamalla kyseinen show
-            setGroupShows((prev) => prev.filter((s) => s.shareid !== shareId));
+            setGroupShows((prev) => prev.filter((s) => s.shareid !== shareId))
         } catch (err) {
-            console.error("Virhe poistettaessa jakoa:", err);
-            alert("Poistaminen epäonnistui");
+            console.error("Virhe poistettaessa jakoa:", err)
+            alert("Poistaminen epäonnistui")
         }
-        };
+        }
 
     // Parsii käyttäjän ID:n tokenista ja asettaa hasToken-tilan
     useEffect(() => {
@@ -117,28 +117,28 @@ export default function GroupPage() {
                     setMembers(membersRes.data)
 
                     // Tarkista onko kirjautunut käyttäjä jäsen
-                    const isUserAMember = membersRes.data.some(m => String(m.userid) === String(userId));
+                    const isUserAMember = membersRes.data.some(m => String(m.userid) === String(userId))
                     setIsMember(isUserAMember)
 
                     // B) Hae liittymispyynnöt (vain jos ei jäsen)
                     if (!isUserAMember) {
                         const joinRequestsRes = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${groupId}/join-requests`, {
                             headers: { Authorization: `Bearer ${token}` }
-                        });
-                        const hasPendingRequest = joinRequestsRes.data.some(r => String(r.userid) === String(userId));
-                        setJoinRequestSent(hasPendingRequest);
+                        })
+                        const hasPendingRequest = joinRequestsRes.data.some(r => String(r.userid) === String(userId))
+                        setJoinRequestSent(hasPendingRequest)
                     }
                 } catch (memberError) {
                     // Jatketaan ilman jäsen-/pyyntötietoja, jos API estää pääsyn
-                    console.warn("Virhe jäsenyystietojen haussa:", memberError.response?.status);
-                    setIsMember(false);
-                    setJoinRequestSent(false);
-                    setMembers([]);
+                    console.warn("Virhe jäsenyystietojen haussa:", memberError.response?.status)
+                    setIsMember(false)
+                    setJoinRequestSent(false)
+                    setMembers([])
                 }
             }
             setLoading(false)
         } catch (err) {
-            console.error("Virhe ryhmätietojen haussa:", err.response?.data || err.message);
+            console.error("Virhe ryhmätietojen haussa:", err.response?.data || err.message)
             setError(err.response?.data?.message || 'Ryhmän haku epäonnistui')
             setLoading(false)
         }
@@ -177,13 +177,13 @@ export default function GroupPage() {
     const handleMembershipAction = async (onLeaveCallback) => {
         const token = localStorage.getItem("token")
         if (!token) {
-            alert("Sinun täytyy kirjautua sisään suorittaaksesi toiminnon.");
-            return;
+            alert("Sinun täytyy kirjautua sisään suorittaaksesi toiminnon.")
+            return
         }
         setError('')
         setBanError(null)
     
-        const wasOwner = String(userId) === String(group?.ownerid);
+        const wasOwner = String(userId) === String(group?.ownerid)
     
         try {
             if (!isMember) {
@@ -203,9 +203,9 @@ export default function GroupPage() {
             
                 // Tarkistaa, poistettiinko ryhmä
                 if (leaveResponse.data.groupDeleted) {
-                    alert('Ryhmä poistettu, koska se jäi ilman jäseniä.');
-                    navigate('/'); // Ohjaa etusivulle ryhmän poiston jälkeen
-                    return;
+                    alert('Ryhmä poistettu, koska se jäi ilman jäseniä.')
+                    navigate('/')
+                    return
                 }
             
                 alert('Olet poistunut ryhmästä.')
@@ -223,7 +223,7 @@ export default function GroupPage() {
         } catch (err) {
             console.error("Virhe:", err.response?.data || err.message)
         
-            // Käsittelee 403 bännivirhe
+            // Käsittelee bännivirheen
             if (err.response?.status === 403 && err.response?.data?.message === "Olet estetty tästä ryhmästä") {
                 setBanError({
                     message: err.response.data.message,
@@ -231,7 +231,6 @@ export default function GroupPage() {
                 }) 
                 setError(null)
             } else {
-                // Muut virheet
                 setError(err.response?.data?.message || 'Toiminto epäonnistui')
                 setBanError(null)
             }
@@ -242,115 +241,108 @@ export default function GroupPage() {
         useEffect(() => {
             const fetchGroupShows = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const token = localStorage.getItem("token")
                 const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/groupshows/${groupId}`,
                 { headers: token ? { Authorization: `Bearer ${token}` } : {} }
-                );
-                setGroupShows(res.data);
+                )
+                setGroupShows(res.data)
             } catch (err) {
-                console.error("Virhe jaettujen näytösten haussa:", err);
+                console.error("Virhe jaettujen näytösten haussa:", err)
             }
-            };
+            }
 
             if (isMember) {
-            fetchGroupShows();
+            fetchGroupShows()
             }
-        }, [groupId, isMember]);
-
-
-    // --- Renderöinti ---
+        }, [groupId, isMember])
 
     if (loading) return <p>Ladataan Ryhmää...</p>
     if (error) return <p style={{ color: "red" }}>{error}</p>
     if (!group) return null
 
-    const shouldShowFullContent = isMember;
+    const shouldShowFullContent = isMember
 
     return (
         <div className="groupscreen">
             {/* Ryhmän perustiedot */}
-            <section className="group-header">
-                <div className="group-image">
-                    <img
-                      src={
-                        group.groupimg
-                          ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
-                          : "https://placehold.co/300x200?text=Ryhmä"
-                      }
-                      className="card-img-top"
-                      alt={group.name}
-                    />
-                </div>
-                <div className="group-info">
-                    <h1>{group.name}</h1>
-                    <p>{group.description ? group.description : "Ei vielä kuvausta"}</p>
-                    {/*Ryhmän muokkauspainike, näkyy vain omistajalle */}
-                    {String(userId) === String(group.ownerid) && (
-                      <button
-                        className="btn btn-outline-primary btn-sm ms-2"
-                        onClick={() => setShowEditModal(true)}
-                      >
-                        Muokkaa ryhmää
-                      </button>
-                    )}
-                    
-                    {String(userId) === String(group.ownerid) && (
-                      <button className="btn btn-danger" onClick={handleDeleteGroup}>
-                        Poista ryhmä
-                      </button>
-                    )}
-                </div>
-            </section>
-
-            <hr />
-
-            {/* --- Rajoitettu näkymä (Kun ei ole jäsen) --- */}
-            {!shouldShowFullContent && (
-                <JoinGroup 
-                    hasToken={hasToken}
-                    joinRequestSent={joinRequestSent}
-                    handleMembershipAction={handleMembershipAction} // Lähetä liittymistoiminto
-                    banError={banError} // Näytä mahdollinen bännivirhe
-                />
+        <section className="group-header d-flex flex-md-row flex-column align-items-start gap-4">
+          <div className="group-image col-12 col-md-4 text-center">
+            <img
+              src={
+                group.groupimg
+                  ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
+                  : "https://placehold.co/300x200?text=Ryhmä"
+              }
+              className="img-fluid rounded"
+              alt={group.name}
+            />
+          </div>
+          
+          <div className="group-info col-12 col-md-8">
+            <h1>{group.name}</h1>
+            <p>{group.description || "Ei vielä kuvausta"}</p>
+          
+            {String(userId) === String(group.ownerid) && (
+              <>
+                <button
+                  className="btn btn-outline-primary btn-sm me-2"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  Muokkaa ryhmää
+                </button>
+                <button className="btn btn-danger" onClick={handleDeleteGroup}>
+                  Poista ryhmä
+                </button>
+              </>
             )}
+          </div>
+        </section>
+    <hr />
+    {/* Rajoitettu näkymä (Kun ei ole jäsen) */}
+    {!shouldShowFullContent && (
+        <JoinGroup 
+            hasToken={hasToken}
+            joinRequestSent={joinRequestSent}
+            handleMembershipAction={handleMembershipAction}
+            banError={banError}
+        />
+    )}
+    {/* Täysi sisältö (Kun on jäsen) */}
+    {shouldShowFullContent && (
+        <>
+            {/* Ryhmän suosikkielokuvat */}
+            <section className="shared-movies my-4">
+                <h3>Jaetut elokuvat</h3>
+                <GroupMoviesList
+                    groupID={groupId}
+                    token={localStorage.getItem("token")}
+                    userId={userId}
+                    ownerId={group.ownerid}
+                />
+            </section>
+            {/* Ryhmän jaetut näytökset */}
+            <section className="shared-shows my-4">
+                <h3>Jaetut näytökset</h3>
+                <GroupShowsList
+                    shows={groupShows}
+                    userId={userId}
+                    ownerId={group.ownerid}
+                    onDelete={handleDeleteShow}
+        />
+            </section>
+                    <div className="middle-content d-flex flex-md-row flex-column gap-4 align-items-start ">
 
-            {/* --- Täysi sisältö (Kun on jäsen) --- */}
-            {shouldShowFullContent && (
-                <>
-                    {/* Ryhmän suosikkielokuvat (Paikkamerkki) */}
-                    <section className="shared-movies my-4">
-                        <h2>Jaetut elokuvat</h2>
-                        <GroupMoviesList
-                            groupID={groupId}
-                            token={localStorage.getItem("token")}
-                            userId={userId}
-                            ownerId={group.ownerid}
-                        />
-                    </section>
+                      <section className="forum col-12 col-md-8">
+                        <h3>Foorumi</h3>
+                        <div className="forum-messages mb-3">Foorumiviestit näkyvät täällä.</div>
+                        <textarea className="form-control mb-2" placeholder="Kirjoita viesti"></textarea>
+                        <button className="btn btn-primary w-100">Lähetä</button>
+                      </section>
 
-                    {/* Ryhmän jaetut näytökset */}
-                    <section className="shared-shows my-4">
-                    <h2>Jaetut näytökset</h2>
-                    <GroupShowsList
-                        shows={groupShows}
-                        userId={userId}
-                        ownerId={group.ownerid}
-                        onDelete={handleDeleteShow}
-                    />
-                    </section>
-
-                    <div className="middle-content">
-                        {/* Foorumi (Paikkamerkki) */}
-                        <section className="forum">
-                            <h2>Foorumi</h2>
-                            <div className="forum-messages">Foorumiviestit näkyvät täällä.</div>
-                            <textarea placeholder="Kirjoita viesti"></textarea>
-                            <button className="btn btn-primary w-100 mt-2">Lähetä</button>
-                        </section>
-
-                        {/* Jäsenluettelo ja hallinta */}
-                        <GroupMembers
+                        <section className="col-12 col-md-4">
+                          <h3>Ryhmän jäsenet</h3>
+                          <GroupMembers
                             groupId={groupId}
                             ownerId={group.ownerid}
                             userId={userId}
@@ -360,9 +352,10 @@ export default function GroupPage() {
                             setMembers={setMembers}
                             bannedMembers={bannedMembers}
                             setBannedMembers={setBannedMembers}
-                            handleMembershipAction={handleMembershipAction} // Ryhmästä eroaminen
+                            handleMembershipAction={handleMembershipAction}
                             handleError={handleError}
-                        />
+                          />
+                        </section>
                     </div>
                 </>
             )}

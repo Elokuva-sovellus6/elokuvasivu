@@ -1,56 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const ShareShowModal = ({ onClose, showData, onShared }) => {
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState([])
   const [formData, setFormData] = useState({
     groupID: '',
     reason: ''
-  });
-  const [error, setError] = useState('');
-  const [hasToken, setHasToken] = useState(false);
-
-  const navigate = useNavigate();
+  })
+  const [error, setError] = useState('')
+  const [hasToken, setHasToken] = useState(false)
 
   // Haetaan kirjautuneen käyttäjän ryhmät
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
+    
+    // Tarkistetaan onko käyttäjä kirjautunut
     if (!token) {
-      setHasToken(false);
-      setGroups([]);
-      return;
+      setHasToken(false)
+      setGroups([])
+      return
     }
-    setHasToken(true);
+    setHasToken(true)
 
+    // Hakee käyttäjän ryhmät
     const fetchGroups = async () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/groups/mine`,
           { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setGroups(res.data);
+        )
+        setGroups(res.data)
       } catch (err) {
-        console.error('Virhe ryhmien haussa:', err);
-        setError('Ryhmiä ei voitu hakea');
+        console.error('Virhe ryhmien haussa:', err)
+        setError('Ryhmiä ei voitu hakea')
       }
-    };
+    }
 
-    fetchGroups();
-  }, []);
+    fetchGroups()
+  }, [])
 
+  // Käsittelee lomakekenttien muutokset
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
+  // Käsittelee lomakkeen lähetyksen
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setError('')
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
     if (!token) {
-      setError("Sinun täytyy kirjautua sisään jakaaksesi näytöksen.");
-      return;
+      setError('Sinun täytyy kirjautua sisään jakaaksesi näytöksen.')
+      return
     }
 
     try {
@@ -66,21 +68,22 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
         image: showData.image || null,
         url: showData.url || null,
         movieName: showData.name || null
-      };
+      }
 
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/groupshows`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
-      );
+      )
 
-      if (onShared) onShared(res.data);
-      onClose();
+      // Kutsutaan callback-funktiota, jos jaettu onnistuneesti
+      if (onShared) onShared(res.data)
+      onClose()
     } catch (err) {
-      console.error('Virhe jaettaessa näytöstä:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Näytöksen jako epäonnistui');
+      console.error('Virhe jaettaessa näytöstä:', err.response?.data || err.message)
+      setError(err.response?.data?.message || 'Näytöksen jako epäonnistui')
     }
-  };
+  }
 
   return (
     <div className="modal d-block" tabIndex="-1" role="dialog">
@@ -88,6 +91,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
         <div className="modal-content rounded-xl">
           <div className="modal-header">
             <h5 className="modal-title">Jaa näytös ryhmälle</h5>
+            {/* Sulkemisnappi */}
             <button
               type="button"
               className="btn-close"
@@ -96,7 +100,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
             ></button>
           </div>
           <div className="modal-body">
-            {/* Näytöksen tiedot */}
+            {/* Näytöksen tiedot esikatseluna */}
             <div className="mb-3">
               <strong>{showData.name}</strong><br />
               {showData.theatre}{showData.auditorium ? `, ${showData.auditorium}` : ''}<br />
@@ -106,12 +110,13 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
               })}
             </div>
 
-            {/* Jos ei ole kirjautunut */}
+            {/* Jos ei ole kirjautunut näytetään varoitus */}
             {!hasToken ? (
               <div className="alert alert-warning text-center">
                 <p>Kirjaudu sisään jakaaksesi näytöksen.</p>
               </div>
             ) : (
+              // Jakolomake
               <form onSubmit={handleSubmit}>
                 {/* Dropdown ryhmille */}
                 <div className="mb-3">
@@ -147,9 +152,11 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
                   ></textarea>
                 </div>
 
+                {/* Lähetysnappi */}
                 <button type="submit" className="btn btn-primary w-100 mt-2">
                   Jaa näytös
                 </button>
+                {/* Virheilmoitus */}
                 {error && <p className="text-danger mt-3">{error}</p>}
               </form>
             )}
@@ -157,7 +164,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ShareShowModal;
+export default ShareShowModal

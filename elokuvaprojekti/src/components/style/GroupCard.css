@@ -1,8 +1,8 @@
 .group-card {
-    min-width: 200px;
-    max-width: 450px;
+    min-width: 270px;
+    max-width: 400px;
     flex: 0 0 auto;
-    height: 450px;
+    height: 390px;
 }
 
 .group-card img {

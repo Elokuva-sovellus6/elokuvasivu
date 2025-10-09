@@ -5,7 +5,8 @@ import MovieCard from "../components/MovieCard.jsx"
 import { getPopularMovies, searchMovies, discoverMovies, fetchGenres } from "../api/moviedb.jsx"
 import Pagination from "../components/Pagination.jsx"
 import GenericDropdown from "../components/Dropdown.jsx"
-import RatingStars from "../components/RatingStars.jsx" 
+import RatingStars from "../components/RatingStars.jsx"
+import "./style/MovieScreen.css"
 
 export default function MovieScreen() {
   const [genres, setGenres] = useState([])
@@ -45,7 +46,6 @@ export default function MovieScreen() {
           // Hakusana käytössä
           data = await searchMovies(query, currentPage)
 
-          // Filtteröidään clientissä genre + vuosi
           let filtered = data.results || []
 
           if (selectedGenre) {
@@ -101,44 +101,43 @@ export default function MovieScreen() {
   return (
     <div className="container">
       <h3>Hae elokuvia TMDB:stä</h3>
-      <div className="row g-2 mb-3 align-items-center">
-        <div className="col-2">
-          <GenericDropdown
-            label="Valitse genre"
-            items={genres}
-            selected={selectedGenre}
-            onSelect={setSelectedGenre}
-            itemKey="id"
-            itemLabel="name"
-          />
-        </div>
-        <div className="col-3">
-          <input
-            type="number"
-            min="1900"
-            max={new Date().getFullYear()}
-            value={selectedDate}
-            onChange={handleYearChange}
-            placeholder="Julkaisuvuosi"
-          />
-        </div>
-      </div>
-      <div className="col-5">
-        <form
-          className="d-flex"
-          role="search"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <input
-            className="form-control me-2"
-            type="search"
-            placeholder="Etsi elokuvia"
-            aria-label="Search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </form>
-      </div>
+{/* Filtterit */}
+<div className="filters">
+  <div className="filter-item">
+    <GenericDropdown
+      label="Valitse genre"
+      items={genres}
+      selected={selectedGenre}
+      onSelect={setSelectedGenre}
+      itemKey="id"
+      itemLabel="name"
+    />
+  </div>
+
+  <div className="filter-item">
+    <input
+      type="number"
+      min="1900"
+      max={new Date().getFullYear()}
+      value={selectedDate}
+      onChange={handleYearChange}
+      placeholder="Julkaisuvuosi"
+      className="form-control"
+    />
+  </div>
+
+  <div className="filter-item">
+    <form onSubmit={(e) => e.preventDefault()}>
+      <input
+        type="search"
+        className="form-control"
+        placeholder="Etsi elokuvia"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+    </form>
+  </div>
+</div>
 
       <div style={{ marginTop: "2rem" }}>
         {loading && <p>Ladataan...</p>}
@@ -160,7 +159,7 @@ export default function MovieScreen() {
                     : "Ei kuvausta"
                 
                 const customExtraContent = (
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex align-items-center card-text">
                         <RatingStars rating={movie.vote_average / 2} />
                         <small className="ms-2">
                             {movie.vote_average ? `TMDB: ${movie.vote_average.toFixed(1)}/10` : ''}

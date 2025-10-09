@@ -1,23 +1,25 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./style/GroupMovieCard.css";
+import React, { useState } from "react"
+import { Link } from "react-router-dom"
+import "./style/GroupMovieCard.css"
 
 export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
-  const [showFullComment, setShowFullComment] = useState(false);
+  const [showFullComment, setShowFullComment] = useState(false)
 
+  // Tarkistaa voiko käyttäjä poistaa jaon (jakaja tai ryhmän omistaja)
   const canDelete =
-    String(movie.userid) === String(userId) || String(ownerId) === String(userId);
+    String(movie.userid) === String(userId) || String(ownerId) === String(userId)
 
+  // Käsittelee jaon poiston
   const handleDelete = () => {
     if (window.confirm("Haluatko varmasti poistaa tämän jaon?")) {
-      onDelete(movie.shareid);
+      onDelete(movie.shareid)
     }
-  };
+  }
 
   return (
     <>
       <div className="card shadow-sm border-0 position-relative group-movie-card">
-        {/* Klikattava kuva */}
+        {/* Kuva toimii linkkinä elokuvasivulle */}
         <Link to={`/movie/${movie.tmdbid}`} className="movie-link">
           <img
             src={movie.image || "/placeholder_poster.png"}
@@ -26,32 +28,35 @@ export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
           />
         </Link>
 
-        {/* Poistonappi */}
+        {/* Poistonappi, näytetään vaan jos käyttäjä voi poistaa */}
         {canDelete && (
           <button
             type="button"
-            className="btn-close delete-btn"
+            className="delete-btn position-absolute top-0 end-0 m-2"
             aria-label="Poista"
             onClick={handleDelete}
-          />
+          >
+            <i className="bi bi-trash-fill text-danger"></i>
+          </button>
         )}
 
-        {/* Kortin footer */}
+        {/* Kortin tiedot */}
         <div className="card-body p-2">
-          <small className="text-muted d-block mb-1">
+          <small className="text-muted d-block mb-1 card-text">
             {movie.username} jakoi elokuvan
           </small>
-          <h6 className="fw-bold mb-1">{movie.movieName}</h6>
+          <h6 className="fw-bold mb-1 card-title">{movie.movieName}</h6>
 
+          {/* Syy/Kommentti ja Lue lisää -painike */}
           {movie.reason && (
             <div>
-              <p className="text-muted fst-italic small mb-0 comment-text">
+              <p className="text-muted fst-italic small mb-0 comment-text card-text">
                 "{movie.reason}"
               </p>
+              {/* Näytä "Lue lisää" vain jos kommentti on pidempi kuin 100 merkkiä */}
               {movie.reason.length > 100 && (
                 <button
                   className="btn btn-link p-0 small"
-                  style={{ fontSize: "0.8rem" }}
                   onClick={() => setShowFullComment(true)}
                 >
                   Lue lisää
@@ -62,13 +67,12 @@ export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
         </div>
       </div>
 
-      {/* Modal koko kommentille */}
+      {/* Modal koko kommentille, näytetään showFullComment-tilasta riippuen */}
       {showFullComment && (
         <div
           className="modal d-block"
           tabIndex="-1"
           role="dialog"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content rounded">
@@ -96,5 +100,5 @@ export default function GroupMovieCard({ movie, userId, ownerId, onDelete }) {
         </div>
       )}
     </>
-  );
+  )
 }

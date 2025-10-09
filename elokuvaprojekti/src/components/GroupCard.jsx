@@ -4,7 +4,7 @@ import "./style/GroupCard.css"
 
 export default function GroupCard({ group }) {
     return (
-        <div className="card group-card">
+        <div className="card group-card card-bg">
             <Link to={`/groups/${group.groupid}`} className="text-decoration-none text-dark">
                 <img
                   src={
@@ -16,8 +16,8 @@ export default function GroupCard({ group }) {
                   alt={group.name}
                 />
                 <div className="card-body">
-                    <h5 className="card-title">{group.name}</h5>
-                    <p className="card-text">{group.description?.slice(0, 240)}...</p>
+                    <h5>{group.name}</h5>
+                    <p className="card-text">{group.description?.slice(0, 120)}...</p>
                 </div>
             </Link>
         </div>
