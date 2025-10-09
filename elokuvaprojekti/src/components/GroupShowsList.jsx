@@ -10,7 +10,7 @@ export default function GroupShowsList({ shows, userId, ownerId, onDelete }) {
 
   return (
     <div>
-      <div className="row">
+      <div className="row g-3">
         {shows.slice(0, visibleCount).map((show) => (
           <div key={show.shareid} className="col-md-6 d-flex">
             <GroupShowCard
@@ -28,14 +28,14 @@ export default function GroupShowsList({ shows, userId, ownerId, onDelete }) {
       <div className="text-center mt-3">
         {visibleCount < shows.length ? (
           <button
-            className="btn btn-outline-primary btn-sm"
+            className="btn btn-sm"
             onClick={() => setVisibleCount((prev) => prev + 4)}
           >
             Näytä lisää
           </button>
         ) : shows.length > 4 ? (
           <button
-            className="btn btn-outline-secondary btn-sm"
+            className="btn btn-sm"
             onClick={() => setVisibleCount(4)}
           >
             Näytä vähemmän

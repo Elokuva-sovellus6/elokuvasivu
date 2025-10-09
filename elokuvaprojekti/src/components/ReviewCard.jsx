@@ -1,44 +1,43 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./style/ReviewCard.css"; 
+import React, { useState } from "react"
+import { Link } from "react-router-dom"
+import "./style/ReviewCard.css" 
 
 function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLength = 100, onDelete }) {
-  const [expanded, setExpanded] = useState(false); 
+  const [expanded, setExpanded] = useState(false)
 
-  const isLong = text.length > maxLength; 
-  const displayText = expanded || !isLong ? text : text.slice(0, maxLength) + "..."; 
+  const isLong = text.length > maxLength // Tarkistaa, onko teksti pidempi kuin maksimipituus
+  // Näytettävä teksti: kokonaan jos laajennettu/lyhyt, muuten typistetty
+  const displayText = expanded || !isLong ? text : text.slice(0, maxLength) + "..." 
 
-  // HUOM: Vain ehdolliset tyylit jätetty, ja niistä on poistettu puolipisteet.
   return (
     <div className={`card review-card me-3 ${expanded ? 'expanded' : ''}`}>
-      {/* Poistopainike oikeassa yläkulmassa */}
+      {/* Poistopainike näkyy vain, jos onDelete-funktio on annettu (eli omistaja voi poistaa) */}
       {onDelete && (
         <button
           type="button"
-          className="btn-close position-absolute review-delete-btn"
+          className="btn-close delete-btn position-absolute"
           aria-label="Close"
           onClick={onDelete}
         />
       )}
       
-      {/* Elokuvan nimi linkkinä */}
+      {/* Elokuvan nimi linkkinä elokuvakortille */}
       <div className="mb-2">
-        <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none">
+        <Link to={`/movie/${movieId}`} className="fw-bold text-decoration-none card-title">
           {movieTitle}
         </Link>
       </div>
 
       {/* Käyttäjä + arvosana */}
-      <div className="d-flex justify-content-between mb-2">
+      <div className="d-flex justify-content-between mb-2 card-text">
         <strong>{username}</strong>
         <span>{rating}/5 ⭐</span>
       </div>
 
       {/* Arvosteluteksti */}
-      {/* POISTETTU INLINE STYLE `margin: 0` -> käytetään CSS-luokkaa tai suoraa CSS:ää */}
       <p className="review-text-content"> 
         {displayText}{" "}
-        {isLong && ( 
+        {isLong && ( // Näytä "Lue lisää/Piilota" linkki jos teksti on pitkä
           <span
             className="review-read-more" 
             onClick={() => setExpanded(!expanded)}
@@ -48,10 +47,10 @@ function ReviewCard({ text, username, rating, date, movieTitle, movieId, maxLeng
         )}
       </p>
 
-      {/* Alarivi: päivämäärä */}
-      <small className="text-muted">{date}</small>
+      {/* Päivämäärä */}
+      <small className="text-muted card-text">{date}</small>
     </div>
-  );
+  )
 }
 
-export default ReviewCard;
+export default ReviewCard

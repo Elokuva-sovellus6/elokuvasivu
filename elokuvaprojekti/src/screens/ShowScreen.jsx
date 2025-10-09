@@ -76,9 +76,8 @@ export default function ShowScreen() {
     <div>
       <h3>Finnkino näytökset</h3>
 
-      <div className="filters d-flex align-items-center gap-3 mb-3">
-        <div className="filters">
-          {/* Dropdown alueelle */}
+      <div className="filters flex-wrap">
+        <div className="filter-item area-dropdown">
           <GenericDropdown
             label="Valitse alue"
             items={areas}
@@ -87,9 +86,10 @@ export default function ShowScreen() {
             itemKey="id"
             itemLabel="name"
           />
+        </div>
 
-          {/* Elokuvan valinta */}
-          {uniqueMovies.length > 0 && (
+        {uniqueMovies.length > 0 && (
+          <div className="filter-item movie-dropdown">
             <GenericDropdown
               label="Valitse elokuva"
               items={[{ id: "all", name: "Kaikki elokuvat" }, ...uniqueMovies]}
@@ -98,16 +98,16 @@ export default function ShowScreen() {
               itemKey="eventId"
               itemLabel="name"
             />
-          )}
-
-          {/* Päivämäärän valinta */}
-          <div className="date-picker">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
           </div>
+        )}
+
+        <div className="filter-item date-dropdown">
+          <input
+            type="date"
+            className="form-control"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
         </div>
       </div>
 

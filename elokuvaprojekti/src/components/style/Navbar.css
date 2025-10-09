@@ -34,3 +34,49 @@
   color: #fff !important;
   border-radius: 6px;
 }
+
+.nav-item.dropdown .dropdown-item > div {
+    min-width: 110px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 991.98px) {
+  /* Koko avattava valikko vasemmalle: Tämä asetus on turvallisin */
+  .navbar-collapse {
+    align-items: flex-start;
+    padding-left: 15px; 
+  }
+
+  /* Navigaatiolinkkien lista vasemmalle */
+  .navbar-nav {
+    margin-right: auto !important;
+    margin-left: 0 !important;
+  }
+    
+  /* Korjaa kellonapin leveyden ja siirtää vasemmalle */
+  .navbar .bell-wrapper {
+    width: fit-content; 
+    margin-top: 0.5rem; 
+    margin-bottom: 0.5rem;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .navbar .bell-wrapper .badge {
+    top: 0;
+    right: 0;
+    font-size: 0.65rem;
+  }
+
+  /* 3. Tervetuloa + Kirjaudu ulos vasemmalle */
+  .navbar .user-info-wrapper {
+    margin-bottom: 0.5rem;
+    
+    /* Pakota vasempaan reunaan */
+    margin-left: 0 !important; 
+    margin-right: auto; 
+  }
+}

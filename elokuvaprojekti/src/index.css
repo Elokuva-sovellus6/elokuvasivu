@@ -10,6 +10,34 @@ body {
    color: #fff !important;
 }
 
+p {
+  color: #fff !important;
+}
+
+h1, h3, h5 {
+  color: #fff !important;
+}
+
+.modal-content h5,
+.modal-content h3,
+.modal-content h1 {
+  color: #000 !important;
+}
+
+.card-title {
+  color: #fff !important;
+  font-size: 1.1rem;
+}
+
+.card-text {
+  color: #fff !important;
+}
+
+.card-bg {
+  background-color: rgb(30, 31, 32) !important;
+  border-radius: 8px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -20,9 +48,6 @@ button {
   background-color: #4f46e5 !important;
   color: #fff !important;
   border: none !important;
-  border-radius: 6px !important;
-  padding: 8px 16px !important;
-  margin: 0.2px !important;
   transition: background-color 0.2s !important;
 }
 
@@ -36,20 +61,69 @@ button:hover {
   background-color: #756ef0 !important;
 }
 
-.card {
+.delete-btn {
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.delete-btn i {
+  font-size: 1.2rem;
+  color: #dc3545;
+}
+
+.delete-btn:hover,
+.delete-btn:focus,
+.delete-btn:active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+a {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.card{
   background-color: rgb(30, 31, 32) !important;
   border-radius: 8px !important;
 }
 
-.card-text {
-  color: #fff !important;
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
 }
 
-.card-title {
-  color:#fff !important;
+.showtimes-list,
+.showtimes-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128,128,128,0.4) transparent;
 }
 
-a {
-  color: inherit !important;
-  text-decoration: none !important;
+.showtimes-list::-webkit-scrollbar,
+.showtimes-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.showtimes-list::-webkit-scrollbar-thumb,
+.showtimes-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.4);
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+
+.showtimes-list::-webkit-scrollbar-track,
+.showtimes-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }

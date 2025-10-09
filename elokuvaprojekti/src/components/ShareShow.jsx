@@ -17,7 +17,7 @@ export default function ShareShow({ show, tmdbId, movieName }) {
           {show.theatre}{show.auditorium ? `, ${show.auditorium}` : ""}
         </a>
 
-        <span className="showtime">
+        <span className="showtime card-text">
           {new Date(show.time).toLocaleTimeString("fi-FI", {
             hour: "2-digit",
             minute: "2-digit",

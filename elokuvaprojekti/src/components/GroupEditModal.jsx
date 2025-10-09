@@ -52,7 +52,7 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-xl">
           <div className="modal-header">
-            <h5 className="modal-title">Muokkaa ryhmää</h5>
+            <h5 className="modal-title modal-content">Muokkaa ryhmää</h5>
             <button
               type="button"
               className="btn-close"

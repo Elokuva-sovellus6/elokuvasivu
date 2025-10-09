@@ -71,8 +71,8 @@ export default function Rating({ movieId, token }) {
           onChange={(e) => setRateFormData({ ...rateFormData, review: e.target.value })}
         />
       </div>
-      <div className="submit_rating">
-        <button className="btn btn-success" onClick={handleRateSubmit}>Arvostele</button>
+      <div className="d-grid mt-3">
+        <button className="btn" onClick={handleRateSubmit}>Arvostele</button>
       </div>
     </div>
   )

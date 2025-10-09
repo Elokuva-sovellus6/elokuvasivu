@@ -1,3 +1,14 @@
+.movie-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body {
+  flex: 1;
+}
+
 .movie-card-img {
     height: 600px;
     object-fit: cover;
@@ -5,4 +16,16 @@
 
 .movie-card-no-img {
     height: 600px;
+}
+
+.card-footer{
+  background-color: rgb(30, 31, 32) !important
+}
+
+.card-text {
+  color: #fff !important;
+}
+
+.card-title {
+  color:#fff !important;
 }

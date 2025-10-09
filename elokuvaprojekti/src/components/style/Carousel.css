@@ -1,0 +1,69 @@
+/* Scroll container */
+.scrollview-container {
+    scroll-behavior: smooth;
+    gap: 1rem;
+    padding-bottom: calc(0.5rem + 8px); /* Varaa tilan scrollbarille ja estää sisällön hyppimisen */
+    overflow-x: auto;
+}
+
+/* Scrollbarin piilotettu tila */
+.scrollview-container::-webkit-scrollbar {
+    height: 8px;
+    opacity: 0;
+}
+
+/* Piilotetaan oletusnuolet */
+.scrollview-container::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* Scrollbarin näkyvä tila */
+.scrollview-container.show-scrollbar::-webkit-scrollbar {
+    opacity: 1;
+    transition: opacity 5s ease-in-out; 
+}
+
+/* Scrollbarin peukalo (thumb) */
+.scrollview-container.show-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.7);
+    border-radius: 4px;
+}
+
+/* --- Nuolia ympäröivä containeri --- */
+.scrollview-wrapper {
+    position: relative;
+}
+
+/* Nuolet */
+.scroll-arrow {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-arrow:hover, .scroll-arrow:focus {
+    background: none !important;
+}
+
+.scroll-arrow-left {
+    left: -50px;
+}
+
+.scroll-arrow-right {
+    right: -50px;
+}
+
+/* Piilotetaan nuolet pienillä näytöillä */
+@media (max-width: 768px) {
+    .scroll-arrow {
+        display: none !important;
+    }
+}

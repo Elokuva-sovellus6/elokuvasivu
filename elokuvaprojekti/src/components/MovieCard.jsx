@@ -1,18 +1,17 @@
-// MovieCard.js
-
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import "./style/MovieCard.css"
 
 export default function MovieCard({
   id,
   title,
-  imageSrc, // Koko kuvan URL
-  description, // Kuvausteksti (valinnainen)
-  linkTo, // Linkin kohde (valinnainen, esim. /movie/123)
-  releaseYear, // Julkaisuvuosi (valinnainen)
-  genres, // Genre(t) stringinä (valinnainen)
-  extraContent, // Lisäsisältö, esim. tähdet tai näytösajat
-  isLink = true, // Onko kortti linkki
+  imageSrc,
+  description,
+  linkTo,
+  releaseYear,
+  genres,
+  extraContent,
+  isLink = true,
+  noColWrapper = false,
 }) {
   const MovieImage = imageSrc ? (
     <img
@@ -27,53 +26,50 @@ export default function MovieCard({
   )
 
   const MovieBody = (
-    <div className="card-body">
-      <h5 className="card-title">
+    <div className="card-body pb-0 card-bg">
+      <h5>
         <strong>{title}</strong>
       </h5>
-
-      {releaseYear && (
-        <p className="card-text">
-          <strong>Julkaisuvuosi:</strong> {releaseYear}
-        </p>
-      )}
-
-      {genres && (
-        <p className="card-text">
-          <strong>Genre:</strong> {genres}
-        </p>
-      )}
-
+      {releaseYear && <p className="card-text"><strong>Julkaisuvuosi:</strong> {releaseYear}</p>}
+      {genres && <p className="card-text"><strong>Genre:</strong> {genres}</p>}
       {description && (
         <p className="card-text">
           <strong>Kuvaus: </strong>
           {description}
         </p>
       )}
-
-      {/* Lisäsisältö renderöidään tässä */}
-      {extraContent}
     </div>
   )
 
-  const CardContent = (
+  const LinkContent = (
     <>
       {MovieImage}
       {MovieBody}
     </>
   )
 
+  const CardInner = (
+    <div className="card movie-card movie-link h-100 w-100 shadow-sm text-dark text-decoration-none">
+      {isLink && linkTo ? (
+        <Link to={linkTo} className="text-dark text-decoration-none">
+          {LinkContent}
+        </Link>
+      ) : (
+        LinkContent
+      )}
+      {extraContent && (
+        <div className="card-footer bg-white border-0 pt-0">
+          {extraContent}
+        </div>
+      )}
+    </div>
+  )
+
+  if (noColWrapper) return CardInner
+
   return (
-    <div className="col-md-6 col-lg-4 mb-4 card-bg" key={id}>
-      <div className="card movie-link h-100 shadow-sm text-dark text-decoration-none">
-        {isLink && linkTo ? (
-          <Link to={linkTo} className="text-dark text-decoration-none h-100">
-            {CardContent}
-          </Link>
-        ) : (
-          CardContent
-        )}
-      </div>
+    <div className="col-md-6 col-lg-4 mb-4" key={id}>
+      {CardInner}
     </div>
   )
 }

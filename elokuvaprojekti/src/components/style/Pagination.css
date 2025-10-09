@@ -41,3 +41,25 @@
   background-color: #4f46e5;
 }
 
+/* Piilota Back/Next teksti pienissä näytöissä */
+@media (max-width: 520px) {
+  .back-btn::before {
+    content: "<";
+  }
+  .back-btn {
+    padding: 0.5rem;
+  }
+  .back-btn span {
+    display: none;
+  }
+
+  .next-btn::after {
+    content: ">";
+  }
+  .next-btn {
+    padding: 0.5rem;
+  }
+  .next-btn span {
+    display: none;
+  }
+}

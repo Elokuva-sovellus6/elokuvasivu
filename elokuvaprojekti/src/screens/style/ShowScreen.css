@@ -1,105 +1,11 @@
-.movie-poster {
-  max-height: 600px ;
-  width: 100% ;
-  object-fit: contain ;
-  background-color: #000; /* lisää mustat reunat jos kuva ei täytä koko aluetta */
-}
-
-.movie-link {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-
 .movie-link:hover img {
   filter: brightness(85%);
-  transition: 0.3s ease;
-}
-
-.movie-link:hover .card-title {
-  color: #007bff;
   transition: 0.3s ease;
 }
 
 .showtimes-list {
   max-height: 250px;
   overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+
 }
 
-.theatre-name {
-  font-size: 0.95rem;
-  color: #333;
-}
-
-.showtime {
-  font-weight: bold;
-  color: #000;
-}
-
-.showtime-row {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-  gap: 0.5rem;
-}
-
-.showtime-row:last-child {
-  border-bottom: none;
-}
-
-.theatre-name {
-  flex: 1;
-  font-size: 0.95rem;
-  color: #333;
-}
-
-.showtime {
-  font-weight: bold;
-  margin-right: 1rem;
-  min-width: 50px;       
-  text-align: right;     
-}
-
-.theatre-link {
-  flex: 1;                
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.theatre-link:hover {
-  text-decoration: underline;
-}
-
-.share-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  width: 60px;
-  text-align: center;
-}
-
-.share-btn:hover {
-  background-color: #0056b3;
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;   
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.date-picker {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
