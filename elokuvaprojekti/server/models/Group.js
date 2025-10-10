@@ -29,8 +29,7 @@ class Group {
       LEFT JOIN groupmembers m
       ON g.groupid = m.groupid 
       AND m.ismember = true
-      GROUP BY g.groupid
-      ORDER BY g.createddate DESC`
+      GROUP BY g.groupid`
     )
     return result.rows
   }
