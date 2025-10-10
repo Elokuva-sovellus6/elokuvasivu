@@ -9,6 +9,7 @@ import favouriteRouter from './routers/favouriteRouter.js';
 import groupShowRouter from './routers/groupShowRouter.js';
 import moviedbRouter from './routers/moviedbRouter.js';
 import groupMovieRouter from './routers/groupMovieRouter.js'
+import groupChatRouter from './routers/groupChatRouter.js'
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -39,6 +40,9 @@ app.use('/groupshows', groupShowRouter)
 
 //Reitti groupmovie-kontrollerille
 app.use("/groupmovies", groupMovieRouter)
+
+//Reitti groupchat-kontrollerille
+app.use("/groupchat", groupChatRouter)
 
 // Reitti moviedb-kontrollerille
 app.use('/tmdb', moviedbRouter)

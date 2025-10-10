@@ -1,0 +1,89 @@
+.forum {
+  background-color: #111 !important;
+  color: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.forum-title {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.forum-messages {
+  background-color: #1a1a1a !important;
+  border-radius: 10px;
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.forum-message {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #333;
+  transition: background-color 0.2s ease;
+}
+
+.forum-message small,
+.forum-date {
+  color: #9f8cff !important; /* kevyt violetti sävy */
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.forum-message:hover {
+  background-color: #2c2c2c;
+}
+
+.forum-username {
+  color: #7b6cff; /* violetti sävy */
+}
+
+.chat-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #333;
+}
+
+.forum-text {
+  white-space: pre-wrap;
+  margin: 0.5rem 0;
+}
+
+.forum-textarea {
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  resize: none;
+}
+
+.forum-textarea::placeholder {
+  color: #888;
+}
+
+.forum-textarea:focus {
+  outline: none;
+  border-color: #7b6cff;
+  box-shadow: 0 0 5px #7b6cff;
+}
+
+.send-btn {
+  background-color: #7b6cff;
+  border: none;
+  font-weight: 600;
+}
+
+.send-btn:hover {
+  background-color: #6955ff;
+}
+
+section.forum,
+section.forum * {
+  background-color: transparent;
+}
