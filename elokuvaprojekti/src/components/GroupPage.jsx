@@ -6,6 +6,7 @@ import JoinGroup from './JoinGroup.jsx'
 import GroupEditModal from "../components/GroupEditModal"
 import GroupMoviesList from './GroupMoviesList.jsx'
 import GroupShowsList from './GroupShowsList.jsx'
+import GroupChatForum from './GroupChatForum.jsx'
 import './style/GroupPage.css'
 
 export default function GroupPage() {
@@ -333,12 +334,11 @@ export default function GroupPage() {
             </section>
                     <div className="middle-content d-flex flex-md-row flex-column gap-4 align-items-start ">
 
-                      <section className="forum col-12 col-md-8">
-                        <h3>Foorumi</h3>
-                        <div className="forum-messages mb-3">Foorumiviestit näkyvät täällä.</div>
-                        <textarea className="form-control mb-2" placeholder="Kirjoita viesti"></textarea>
-                        <button className="btn btn-primary w-100">Lähetä</button>
-                      </section>
+                      <GroupChatForum 
+                        groupId={groupId}
+                        userId={userId}
+                        ownerId={group.ownerid}
+                        />
 
                         <section className="col-12 col-md-4">
                           <h3>Ryhmän jäsenet</h3>
