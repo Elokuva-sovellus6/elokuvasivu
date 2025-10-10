@@ -25,6 +25,7 @@ dist-ssr
 
 README.md
 .env
+.env.test
 
 server/uploads/*
 !server/uploads/.gitkeep
