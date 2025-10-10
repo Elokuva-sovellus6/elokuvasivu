@@ -60,3 +60,7 @@ export const login = async (req, res, next) => {
         next(error)
     }
 }
+
+export const signout = (req, res, next) => {
+    res.status(204).send()
+}

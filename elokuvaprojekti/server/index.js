@@ -17,7 +17,7 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT || 3001
 
-app.use(cors());
+app.use(cors())
 app.use(express.json())
 
 // Reitit auth-kontrollerille
@@ -52,17 +52,21 @@ app.use("/uploads", express.static("uploads"))
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
     if (err instanceof ApiError) {
-        // TÄMÄ ON KORJATTU VERSIO: Statuskoodi pakotetaan numeroksi
-        const status = Number(err.statusCode) || 500; 
+        // Statuskoodi pakotetaan numeroksi
+        const status = Number(err.statusCode) || 500
  
-        // TÄMÄ RIVI KORJATTU: Käytetään laskettua 'status'-muuttujaa!
-        return res.status(status).json({ message: err.message }); 
+        // Käytetään laskettua status muuttujaa
+        return res.status(status).json({ message: err.message })
     }
-    console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error(err)
+    res.status(500).json({ message: 'Internal Server Error' })
 })
 
-// Käynnistää palvelimen
-app.listen(port, () => {
+// Käynnistetään vain jos ei olla testitilassa
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
-})
+  })
+}
+
+export default app
