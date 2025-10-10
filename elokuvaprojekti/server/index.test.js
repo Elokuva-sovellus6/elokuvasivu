@@ -10,11 +10,46 @@ describe('Auth API', function () {
     await setupTestDB()
 
     // Luodaan käyttäjä suoraan testikantaan kirjautumistestiä varten
-    const passwordHash = await bcrypt.hash('Salasana123', 10)
-    await pool.query(
+    //const passwordHash = await bcrypt.hash('Salasana123', 10)
+    /*await pool.query(
       'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
       ['Testikäyttäjä', 'foo@test.com', passwordHash]
+    )*/
+  })
+
+  //Rekisteröityminen
+  it('rekisteröi uuden käyttäjän onnistuneesti', async () => {
+    const res = await api.post('/auth/register').send({
+      username: 'UusiKayttaja',
+      email: 'foo@test.com',
+      password: 'Salasana123'
+    })
+
+    expect(res.status).to.be.oneOf([200, 201])
+    expect(res.body).to.have.property('message')
+    expect(res.body.message.toLowerCase()).to.include('onnistui')
+  })
+
+  it('ei rekisteröi käyttäjää, jos sähköposti on jo käytössä', async () => {
+    const res = await api.post('/auth/register').send({
+      username: 'ToinenKayttaja',
+      email: 'foo@test.com',
+      password: 'Salasana123'
+    })
+
+    expect(res.status).to.be.oneOf([400, 409])
+  })
+
+  it('rekisteröinnin jälkeen käyttäjä löytyy tietokannasta', async () => {
+    // Etsitään juuri luotu käyttäjä
+    const result = await pool.query(
+      'SELECT username, email FROM users WHERE email = $1',
+      ['foo@test.com']
     )
+
+    expect(result.rows.length).to.equal(1)
+    expect(result.rows[0].username).to.equal('UusiKayttaja')
+    expect(result.rows[0].email).to.equal('foo@test.com')
   })
 
   // Kirjautuminen olemassa olevalla käyttäjällä
@@ -40,5 +75,22 @@ describe('Auth API', function () {
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.status).to.be.oneOf([200, 204])
+  })
+
+  // Rekisteröitymisen poisto
+  it('poistaa käyttäjän onnistuneesti', async () => {
+    const loginRes = await api.post('/auth/login').send({
+      email: 'foo@test.com',
+      password: 'Salasana123'
+    })
+    const token = loginRes.body.token
+
+    const deleteRes = await api.delete('/users/me')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(deleteRes.status).to.be.oneOf([200, 204])
+
+    const checkRes = await pool.query('SELECT * FROM users WHERE email = $1', ['uusi@test.com'])
+    expect(checkRes.rows.length).to.equal(0)
   })
 })
