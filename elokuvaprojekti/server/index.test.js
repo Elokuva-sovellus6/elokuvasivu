@@ -27,6 +27,7 @@ describe('Auth API', function () {
 
     expect(res.status).to.be.oneOf([200, 201])
     expect(res.body).to.have.property('message')
+    // Registration test
     expect(res.body.message.toLowerCase()).to.include('onnistui')
   })
 
@@ -92,5 +93,57 @@ describe('Auth API', function () {
 
     const checkRes = await pool.query('SELECT * FROM users WHERE email = $1', ['uusi@test.com'])
     expect(checkRes.rows.length).to.equal(0)
+  })
+})
+
+describe('Review API', function () {
+  this.timeout(10000)
+
+  let userId
+  let token
+  const movieId = 12345
+
+  before(async () => {
+    //Lisätään testikäyttäjä
+    const passwordHash = await bcrypt.hash('Salasana123', 10)
+    const userRes = await pool.query(
+      'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING userid',
+      ['ReviewUser', 'reviewUser@example.com', passwordHash]
+    )
+    userId = userRes.rows[0].userid
+
+    const loginRes = await api.post('/auth/login').send({
+      email: 'reviewUser@example.com',
+      password: 'Salasana123'
+    })
+    token = loginRes.body.token
+  })
+
+  it('luo uuden arvostelun onnistuneesti', async () => {
+    const res = await api
+      .post(`/movies/${movieId}/review`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        rating: 5,
+        review: 'Paras leffa ikinä!'
+      })
+
+    expect(res.status).to.be.oneOf([200,201])
+    expect(res.body).to.have.property('message')
+    // Review creation test
+    expect(res.body.message.toLowerCase()).to.include('onnistuneesti')
+  })
+
+  it('hakee elokuvan arvotelut onnistuneesti', async () => {
+    const res = await api.get(`/movies/${movieId}/review`)
+    expect(res.status).to.equal(200)
+    expect(res.body).to.be.an('array')
+    expect(res.body[0]).to.have.property('reviewtext')
+  })
+
+  it('ei palauta arvosteluja, jos elokuvalla ei ole arvosteluita', async () => {
+    const res = await api.get('/movies/9999/review')
+    expect(res.status).to.equal(200)
+    expect(res.body).to.be.an('array').that.is.empty
   })
 })
