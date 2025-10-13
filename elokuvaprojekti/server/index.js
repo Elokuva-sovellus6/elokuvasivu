@@ -15,6 +15,12 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 const app = express()
+
+// Sallitaan frontin domain
+app.use(cors({
+  origin: "https://elokuvasivu-front.onrender.com"
+}))
+
 const port = process.env.PORT || 3001
 
 app.use(cors())
@@ -65,7 +71,7 @@ app.use((err, req, res, next) => {
 // Käynnistetään vain jos ei olla testitilassa
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`)
+    console.log(`Server is running on port ${port}`)
   })
 }
 
