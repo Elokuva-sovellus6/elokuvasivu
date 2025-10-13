@@ -15,13 +15,14 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 const app = express()
+const port = process.env.PORT || 3001
 
 // Sallitaan frontin domain
 app.use(cors({
-  origin: "https://elokuvasivu-front.onrender.com"
+  origin: process.env.NODE_ENV === 'production'
+    ? "https://elokuvasivu-front.onrender.com"
+    : "http://localhost:5173"
 }))
-
-const port = process.env.PORT || 3001
 
 app.use(cors())
 app.use(express.json())
