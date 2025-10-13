@@ -12,6 +12,7 @@ import groupMovieRouter from './routers/groupMovieRouter.js'
 import groupChatRouter from './routers/groupChatRouter.js'
 import dotenv from 'dotenv';
 
+
 dotenv.config()
 
 const app = express()
