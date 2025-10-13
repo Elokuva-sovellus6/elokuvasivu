@@ -10,7 +10,15 @@ export const createGroup = async (req, res, next) => {
     const { name, description } = req.body
     const ownerId = req.user.id
     const file = req.file
-    const newGroup = await Group.create(name, description, ownerId, file ? file.filename : null)
+
+    let groupimg = null
+    if (file) {
+      const base64 = file.buffer.toString("base64")
+      const mime = file.mimetype;
+      groupimg = `data:${mime};base64,${base64}`
+    }
+
+    const newGroup = await Group.create(name, description, ownerId, groupimg)
     res.status(201).json({ message: "Ryhmä luotu onnistuneesti", group: newGroup })
   } catch (err) {
       next(err)
@@ -63,9 +71,11 @@ export const updateGroup = async (req, res, next) => {
     if (String(group.ownerid) !== String(userId))
       throw new ApiError("Vain omistaja voi muokata ryhmää", 403)
 
-    let groupimg = group.groupimg
+    let groupimg = group.groupimg;
     if (req.file) {
-      groupimg = req.file.filename
+      const base64 = req.file.buffer.toString("base64");
+      const mime = req.file.mimetype;
+      groupimg = `data:${mime};base64,${base64}`;
     }
 
     const updated = await Group.update(groupId, name, description, groupimg)

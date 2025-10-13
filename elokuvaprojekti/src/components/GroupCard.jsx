@@ -7,11 +7,12 @@ export default function GroupCard({ group }) {
         <div className="card group-card card-bg">
             <Link to={`/groups/${group.groupid}`} className="text-decoration-none text-dark">
                 <img
-                  src={
-                    group.groupimg
-                      ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
-                      : "https://placehold.co/300x200?text=Ryhmä"
-                  }
+                    src={
+                      group.groupimg
+                        ? group.groupimg
+                        : "https://placehold.co/300x200?text=Ryhmä"
+                    }
+
                   className="card-img-top"
                   alt={group.name}
                 />

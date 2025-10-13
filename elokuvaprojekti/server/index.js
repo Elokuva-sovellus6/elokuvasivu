@@ -10,6 +10,7 @@ import groupShowRouter from './routers/groupShowRouter.js';
 import moviedbRouter from './routers/moviedbRouter.js';
 import groupMovieRouter from './routers/groupMovieRouter.js'
 import groupChatRouter from './routers/groupChatRouter.js'
+import multer from "multer";
 import dotenv from 'dotenv';
 
 
@@ -17,6 +18,7 @@ dotenv.config()
 
 const app = express()
 const port = process.env.PORT || 3001
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Sallitaan frontin domain
 app.use(cors({
@@ -54,7 +56,18 @@ app.use("/groupchat", groupChatRouter)
 // Reitti moviedb-kontrollerille
 app.use('/tmdb', moviedbRouter)
 
-app.use("/uploads", express.static("uploads"))
+app.post("/groups/:id/upload", upload.single("image"), async (req, res) => {
+  const base64 = req.file.buffer.toString("base64");
+  const mime = req.file.mimetype; // esim. image/png
+  const dataUri = `data:${mime};base64,${base64}`;
+
+  await pool.query(
+    "UPDATE groups SET groupimg = $1 WHERE id = $2",
+    [dataUri, req.params.id]
+  );
+
+  res.json({ message: "Image saved to DB" });
+});
 
 // Virheenkäsittelijä middleware - ApiError-luokan käsittely
 app.use((err, req, res, next) => {
