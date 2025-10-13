@@ -7,6 +7,7 @@ function FavouriteList() {
     const [ data, setData ] = useState(null);
     const [ loading, setLoading ] = useState(true);
     const [ movies, setMovies ] = useState([]);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchFavourites = async () => {
