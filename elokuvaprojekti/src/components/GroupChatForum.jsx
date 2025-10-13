@@ -79,16 +79,14 @@ export default function GroupChatForum({ groupId, userId, ownerId }) {
               String(userId) === String(msg.userid) ||
               (ownerId && String(userId) === String(ownerId));
 
-            const profileImg = msg.userimg
-              ? `${import.meta.env.VITE_API_URL}/uploads/userimg/${msg.userimg}`
-              : "/placeholder_profile.png";
+            const profileImg = msg.userimg || "/placeholder_profile.png";
 
             return (
               <div key={msg.postid} className="forum-message mb-3 p-3 rounded">
                 <div className="d-flex align-items-center mb-2">
                   {/* Profiilikuva */}
                   <img
-                    src={profileImg}
+                    src={msg.userimg || "/placeholder_profile.png"}
                     alt={`${msg.username} profiilikuva`}
                     className="chat-avatar me-2"
                   />

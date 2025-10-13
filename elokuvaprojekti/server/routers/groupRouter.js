@@ -7,7 +7,7 @@ import multer from "multer"
 const router = express.Router()
 
 // määritellään minne tallennetaan
-const uploadGroup = multer({ dest: "uploads/groupimg/" })
+const uploadGroup = multer({ storage: multer.memoryStorage() })
 
 // Luo uusi ryhmä
 router.post("/", authenticateToken, uploadGroup.single("groupimg"), createGroup)

@@ -270,11 +270,7 @@ export default function GroupPage() {
         <section className="group-header d-flex flex-md-row flex-column align-items-start gap-4">
           <div className="group-image col-12 col-md-4 text-center">
             <img
-              src={
-                group.groupimg
-                  ? `${import.meta.env.VITE_API_URL}/uploads/groupimg/${group.groupimg}`
-                  : "https://placehold.co/300x200?text=Ryhmä"
-              }
+              src={group.groupimg || "https://placehold.co/300x200?text=Ryhmä"}
               className="img-fluid rounded"
               alt={group.name}
             />

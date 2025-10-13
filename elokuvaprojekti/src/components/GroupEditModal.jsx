@@ -92,7 +92,7 @@ const GroupEditModal = ({ onClose, groupId, initialData, onUpdated }) => {
               </div>
               <div className="mb-3">
                 <label htmlFor="groupImage" className="form-label">
-                  Kuvan URL
+                  Ryhmän kuva
                 </label>
                 <input
                   type="file"
