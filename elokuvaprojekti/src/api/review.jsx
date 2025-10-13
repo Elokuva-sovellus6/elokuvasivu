@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3001/movies'
+const BASE_URL = import.meta.env.VITE_API_URL + '/movies';
 
 // Hae elokuvan arvostelut
 export const getReviews = async (movieId) => {
