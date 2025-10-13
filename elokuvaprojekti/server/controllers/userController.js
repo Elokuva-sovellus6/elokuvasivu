@@ -43,6 +43,7 @@ export const updateMe = async (req, res, next) => {
     const updatedUser = await User.update(req.user.id, userDescription, userImg)
     res.json(updatedUser)
   } catch (err) {
+    console.error('Error in updateMe:', err)
     next(err)
   }
 }
