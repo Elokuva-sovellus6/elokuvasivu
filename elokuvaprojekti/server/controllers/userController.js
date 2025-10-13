@@ -30,16 +30,20 @@ export const deleteMe = async (req, res, next) => {
 
 // Kuvan ja kuvauksen päivitys
 export const updateMe = async (req, res, next) => {
-  try {
-    const userImg = req.file ? req.file.filename : req.body.userImg
-    const { userDescription } = req.body
-    const updated = await User.update(req.user.id, userDescription, userImg)
-  
-    if (!updated) 
-      throw new ApiError('Käyttäjää ei löytynyt', 404)
+  const { userDescription } = req.body
+  let userImg = null
 
-    res.json(updated)
+  if (req.file && req.file.buffer) {
+    const base64 = req.file.buffer.toString('base64')
+    const mime = req.file.mimetype
+    userImg = `data:${mime};base64,${base64}`
+  }
+
+  try {
+    const updatedUser = await User.update(req.user.id, userDescription, userImg)
+    res.json(updatedUser)
   } catch (err) {
+    console.error('Error in updateMe:', err)
     next(err)
   }
 }
