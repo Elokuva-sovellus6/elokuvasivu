@@ -11,7 +11,7 @@ function FavouriteList() {
     useEffect(() => {
         const fetchFavourites = async () => {
             try {
-                const res = await fetch(`http://localhost:3001/favourites/${userId}/public`);
+                const res = await fetch(`${API_URL}/favourites/${userId}/public`);
                 const json = await res.json();
                 setData(json);
 
