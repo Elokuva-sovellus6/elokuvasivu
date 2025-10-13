@@ -24,7 +24,6 @@ app.use(cors({
     : "http://localhost:5173"
 }))
 
-app.use(cors())
 app.use(express.json())
 
 // Reitit auth-kontrollerille

@@ -25,6 +25,8 @@ dist-ssr
 
 README.md
 .env
+.env.local
+.env.production
 .env.test
 
 server/uploads/*
