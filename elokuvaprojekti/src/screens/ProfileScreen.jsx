@@ -170,12 +170,8 @@ function ProfileScreen() {
       <div className="row align-items-center mb-4">
         <div className="col-md-3 text-center">
           <img
-            src={
-              user.userimg
-                ? `${import.meta.env.VITE_API_URL}/uploads/userimg/${user.userimg}`
-                : '/default.png'
-            }
-            alt="Profiilikuva"
+            src={user.userimg || '/default.png'} 
+            alt="Profiilikuva" 
             className="profile-avatar"
           />
           <button
