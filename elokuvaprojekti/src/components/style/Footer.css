@@ -1,6 +1,17 @@
 .footer {
     background-color: rgb(30, 31, 32) !important;
     border-top: none !important; 
+    color: #e0e0e0 !important;
+    width: 100%;
+}
+
+.footer-logo {
+  height: 40px;
+  width: auto;
+}
+
+.footer small {
+  color: #bdbdbd !important;
 }
 
 .nav-link {
@@ -9,4 +20,23 @@
   border-radius: 6px;
   margin: 5px;
   transition: background-color 0.3s, color 0.3s;
+}
+
+.footer .border-top {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    text-align: center;
+  }
+
+  .footer .nav-link {
+    display: inline-block;
+    margin: 0.25rem 0.5rem;
+  }
+
+  .footer .footer-logo {
+    margin-bottom: 10px;
+  }
 }

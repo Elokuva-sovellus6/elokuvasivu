@@ -88,7 +88,7 @@ export default function HomeScreen() {
                 extraContent={
                   <div className="d-flex align-items-center">
                     <RatingStars rating={movie.vote_average / 2} />
-                    <small className="ms-2">{movie.vote_average ? `TMDB: ${movie.vote_average.toFixed(1)}/10` : ""}</small>
+                    <small className="card-text">{movie.vote_average ? `TMDB: ${movie.vote_average.toFixed(1)}/10` : ""}</small>
                   </div>
                 }
                 description={movie.overview?.slice(0, 120) + (movie.overview?.length > 120 ? "..." : "")}
