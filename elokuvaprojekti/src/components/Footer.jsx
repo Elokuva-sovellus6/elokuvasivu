@@ -14,7 +14,7 @@ export default function Footer() {
             <NavLink className="navbar-brand d-inline-flex align-items-center justify-content-center" to="/">
               <img 
                 src={logo}
-                alt="Elokuvasivu logo"
+                alt="Movie fans logo"
                 className="footer-logo"
               />
             </NavLink>
