@@ -113,7 +113,7 @@ const ShareShowModal = ({ onClose, showData, onShared }) => {
             {/* Jos ei ole kirjautunut näytetään varoitus */}
             {!hasToken ? (
               <div className="alert alert-warning text-center">
-                <p>Kirjaudu sisään jakaaksesi näytöksen.</p>
+                <p className="card-text-black">Kirjaudu sisään jakaaksesi näytöksen.</p>
               </div>
             ) : (
               // Jakolomake
