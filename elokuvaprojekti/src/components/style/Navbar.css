@@ -80,3 +80,63 @@
     margin-right: auto; 
   }
 }
+
+
+/*  Liittymispyyntöjen dropdown mobiilissa  */
+
+@media (max-width: 768px) {
+  .bell-wrapper .dropdown-menu {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 400px !important;
+    z-index: 2000 !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    background-color: #fff !important;
+    color: #000 !important;
+    overflow-y: auto;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .bell-wrapper .dropdown-item {
+    white-space: normal;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .bell-wrapper .dropdown-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Napit oikealle kuten desktopissa */
+  .bell-wrapper .dropdown-item div {
+    display: flex;
+    justify-content: flex-end !important;
+    gap: 0.5rem;
+  }
+
+  /* Hieman hienovarainen avautumisanimaatio */
+  .bell-wrapper .dropdown-menu.show {
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -45%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  /* Tumma tausta valikon takana (sulkemista varten) */
+  .dropdown-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1500;
+  }
+}
