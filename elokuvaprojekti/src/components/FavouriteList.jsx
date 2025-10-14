@@ -2,6 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getMovieDetails } from '../api/moviedb.jsx';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function FavouriteList() {
     const { userId } = useParams();
     const [ data, setData ] = useState(null);
