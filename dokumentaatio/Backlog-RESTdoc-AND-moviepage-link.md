@@ -1,3 +1,9 @@
+# Backlog
+
+The backlog is available here:
+👉 [View backlog on GitHub](https://github.com/orgs/Elokuva-sovellus6/projects/2/views/1)
+
+
 # REST API Documentation
 
 The public REST API documentation is available here:
