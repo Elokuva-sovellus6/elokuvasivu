@@ -1,5 +1,8 @@
 # Movie Web Application 🎬  
 
+Our movie page is now online!
+👉 [Movie Fans](https://elokuvasivu-front.onrender.com/)
+
 A full-stack web application for movie enthusiasts. This project integrates multiple open data APIs to provide movie information, showtimes, reviews, and social group features. Built with **React**, **Node.js**, and **PostgreSQL**.  
 
 ## Features ✨  
@@ -25,4 +28,4 @@ A full-stack web application for movie enthusiasts. This project integrates mult
 14. **Share Favorites** – Users can share their list as a public URI.  
 
 ### Bonus Feature
-15. **Profile page** – Additional functionality chosen by the development team.  
+15. **Group Page discussion board** – Additional functionality chosen by the development team.  
